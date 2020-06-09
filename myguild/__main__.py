@@ -32,21 +32,31 @@ def _init_logging(debug):
     )
 
 
-@main.command("sync-commands", help="Synchronize command help.")
-def sync_commands():
-    command_help.sync_commands()
+sync_commands_help = """
+Synchronize command help.
+
+By default syncs all commands. To limit sync to a subset of commands,
+specify each command as an argument COMMAND.
+"""
+
+
+@main.command("sync-commands", help=sync_commands_help)
+@click.argument("commands", metavar="[COMMAND]...", nargs=-1)
+@click.option("--preview", is_flag=True, help="Preview sync operation.")
+def sync_commands(commands, **opts):
+    command_help.sync_commands(commands, **opts)
 
 
 @main.command("publish-command", help="Publish command help to a topic.")
 @click.argument("command")
-@click.option("--preview", is_flag=True, help="Show preview of generated help topic.")
+@click.option("--preview", is_flag=True, help="Preview generated help topic.")
 def publish_command(command, **opts):
     command_help.publish_command(command, **opts)
 
 
 if __name__ == "__main__":
     try:
-        main(prog_name="my-guild")
+        main(prog_name="myguild")
     except SystemExit as e:
         if e.args[0] != 0:
             sys.stderr.write("error: %s\n" % e.message)

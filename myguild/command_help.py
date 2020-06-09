@@ -28,39 +28,72 @@ COMMAND_HELP_POST_TEMPLATE = """
 *Guild AI version {version}*
 """
 
+_cache = {}
 
-def sync_commands():
-    commands = sorted(_guild_commands())
+
+class NoSuchCommand(Exception):
+    pass
+
+
+def sync_commands(commands, preview=False):
+    api = init_api()
+    commands = sorted(_guild_commands(commands))
     for name, data in commands:
-        log.info("Syncing %s", name)
+        _sync_command(name, data, preview, api)
 
 
-def _guild_commands():
+def _guild_commands(cmd_names=None):
     cmds = []
-    _acc_guild_commands("", cmds)
+    if cmd_names:
+        _acc_command_data(cmd_names, cmds)
+    else:
+        _acc_recurse_command_data("", cmds)
     return cmds
 
 
-def _acc_guild_commands(base_cmd, acc):
+def _acc_command_data(cmd_names, cmds):
+    for cmd in cmd_names:
+        try:
+            data = _get_cmd_help_data(cmd)
+        except NoSuchCommand:
+            log.warning("no such command '%s'", cmd)
+        else:
+            cmds.append((cmd, data))
+
+
+def _acc_recurse_command_data(base_cmd, acc):
     (help_data, subcommands) = _cmd_help(base_cmd)
     acc.append((base_cmd, help_data))
     for cmd in subcommands:
-        _acc_guild_commands(cmd, acc)
+        _acc_recurse_command_data(cmd, acc)
 
 
 def _cmd_help(cmd):
-    log.info("Getting help info for %s", cmd)
-    help_data = _cmd_help_data(cmd)
+    help_data = _get_cmd_help_data(cmd)
     log.debug("Help data for %s: %r", cmd, help_data)
     subcommands = _subcommands_for_help_data(help_data, cmd)
     return help_data, subcommands
 
 
-def _cmd_help_data(cmd):
+def _get_cmd_help_data(cmd):
+    if cmd:
+        log.info("Getting help info for '%s'", cmd)
+    else:
+        log.info("Getting help info for guild base command")
     help_cmd = "guild %s --help" % cmd
     help_env = dict(os.environ)
     help_env["GUILD_HELP_JSON"] = "1"
-    out = subprocess.check_output(help_cmd, env=help_env, shell=True)
+    p = subprocess.Popen(
+        help_cmd,
+        env=help_env,
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    out, err = p.communicate()
+    if p.returncode != 0:
+        log.debug("error reading help for '%s': %s", cmd, err)
+        raise NoSuchCommand(cmd)
     return json.loads(out)
 
 
@@ -69,49 +102,104 @@ def _subcommands_for_help_data(help_data, base_cmd):
 
 
 def _join_cmd(base_cmd, cmd_term):
-    return "%s %s" % (base_cmd, _strip_aliases(cmd_term))
+    cmd = _strip_aliases(cmd_term)
+    if not base_cmd:
+        return cmd
+    return "%s %s" % (base_cmd, cmd)
 
 
 def _strip_aliases(cmd_term):
     return cmd_term.split(",", 1)[0].strip()
 
 
+def _sync_command(cmd, data, preview, api):
+    try:
+        post = _get_command_topic_post(cmd, api)
+    except DiscourseClientError as e:
+        if preview:
+            log.info("Topic for command '%s' does not exist - will create", cmd)
+            return
+        _create_command_post(cmd, data, api)
+    else:
+        _publish_command(cmd, data, post, api, print_topic=False, test_only=preview)
+
+
+def _create_command_post(cmd, data, api):
+    category = _commands_category(api)
+    content = _format_command_help_post(data)
+    log.info("Creating help topic post for '%s'", cmd)
+    api.create_post(content, category, title="Command: %s" % cmd)
+
+
+def _commands_category(api):
+    try:
+        return _cache["commands_category"]
+    except KeyError:
+        id = _guild_commands_topic_category(api)
+        _cache["commands_category"] = id
+        return id
+
+
+def _guild_commands_topic_category(api):
+    try:
+        topic = api.topic("guild-commands")
+    except api.DiscourseClientError:
+        raise SystemExit(
+            "cannot find 'guild-commands' topic, which is required to "
+            "denote the Commands category - create this topic and run "
+            "this command again")
+    return topic["category_id"]
+
+
 def publish_command(cmd, preview=False):
     api = init_api()
-    log.info("Generating help topic")
-    help_data = _cmd_help_data(cmd)
+    log.info("Generating help topic for '%s'", cmd)
+    try:
+        help_data = _get_cmd_help_data(cmd)
+    except NoSuchCommand:
+        raise SystemExit("command '%s' does not exist" % cmd)
+    else:
+        post = _command_topic_post_or_exit(cmd, api)
+        _publish_command(
+            cmd, help_data, post, api, print_topic=preview, test_only=preview
+        )
+
+
+def _command_topic_post_or_exit(cmd, api):
+    try:
+        return _get_command_topic_post(cmd, api)
+    except DiscourseClientError as e:
+        if log.getEffectiveLevel() <= logging.DEBUG:
+            log.exception("topic for %s", cmd)
+        raise SystemExit(
+            "topic for command '%s' does not exist - "
+            "create topic 'Command: %s' and run this command again." % (cmd, cmd)
+        )
+
+
+def _get_command_topic_post(cmd, api):
+    log.info("Getting current help topic for '%s' from server", cmd)
+    topic = api.topic(_command_slug(cmd))
+    return api.post(topic["post_stream"]["posts"][0]["id"])
+
+
+def _command_slug(cmd):
+    return "command-%s" % cmd.replace(" ", "-")
+
+
+def _publish_command(cmd, help_data, post, api, print_topic, test_only):
     formatted_help = _format_command_help_post(help_data)
-    if preview:
+    if print_topic:
         print(formatted_help)
-    post = _get_command_topic_post(cmd, api)
     if post["raw"] == formatted_help:
-        log.info("Help topic post (%s) unchanged, skipping", post["id"])
+        log.info("Help topic post for '%s' (%s) unchanged", cmd, post["id"])
         return
-    if preview:
+    if test_only:
         log.info("Help topic post (%s) is out-of-date and will be updated", post["id"])
         return
     log.info("Updating help topic post (%s)", post["id"])
     comment = _publish_command_comment(help_data)
     api.update_post(post["id"], formatted_help, comment)
-
-
-def _get_command_topic_post(cmd, api):
-    log.info("Getting current help topic from server")
-    try:
-        topic = api.topic(_command_slug(cmd))
-    except DiscourseClientError as e:
-        if log.getEffectiveLevel() <= logging.DEBUG:
-            log.exception("topic for %s", cmd)
-        raise SystemExit(
-            "a topic for command '%s' does not exist\n"
-            "Create a topic 'Command: %s' and run this command again."
-        )
-    else:
-        return api.post(topic["post_stream"]["posts"][0]["id"])
-
-
-def _command_slug(cmd):
-    return "command-%s" % cmd.replace(" ", "-")
 
 
 def _format_command_help_post(help_data):
