@@ -21,7 +21,7 @@ Refer to help for the commands below for more information.
 
 @click.group(help=main_help)
 @click.option("--debug", is_flag=True, help="Enable debug logging")
-def main(debug):
+def main(debug=False):
     _init_logging(debug)
 
 
@@ -54,8 +54,25 @@ def publish_command(command, **opts):
     command_help.publish_command(command, **opts)
 
 
+@main.command("publish-index", help="Publish command index.")
+@click.option("--preview", is_flag=True, help="Preview generated index.")
+@click.option(
+    "-t",
+    "--test",
+    multiple=True,
+    metavar="COMMAND",
+    help=(
+        "Test index using COMMAND. Implies --preview. "
+        "Maybe be specified multiple times."
+    ),
+)
+def publish_index(**opts):
+    command_help.publish_index(**opts)
+
+
 if __name__ == "__main__":
     try:
+        # pylint: disable=unexpected-keyword-arg
         main(prog_name="myguild")
     except SystemExit as e:
         if e.args[0] != 0:
