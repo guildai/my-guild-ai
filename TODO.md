@@ -2,11 +2,20 @@
 
 ## Work on next
 
-- Permalinks to docs
-- Copy over some content - and get it close, will drive other topics
-- Look for ways to glue together - prev/next links etc.
+- Fix command publish scheme - need a permalink or established topic
+  IDs. Can't rely on redirect as these change when new topics with the
+  same slug are added.
+
+- Move content over
+- Identify areas needing work with TODO (search works well)
+- Link scanner
+- Fix links
 
 ## Topics
+
+### Nice to Have
+
+Some command formatting is wonky. Spacing around "Examples" for dates, etc.
 
 ### Guild AI Tweaks component
 

@@ -143,7 +143,7 @@ def _sync_command(cmd, data, preview, api):
         "sync command '%s'" % cmd,
         lambda: _sync_command_impl(cmd, data, preview, api),
         max_attempts=3,
-        delay=5
+        delay=5,
     )
 
 
@@ -220,7 +220,7 @@ def _command_slug(cmd):
 
 
 def _publish_command(cmd, help_data, post, api, print_topic, test_only):
-    formatted_help = _format_command_help_post(help_data)
+    formatted_help = _format_command_help_post(cmd, help_data)
     if print_topic:
         print(formatted_help)
     if post["raw"].strip() == formatted_help:
@@ -234,11 +234,11 @@ def _publish_command(cmd, help_data, post, api, print_topic, test_only):
     api.update_post(post["id"], formatted_help, comment)
 
 
-def _format_command_help_post(help_data):
+def _format_command_help_post(cmd, help_data):
     post = COMMAND_HELP_POST_TEMPLATE.format(
         formatted_help=_format_command_help(help_data),
         formatted_options=_format_command_help_options(help_data),
-        formatted_subcommands=_format_command_subcommands(help_data),
+        formatted_subcommands=_format_command_subcommands(cmd, help_data),
         **help_data
     )
     return _apply_command_refs(post).strip()
@@ -262,9 +262,9 @@ def _format_command_option(option):
     return "|`%s`|%s|" % (option["term"], option["help"])
 
 
-def _format_command_subcommands(help_data):
-    commands = help_data.get("commands")
-    if not commands:
+def _format_command_subcommands(cmd, help_data):
+    subcommands = help_data.get("commands")
+    if not subcommands:
         return ""
     lines = [
         "",
@@ -274,16 +274,22 @@ def _format_command_subcommands(help_data):
         "" "| | |",
         "|-|-|",
     ]
-    lines.extend([_format_subcommand(cmd) for cmd in commands])
+    lines.extend([_format_subcommand(cmd, subcmd) for subcmd in subcommands])
     return "\n".join(lines)
 
 
-def _format_subcommand(cmd):
-    return "|[`%s`](%s)|%s|" % (cmd["term"], _cmd_url_path(cmd["term"]), cmd["help"])
+def _format_subcommand(cmd, subcmd):
+    return "|[`%s`](%s)|%s|" % (
+        subcmd["term"],
+        _cmd_url_path(_join_cmd(cmd, subcmd["term"])),
+        subcmd["help"],
+    )
 
 
 def _cmd_url_path(cmd):
-    return "/commands/%s" % _command_slug(_strip_aliases(cmd))
+    # TODO: This is broken - we need a reliable path for these
+    # commands.
+    return "/t/%s" % _command_slug(_strip_aliases(cmd))
 
 
 def _apply_command_refs(s):
