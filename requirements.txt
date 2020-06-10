@@ -1,1 +1,1 @@
-pydiscourse
+-e https://github.com/gar1t/pydiscourse.git#egg=pydiscourse

@@ -2,6 +2,10 @@
 
 ## Command Help Topics
 
+The following fork of `pydiscourse` is required:
+
+    https://github.com/gar1t/pydiscourse
+
 Use the following for auth:
 
     $ source <( gpg -d api-creds.gpg )
