@@ -7,10 +7,14 @@ import socket
 import subprocess
 import time
 
+import requests
+
 from .api import init as init_api
 from .api import DiscourseClientError
+from .log_util import getLogger
 
-log = logging.getLogger()
+log = getLogger()
+
 
 COMMAND_HELP_POST_TEMPLATE = """
 <div data-theme-toc="true"></div>
@@ -55,16 +59,16 @@ def _retry(desc, f, max_attempts=3, delay=1):
                 raise
             if log.getEffectiveLevel() <= logging.DEBUG:
                 log.exception(desc)
-            log.error("error running %s: %s", desc, e)
-            log.info("retrying %s after %0.1f seconds", desc, delay)
+            log.error("Error running %s: %s", desc, e)
+            log.info("Retrying %s after %0.1f seconds", desc, delay)
             time.sleep(delay)
 
 
-def sync_commands(commands, preview=False):
+def publish_commands(commands, preview=False, check=False):
     api = init_api()
     commands = sorted(_guild_commands(commands))
     for name, data in commands:
-        _sync_command(name, data, preview, api)
+        _sync_command(name, data, preview, check, api)
 
 
 def _guild_commands(cmd_names=None):
@@ -81,7 +85,7 @@ def _acc_command_data(cmd_names, cmds):
         try:
             data = _get_cmd_help_data(cmd)
         except NoSuchCommand:
-            log.warning("no such command '%s'", cmd)
+            log.error("No such command '%s'", cmd)
         else:
             cmds.append((cmd, data))
 
@@ -118,7 +122,7 @@ def _get_cmd_help_data(cmd):
     )
     out, err = p.communicate()
     if p.returncode != 0:
-        log.debug("error reading help for '%s': %s", cmd, err)
+        log.debug("Error reading help for '%s': %s", cmd, err)
         raise NoSuchCommand(cmd)
     return json.loads(out)
 
@@ -138,35 +142,56 @@ def _strip_aliases(cmd_term):
     return cmd_term.split(",", 1)[0].strip()
 
 
-def _sync_command(cmd, data, preview, api):
+def _sync_command(cmd, data, preview, check, api):
     _retry(
         "sync command '%s'" % cmd,
-        lambda: _sync_command_impl(cmd, data, preview, api),
+        lambda: _sync_command_impl(cmd, data, preview, check, api),
         max_attempts=3,
         delay=5,
     )
 
 
-def _sync_command_impl(cmd, data, preview, api):
+def _sync_command_impl(cmd, data, preview, check, api):
     try:
         post = _get_command_topic_post(cmd, api)
     except DiscourseClientError:
-        if preview:
-            log.info("Topic for command '%s' does not exist - will create", cmd)
-            return
-        _create_command_post(cmd, data, api)
+        _create_command_post(cmd, data, preview, check, api)
     else:
-        _publish_command(cmd, data, post, api, print_topic=False, test_only=preview)
+        _publish_command(cmd, data, post, api, preview=preview, check=check)
 
 
-def _create_command_post(cmd, data, api, preview=False):
+def _get_command_topic_post(cmd, api):
+    assert cmd
+    log.info("Getting published help topic for '%s' from server", cmd)
+    topic = api._get(_command_topic_link(cmd))
+    return api.post(topic["post_stream"]["posts"][0]["id"])
+
+
+def _command_topic_link(cmd):
+    return "/t/%s" % _command_help_slug(cmd)
+
+
+def _command_permalink(cmd):
+    return "/commands/%s" % cmd.replace(" ", "-")
+
+
+def _create_command_post(cmd, data, preview, check, api):
     category = _commands_category(api)
-    content = _format_command_help_post(data)
+    content = _format_command_help_post(cmd, data)
     if preview:
         print(content)
+    if check:
+        log.warning("Help topic for '%s' does not exist", cmd)
+    if check or preview:
         return
-    log.info("Creating help topic post for '%s'", cmd)
-    api.create_post(content, category, title="Command: %s" % cmd)
+    log.action("Creating help topic post for '%s'", cmd)
+    title = _command_help_title(cmd)
+    post = api.create_post(content, category, title=title)
+    log.info("Created help topic post %s '%s' for '%s'", post["id"], title, cmd)
+
+
+def _command_help_title(cmd):
+    return "Command: %s" % cmd
 
 
 def _commands_category(api):
@@ -190,47 +215,20 @@ def _guild_commands_topic_category(api):
     return topic["category_id"]
 
 
-def publish_command(cmd, preview=False):
-    api = init_api()
-    log.info("Generating help topic for '%s'", cmd)
-    try:
-        help_data = _get_cmd_help_data(cmd)
-    except NoSuchCommand:
-        raise SystemExit("command '%s' does not exist" % cmd)
-    else:
-        try:
-            post = _get_command_topic_post(cmd, api)
-        except DiscourseClientError:
-            _create_command_post(cmd, help_data, api, preview)
-        else:
-            _publish_command(
-                cmd, help_data, post, api, print_topic=preview, test_only=preview
-            )
-
-
-def _get_command_topic_post(cmd, api):
-    assert cmd
-    log.info("Getting current help topic for '%s' from server", cmd)
-    topic = api.topic(_command_slug(cmd))
-    return api.post(topic["post_stream"]["posts"][0]["id"])
-
-
-def _command_slug(cmd):
-    return "command-%s" % cmd.replace(" ", "-")
-
-
-def _publish_command(cmd, help_data, post, api, print_topic, test_only):
+def _publish_command(cmd, help_data, post, api, preview, check):
     formatted_help = _format_command_help_post(cmd, help_data)
-    if print_topic:
+    if preview:
         print(formatted_help)
     if post["raw"].strip() == formatted_help:
-        log.info("Help topic post for '%s' (%s) unchanged", cmd, post["id"])
+        log.info("Help topic post %s for '%s' is up-to-date", post["id"], cmd)
         return
-    if test_only:
-        log.info("Help topic post (%s) is out-of-date and will be updated", post["id"])
+    if check:
+        log.warning(
+            "Help topic post %s for '%s' is out-of-date", post["id"], cmd,
+        )
         return
     comment = _publish_command_comment(help_data)
-    log.info("Updating help topic post (%s)", post["id"])
+    log.action("Updating help topic post %s for '%s'", post["id"], cmd)
     api.update_post(post["id"], formatted_help, comment)
 
 
@@ -281,15 +279,9 @@ def _format_command_subcommands(cmd, help_data):
 def _format_subcommand(cmd, subcmd):
     return "|[`%s`](%s)|%s|" % (
         subcmd["term"],
-        _cmd_url_path(_join_cmd(cmd, subcmd["term"])),
+        _command_permalink(_join_cmd(cmd, subcmd["term"])),
         subcmd["help"],
     )
-
-
-def _cmd_url_path(cmd):
-    # TODO: This is broken - we need a reliable path for these
-    # commands.
-    return "/t/%s" % _command_slug(_strip_aliases(cmd))
 
 
 def _apply_command_refs(s):
@@ -300,7 +292,7 @@ def _apply_command_refs(s):
 def _try_command_ref(s):
     m = re.match(r"``guild (.+) --help``", s)
     if m:
-        return "[`guild %s`](/t/%s)" % (m.group(1), _command_slug(m.group(1)))
+        return "[`guild %s`](%s)" % (m.group(1), _command_permalink(m.group(1)))
     return None
 
 
@@ -315,7 +307,7 @@ def _publish_command_comment(help_data):
     )
 
 
-def publish_index(preview=False, test=None):
+def publish_index(preview=False, check=False, test=None):
     api = init_api()
     commands = sorted(_guild_commands(test))
     assert commands
@@ -332,8 +324,11 @@ def publish_index(preview=False, test=None):
     if post["raw"].strip() == formatted_index:
         log.info("Command index post (%s) is up-to-date", post["id"])
         return
+    if check:
+        log.warning("Command index post (%s) is out-of-date", post["id"])
+        return
     comment = _publish_index_comment(version)
-    log.info("Updating command index post (%s)", post["id"])
+    log.action("Updating command index post (%s)", post["id"])
     api.update_post(post["id"], formatted_index, comment)
 
 
@@ -365,7 +360,7 @@ def _format_command_index_commands(commands):
 
 
 def _format_command_for_index(name, data):
-    return "|[`%s`](/t/%s)|%s|" % (name, _command_slug(name), _cmd_summary(data))
+    return "|[%s](%s)|%s|" % (name, _command_permalink(name), _cmd_summary(data))
 
 
 def _cmd_summary(data):
@@ -394,3 +389,102 @@ def _publish_index_comment(version):
             utc_date=datetime.datetime.utcnow().isoformat(),
         )
     )
+
+
+def check_command_permalinks(commands):
+    api = init_api()
+    commands = sorted(_guild_commands(commands))
+    for cmd, _data in commands:
+        _check_permalink(_command_permalink(cmd), cmd, api)
+
+
+def _check_permalink(link, cmd, api):
+    resp = requests.get("https://my.guild.ai/%s" % link, allow_redirects=False)
+    if resp.status_code == 404:
+        _no_permalink_error(link, cmd, api)
+    elif resp.status_code != 301:
+        log.error(
+            "Unexpected non-redirect for %s: %s (%s)",
+            link,
+            resp.reason,
+            resp.status_code,
+        )
+    else:
+        _check_permalink_redirect(link, resp, cmd, api)
+
+
+def _no_permalink_error(link, cmd, api):
+    try:
+        topic = api.topic(_command_help_slug(cmd))
+    except DiscourseClientError:
+        log.error("No permalink or broken link for %s", link)
+    else:
+        log.error(
+            "No permalink for %s but topic %s '%s' by %s exists",
+            link,
+            topic["id"],
+            topic["title"],
+            topic["details"]["created_by"]["username"],
+        )
+
+
+def _command_help_slug(cmd):
+    return "command-%s" % cmd.replace(" ", "-")
+
+
+def _check_permalink_redirect(link, resp, cmd, api):
+    location = resp.headers.get("location")
+    assert location, (link, resp)
+    m = re.match(r"https://my.guild.ai/t/[^/]+/([0-9]+)", location)
+    if not m:
+        log.error("Unexpected redirect host for %s: %s", link, location)
+    topic_id = int(m.group(1))
+    try:
+        topic = api.topic(topic_id)
+    except DiscourseClientError as e:
+        log.error("Error getting topic %s from server: %s", topic_id, e)
+    else:
+        log.info(
+            "Link %s redirects to topic %s '%s' by %s",
+            link,
+            topic["id"],
+            topic["title"],
+            topic["details"]["created_by"]["username"],
+        )
+        _check_topic_author(topic)
+        _check_topic_slug(topic, cmd)
+        _check_topic_title(topic, cmd)
+
+
+def _check_topic_author(topic):
+    expected = "guildai"
+    author = topic["details"]["created_by"]["username"]
+    if author != expected:
+        log.error(
+            "Unexpected author for topic %s: got '%s' expected '%s'",
+            topic["id"],
+            author,
+            expected,
+        )
+
+
+def _check_topic_slug(topic, cmd):
+    expected = _command_help_slug(cmd)
+    if topic["slug"] != expected:
+        log.error(
+            "Unexpected slug for topic %s: got '%s' expected '%s'",
+            topic["id"],
+            topic["slug"],
+            expected,
+        )
+
+
+def _check_topic_title(topic, cmd):
+    expected = _command_help_title(cmd)
+    if topic["title"] != expected:
+        log.error(
+            "Unexpected title for topic %s: got '%s' expected '%s'",
+            topic["id"],
+            topic["title"],
+            expected,
+        )

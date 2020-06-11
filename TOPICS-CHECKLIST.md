@@ -1,4 +1,4 @@
-- docs:                                       13
+- docs:
     - docs.md
     - install.md
 

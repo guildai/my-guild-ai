@@ -1,11 +1,11 @@
 from __future__ import print_function
 from __future__ import absolute_import
 
-import logging
 import sys
 
 import click
 
+from . import log_util
 from . import command_help
 
 main_help = """
@@ -22,40 +22,28 @@ Refer to help for the commands below for more information.
 @click.group(help=main_help)
 @click.option("--debug", is_flag=True, help="Enable debug logging")
 def main(debug=False):
-    _init_logging(debug)
+    log_util.init(debug)
 
 
-def _init_logging(debug):
-    logging.basicConfig(
-        level=logging.DEBUG if debug else logging.INFO,
-        format="%(levelname)s: [%(name)s] %(message)s",
-    )
+publish_commands_help = """
+Publish commands.
 
-
-sync_commands_help = """
-Synchronize command help.
-
-By default syncs all commands. To limit sync to a subset of commands,
-specify each command as an argument COMMAND.
+By default publishes all commands. To publish specific commands,
+specify one or more arguments for COMMAND.
 """
 
 
-@main.command("sync-commands", help=sync_commands_help)
+@main.command("publish-commands", help=publish_commands_help)
 @click.argument("commands", metavar="[COMMAND]...", nargs=-1)
-@click.option("--preview", is_flag=True, help="Preview sync operation.")
-def sync_commands(commands, **opts):
-    command_help.sync_commands(commands, **opts)
-
-
-@main.command("publish-command", help="Publish command help to a topic.")
-@click.argument("command")
-@click.option("--preview", is_flag=True, help="Preview generated help topic.")
-def publish_command(command, **opts):
-    command_help.publish_command(command, **opts)
+@click.option("--check", is_flag=True, help="Check published topics.")
+@click.option("--preview", is_flag=True, help="Preview published topics.")
+def publish_commands(commands, **opts):
+    command_help.publish_commands(commands, **opts)
 
 
 @main.command("publish-index", help="Publish command index.")
 @click.option("--preview", is_flag=True, help="Preview generated index.")
+@click.option("--check", is_flag=True, help="Check published index status.")
 @click.option(
     "-t",
     "--test",
@@ -68,6 +56,12 @@ def publish_command(command, **opts):
 )
 def publish_index(**opts):
     command_help.publish_index(**opts)
+
+
+@main.command("check-command-permalinks")
+@click.argument("commands", metavar="[COMMAND]...", nargs=-1)
+def check_command_permalinks(commands):
+    command_help.check_command_permalinks(commands)
 
 
 if __name__ == "__main__":
