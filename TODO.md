@@ -2,16 +2,9 @@
 
 ## Work on next
 
-
-- Fix command publish scheme - need a permalink or established topic
-  IDs. Can't rely on redirect as these change when new topics with the
-  same slug are added.
-
-- Overview fix - try to emulate /docs on www-pre.
-
 - Move content over
 - Identify areas needing work with TODO (search works well)
-- Link scanner
+- Link scanner?
 - Fix links
 
 ## Topics

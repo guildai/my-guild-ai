@@ -2,6 +2,7 @@ import datetime
 import json
 import logging
 import os
+import pprint
 import re
 import socket
 import subprocess
@@ -12,6 +13,8 @@ import requests
 from .api import init as init_api
 from .api import DiscourseClientError
 from .log_util import getLogger
+
+from . import cache
 
 log = getLogger()
 
@@ -64,6 +67,11 @@ def _retry(desc, f, max_attempts=3, delay=1):
             time.sleep(delay)
 
 
+###################################################################
+# Publish commands
+###################################################################
+
+
 def publish_commands(commands, preview=False, check=False):
     api = init_api()
     commands = sorted(_guild_commands(commands))
@@ -106,10 +114,12 @@ def _cmd_help(cmd):
 
 
 def _get_cmd_help_data(cmd):
-    if cmd:
-        log.info("Getting help info for '%s'", cmd)
-    else:
-        log.info("Getting help info for guild base command")
+    cmd_desc = _cmd_desc(cmd)
+    cached = cache.read(_cmd_cache_key(cmd))
+    if cached:
+        log.info("Reading cached command info for %s", cmd_desc)
+        return json.loads(cached)
+    log.info("Getting command info for %s", cmd_desc)
     help_cmd = "guild %s --help" % cmd
     help_env = dict(os.environ)
     help_env["GUILD_HELP_JSON"] = "1"
@@ -124,7 +134,18 @@ def _get_cmd_help_data(cmd):
     if p.returncode != 0:
         log.debug("Error reading help for '%s': %s", cmd, err)
         raise NoSuchCommand(cmd)
+    cache.write(_cmd_cache_key(cmd), out)
     return json.loads(out)
+
+def _cmd_desc(cmd):
+    if cmd:
+        return "'%s'" % cmd
+    else:
+        return "guild base command"
+
+
+def _cmd_cache_key(cmd):
+    return "command:%s" % cmd
 
 
 def _subcommands_for_help_data(help_data, base_cmd):
@@ -331,6 +352,11 @@ def _publish_command_comment(help_data):
     )
 
 
+###################################################################
+# Publish index
+###################################################################
+
+
 def publish_index(preview=False, check=False, test=None):
     api = init_api()
     commands = sorted(_guild_commands(test))
@@ -394,13 +420,18 @@ def _cmd_summary(data):
 def _commands_index_post(api):
     log.info("Getting commands index topic")
     try:
-        topic = api.topic("guild-commands")
+        topic = api._get("/commands")
     except DiscourseClientError:
         raise SystemExit(
-            "cannot find commands index 'guild-commands' topic - "
-            "create this topic and run this command again"
+            "cannot find commands index topic for '/commands' permalink - "
+            "create a valid permalink and run this command again"
         )
     else:
+        if "post_stream" not in topic:
+            log.error(
+                "unexpected result for /commands permalink: %s", pprint.pformat(topic)
+            )
+            raise SystemExit("unexpected content for /commands - see above for details")
         return api.post(topic["post_stream"]["posts"][0]["id"])
 
 
@@ -413,6 +444,11 @@ def _publish_index_comment(version):
             utc_date=datetime.datetime.utcnow().isoformat(),
         )
     )
+
+
+###################################################################
+# Check command permalinks
+###################################################################
 
 
 def check_command_permalinks(commands):
