@@ -128,18 +128,26 @@ def _get_cmd_help_data(cmd):
 
 
 def _subcommands_for_help_data(help_data, base_cmd):
-    return [_join_cmd(base_cmd, cmd["term"]) for cmd in help_data.get("commands", [])]
+    subcommands = []
+    for cmd in help_data.get("commands", []):
+        for term in _split_cmd_term(cmd["term"]):
+            subcommands.append(_join_cmd(base_cmd, term))
+    return subcommands
 
 
-def _join_cmd(base_cmd, cmd_term):
-    cmd = _strip_aliases(cmd_term)
+def _split_cmd_term(cmd_term):
+    """Splits a command term into mutiple parts.
+
+    Command terms may contain aliases, which are included in the
+    parts.
+    """
+    return [part.strip() for part in cmd_term.split(",")]
+
+
+def _join_cmd(base_cmd, subcmd):
     if not base_cmd:
-        return cmd
-    return "%s %s" % (base_cmd, cmd)
-
-
-def _strip_aliases(cmd_term):
-    return cmd_term.split(",", 1)[0].strip()
+        return subcmd
+    return "%s %s" % (base_cmd, subcmd)
 
 
 def _sync_command(cmd, data, preview, check, api):
@@ -163,7 +171,12 @@ def _sync_command_impl(cmd, data, preview, check, api):
 def _get_command_topic_post(cmd, api):
     assert cmd
     log.info("Getting published help topic for '%s' from server", cmd)
-    topic = api._get(_command_topic_link(cmd))
+    try:
+        # Try permalink first.
+        topic = api._get(_command_permalink(cmd))
+    except DiscourseClientError:
+        # If permalink doesn't exist, try topic link.
+        topic = api._get(_command_topic_link(cmd))
     return api.post(topic["post_stream"]["posts"][0]["id"])
 
 
@@ -219,6 +232,8 @@ def _publish_command(cmd, help_data, post, api, preview, check):
     formatted_help = _format_command_help_post(cmd, help_data)
     if preview:
         print(formatted_help)
+        if not check:
+            return
     if post["raw"].strip() == formatted_help:
         log.info("Help topic post %s for '%s' is up-to-date", post["id"], cmd)
         return
@@ -277,10 +292,19 @@ def _format_command_subcommands(cmd, help_data):
 
 
 def _format_subcommand(cmd, subcmd):
-    return "|[`%s`](%s)|%s|" % (
-        subcmd["term"],
-        _command_permalink(_join_cmd(cmd, subcmd["term"])),
-        subcmd["help"],
+    return "|%s|%s|" % (_format_subcommand_links(cmd, subcmd), subcmd["help"])
+
+
+def _format_subcommand_links(cmd, subcmd):
+    return ", ".join(
+        [_format_subcommand_link(cmd, term) for term in _split_cmd_term(subcmd["term"])]
+    )
+
+
+def _format_subcommand_link(base_cmd, subcmd_term):
+    return "[%s](%s)" % (
+        subcmd_term,
+        _command_permalink(_join_cmd(base_cmd, subcmd_term)),
     )
 
 
