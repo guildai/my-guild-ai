@@ -9,10 +9,19 @@ log = logging.getLogger()
 cache_dir = os.path.abspath(os.path.expanduser("~/.cache/myguild"))
 
 
-def clear():
+def clear_all():
     assert os.path.isabs(cache_dir) and cache_dir.endswith(".cache/myguild"), cache_dir
     log.action("Clearing cache (%s)", cache_dir)
     shutil.rmtree(cache_dir)
+
+
+def delete(key):
+    path = _key_path(key)
+    try:
+        os.remove(path)
+    except OSError as e:
+        if e.errno != errno.ENOENT:
+            raise
 
 
 def read(key):
@@ -43,3 +52,10 @@ def _ensure_dir(dir):
     except OSError as e:
         if e.errno != errno.EEXIST:
             raise
+
+
+def get_info():
+    return {
+        "cache-dir": cache_dir,
+        "cache-entries": len(os.listdir(cache_dir)),
+    }

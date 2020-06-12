@@ -353,7 +353,7 @@ def _publish_command_comment(help_data):
 
 
 ###################################################################
-# Publish index
+# Publish commands index
 ###################################################################
 
 
@@ -366,7 +366,8 @@ def publish_index(preview=False, check=False, test=None):
     formatted_index = _format_command_index(commands, version)
     if preview:
         print(formatted_index)
-        return
+        if not check:
+            return
     post = _commands_index_post(api)
     if test:
         log.info("Skipping update of commands index post (%s) due to tests", post["id"])
@@ -422,16 +423,17 @@ def _commands_index_post(api):
     try:
         topic = api._get("/commands")
     except DiscourseClientError:
-        raise SystemExit(
-            "cannot find commands index topic for '/commands' permalink - "
+        log.error(
+            "Cannot find commands index topic for '/commands' permalink - "
             "create a valid permalink and run this command again"
         )
+        raise SystemExit(1)
     else:
         if "post_stream" not in topic:
             log.error(
                 "unexpected result for /commands permalink: %s", pprint.pformat(topic)
             )
-            raise SystemExit("unexpected content for /commands - see above for details")
+            raise SystemExit(1)
         return api.post(topic["post_stream"]["posts"][0]["id"])
 
 
