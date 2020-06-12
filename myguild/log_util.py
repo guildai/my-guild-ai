@@ -21,7 +21,7 @@ class Formatter(logging.Formatter):
         elif level >= logging.WARNING:
             return "\033[33m%s\033[0m" % s
         elif level >= ACTION:
-            return "\033[34m%s\033[0m" % s
+            return "\033[96m%s\033[0m" % s
         else:
             return s
 

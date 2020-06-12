@@ -10,6 +10,7 @@ from . import cache
 from . import command_help
 from . import docs
 from . import log_util
+from . import security
 
 
 ###################################################################
@@ -181,6 +182,18 @@ def _print_cache_info():
     info = cache.get_info()
     print(yaml.safe_dump(info, default_flow_style=False, indent=2).strip())
 
+
+###################################################################
+# audit
+###################################################################
+
+audit_help = """
+Show audit information.
+"""
+
+@main.command("audit", help=audit_help)
+def audit():
+    security.audit()
 
 
 ###################################################################

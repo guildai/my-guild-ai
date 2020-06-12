@@ -139,27 +139,30 @@ def _get_link_topic_json(link):
         )
         raise TopicLookupError(link)
     else:
-        location = resp.headers.get("location")
-        assert location, (link, resp)
-        m = re.match(r"https://my.guild.ai/(.+)", location)
-        if not m:
-            log.error("Unexpected redirect host for %s: %s", link, location)
-            raise TopicLookupError(link)
-        topic_info_url = "https://my.guild.ai/%s.json" % m.group(1)
-        resp = requests.get(topic_info_url, allow_redirects=False)
-        if not resp.ok:
-            log.error(
-                "Error reading link topic from %s: %s (%s)",
-                topic_path,
-                resp.reason,
-                resp.status_code,
-            )
-            raise TopicLookupError(link)
-        content_type = resp.headers.get("content-type")
-        if content_type != "application/json; charset=utf-8":
-            log.error("Unexpected content type for %s: %s", topic_url, content_type)
-            raise TopicLookupError(link)
-        return resp.content
+        return _link_topic_json_for_redirect(resp.headers.get("location"), link)
+
+
+def _link_topic_json_for_redirect(location, link):
+    assert location, link
+    m = re.match(r"https://my.guild.ai/(.+)", location)
+    if not m:
+        log.error("Unexpected redirect host for %s: %s", link, location)
+        raise TopicLookupError(link)
+    topic_info_url = "https://my.guild.ai/%s.json" % m.group(1)
+    resp = requests.get(topic_info_url, allow_redirects=False)
+    if not resp.ok:
+        log.error(
+            "Error reading link topic from %s: %s (%s)",
+            location,
+            resp.reason,
+            resp.status_code,
+        )
+        raise TopicLookupError(link)
+    content_type = resp.headers.get("content-type")
+    if content_type != "application/json; charset=utf-8":
+        log.error("Unexpected content type for %s: %s", location, content_type)
+        raise TopicLookupError(link)
+    return resp.content
 
 
 def _apply_commands(section, lines):
