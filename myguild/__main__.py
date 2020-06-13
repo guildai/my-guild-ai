@@ -48,8 +48,20 @@ to a topic, the command exits with an error.
 
 
 @main.command("publish-docs-index", help=publish_docs_index_help)
-@click.option("--preview", is_flag=True, help="Preview generated index.")
-@click.option("--check", is_flag=True, help="Check published index status.")
+@click.option("-p", "--preview", is_flag=True, help="Preview generated index.")
+@click.option("-c", "--check", is_flag=True, help="Check published index status.")
+@click.option(
+    "-d", "--diff", is_flag=True, help="Show a diff of generated and published index."
+)
+@click.option(
+    "check_links",
+    "-l",
+    "--check-link",
+    metavar="LINK",
+    multiple=True,
+    help="Check a docs link.",
+)
+@click.option("-f", "--force", is_flag=True, help="Continue even when errors occur.")
 def publish_docs_index(**opts):
     docs.publish_index(**opts)
 
@@ -68,8 +80,8 @@ specify one or more arguments for COMMAND.
 
 @main.command("publish-commands", help=publish_commands_help)
 @click.argument("commands", metavar="[COMMAND]...", nargs=-1)
-@click.option("--check", is_flag=True, help="Check published topics.")
-@click.option("--preview", is_flag=True, help="Preview published topics.")
+@click.option("-p", "--preview", is_flag=True, help="Preview published topics.")
+@click.option("-c", "--check", is_flag=True, help="Check published topics.")
 def publish_commands(commands, **opts):
     command_help.publish_commands(commands, **opts)
 
@@ -89,8 +101,8 @@ with an error.
 
 
 @main.command("publish-commands-index", help=publish_commands_index_help)
-@click.option("--preview", is_flag=True, help="Preview generated index.")
-@click.option("--check", is_flag=True, help="Check published index status.")
+@click.option("-p", "--preview", is_flag=True, help="Preview generated index.")
+@click.option("-c", "--check", is_flag=True, help="Check published index status.")
 @click.option(
     "-t",
     "--test",
@@ -190,6 +202,7 @@ def _print_cache_info():
 audit_help = """
 Show audit information.
 """
+
 
 @main.command("audit", help=audit_help)
 def audit():

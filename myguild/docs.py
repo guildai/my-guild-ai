@@ -3,9 +3,14 @@ import json
 import os
 import pprint
 import re
+import shlex
+import shutil
 import socket
+import subprocess
+import tempfile
 
 import requests
+import six
 import yaml
 
 from .api import init as init_api
@@ -32,34 +37,88 @@ class TopicLookupError(Exception):
 ###################################################################
 
 
-def publish_index(preview=False, check=False):
+def publish_index(
+    preview=False, check=False, diff=False, check_links=None, force=False
+):
+    check = check or diff
     api = init_api()
+    if check_links:
+        _check_publish_links(check_links)
+    else:
+        _publish_index(preview, check, diff, force, api)
+
+
+def _check_publish_links(check_links):
+    for link in check_links:
+        try:
+            topic = _get_link_topic(link)
+        except TopicLookupError:
+            raise SystemExit(1)
+        else:
+            log.info(
+                "Got topic %s '%s' for link '%s'", topic["id"], topic["title"], link
+            )
+
+
+def _publish_index(preview, check, diff, force, api):
     log.info("Generating docs index")
-    formatted_index = _format_docs_index()
+    formatted_index = _format_docs_index(force)
     if preview:
         print(formatted_index)
         if not check:
             return
     post = _docs_index_post(api)
-    if post["raw"].strip() == formatted_index:
+    post_raw = post["raw"].strip()
+    if post_raw == formatted_index:
         log.info("Docs index post (%s) is up-to-date", post["id"])
         return
     if check:
         log.action("Docs index post (%s) is out-of-date", post["id"])
+        if diff:
+            _diff_post(post["id"], post_raw, formatted_index)
         return
     comment = _publish_index_comment()
     log.action("Updating docs index post (%s)", post["id"])
-    assert False
     api.update_post(post["id"], formatted_index, comment)
 
 
-def _format_docs_index():
+def _diff_post(post_id, published, generated):
+    tmp = tempfile.mkdtemp(prefix="myguild-diff-")
+    published_path = os.path.join(tmp, "post-%s.md" % post_id)
+    generated_path = os.path.join(tmp, "generated.md")
+    with open(published_path, "w") as f:
+        f.write(published)
+    with open(generated_path, "w") as f:
+        f.write(generated)
+    diff_cmd = shlex.split(os.getenv("DIFF") or "diff -u") + [published_path, generated_path]
+    subprocess.call(diff_cmd)
+    assert sorted(os.listdir(tmp)) == ["generated.md", "post-%s.md" % post_id], tmp
+    shutil.rmtree(tmp)
+
+
+def _format_docs_index(force):
     lines = []
     index = _load_index()
     _apply_index_header(lines)
     for item in index:
-        _apply_index_item(item, lines)
+        _apply_index_item(item, force, lines)
+    _check_lines(lines)
     return "\n".join(lines)
+
+
+def _check_lines(lines):
+    errors = False
+    for line in lines:
+        if not isinstance(line, six.string_types):
+            log.info("Lines: %s", pprint.pformat(lines))
+            log.error(
+                "ASSERTION ERROR - got a non-string line: %r (see "
+                "lines above for context)",
+                line,
+            )
+            errors = True
+    if errors:
+        raise SystemExit(1)
 
 
 def _load_index():
@@ -69,45 +128,79 @@ def _load_index():
 
 
 def _apply_index_header(lines):
-    lines.extend(['<div data-theme-toc="true"></div>', ""])
+    lines.extend(["<div data-theme-toc=\"true\"></div>", ""])
 
 
-def _apply_index_item(item, lines):
+def _apply_index_item(item, force, lines):
     if "section" in item:
-        _apply_section(item, lines)
+        _apply_section(item, force, lines)
     else:
         log.error("unexpected item in index: %s", pprint.pformat(item))
         raise SystemExit(1)
 
 
-def _apply_section(section, lines):
+def _apply_section(section, force, lines):
     lines.extend(["## %s" % section["section"], ""])
+    _apply_section_description(section, lines)
     if "links" in section:
-        _apply_section_links(section, lines)
+        _apply_section_links(section, force, lines)
     elif "commands" in section:
-        _apply_commands(section, lines)
+        _apply_commands(section, force, lines)
 
 
-def _apply_section_links(section, lines):
+def _apply_section_description(section, lines):
+    desc = section.get("description")
+    if desc:
+        lines.extend([desc, ""])
+
+
+def _apply_section_links(section, force, lines):
     lines.extend([_section_div_open(GUILD_DOCS_SECTION_CLASS, DEFAULT_LINK_ICON), ""])
-    lines.extend([_format_section_link(link) for link in section.get("links") or []])
+    lines.extend(
+        [
+            _format_section_link(link, force, section)
+            for link in section.get("links") or []
+        ]
+    )
     lines.extend(["", "</div>", ""])
 
 
 def _section_div_open(section_class, link_icon_class):
-    return '<div data-guild-class="%s" data-guild-li-icon="%s">' % (
+    return "<div data-guild-class=\"%s\" data-guild-li-icon=\"%s\">" % (
         section_class,
         link_icon_class,
     )
 
 
-def _format_section_link(link):
+def _format_section_link(link, force, section):
     try:
         topic = _get_link_topic(link)
     except TopicLookupError:
-        return "- !!! error getting topic for %s - see logs for details !!!" % link
+        if force:
+            return (
+                "<!-- !!! ERROR formatting link '%s' - see log for details !!! -->"
+                % link
+            )
+        raise SystemExit(1)
     else:
-        return "- [%s](%s)" % (link, topic["title"])
+        title = _format_link_title(topic["title"], section)
+        return "- [%s](/%s)" % (title, link)
+
+
+def _format_link_title(title, section):
+    while section:
+        for repl in section.get("link-title-repl") or []:
+            title = re.sub(_required("pattern", repl), _required("repl", repl), title)
+        section = section.get("_parent")
+    return title
+
+
+def _required(name, mapping):
+    try:
+        return mapping[name]
+    except KeyError:
+        log.error("Missing required '%s' in %s", name, pprint.pformat(mapping))
+        raise SystemExit(1)
 
 
 def _get_link_topic(link):
@@ -128,7 +221,7 @@ def _link_cache_key(link):
 def _get_link_topic_json(link):
     resp = requests.get("https://my.guild.ai/%s" % link, allow_redirects=False)
     if resp.status_code == 404:
-        log.error("No permalink or broken link for %s", link)
+        log.error("Topic or permalink for '%s' does not exist", link)
         raise TopicLookupError(link)
     elif resp.status_code != 301:
         log.error(
@@ -165,10 +258,11 @@ def _link_topic_json_for_redirect(location, link):
     return resp.content
 
 
-def _apply_commands(section, lines):
-    for command in section.get("commands") or []:
-        lines.extend(["### %s" % _command_section_title(command), ""])
-        _apply_command_links(command, lines)
+def _apply_commands(section, force, lines):
+    for command_section in section.get("commands") or []:
+        command_section["_parent"] = section
+        lines.extend(["### %s" % _command_section_title(command_section), ""])
+        _apply_command_links(command_section, force, lines)
 
 
 def _command_section_title(command):
@@ -179,12 +273,17 @@ def _command_section_title(command):
         raise SystemExit(1)
 
 
-def _apply_command_links(section, lines):
+def _apply_command_links(section, force, lines):
     section_class = "%s %s" % (GUILD_DOCS_SECTION_CLASS, GUILD_COMMANDS_SECTION_CLASS)
     lines.extend(
         [_section_div_open(section_class, COMMAND_LINK_ICON), "",]
     )
-    lines.extend([_format_section_link(link) for link in section.get("links") or []])
+    lines.extend(
+        [
+            _format_section_link(link, force, section)
+            for link in section.get("links") or []
+        ]
+    )
     lines.extend(["", "</div>", ""])
 
 

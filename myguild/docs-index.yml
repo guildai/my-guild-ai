@@ -2,6 +2,9 @@
   description:
     Start here to learn about Guild AI through easy-to-follow,
     step-by-step guides.
+  link-title-repl:
+    - pattern: 'Get Started: '
+      repl: ''
   links:
     - start
     - start/optimize
@@ -11,255 +14,151 @@
 
 - section: Concepts
   description:
-    Once you’re familiar gotten a start with Guild, go deeper into the
-    core concepts behind the features.
-
+    Once you are familiar gotten a start with Guild, go deeper into
+    the core concepts behind the features.
   links:
-    - docs/cli # Command Line Interface
-    - docs/python-api # Python API
-    - docs/runs # Runs
-    - docs/guildfile # Guild Files 1
-    - docs/flags # Flags
-    - docs/scalars # Scalars
-    - docs/optimization # Hyperparameter Optimization 1
-    - docs/dependencies # Dependencies 1
-    - docs/pipelines # Pipelines
-    - docs/environments # Environments 2
-    - docs/queues # Queues 1
+    - docs/cli
+    - docs/python-api
+    - docs/runs
+    - docs/guildfiles
+    - docs/operations
+    - docs/flags
+    - docs/scalars
+    - docs/optimization
+    - docs/dependencies
+    - docs/pipelines
+    - docs/environments
+    - docs/remotes
+    - docs/queues
 
 - section: Tools
   description:
     Guild provides a number of integrated tools.
-
   links:
-    - docs/compare # Guild Compare
-    - docs/view # Guild View
-    - docs/tensorboard # TensorBoard 1
-    - docs/diff # Guild Diff 1
+    - docs/compare
+    - docs/view
+    - docs/tensorboard
+    - docs/diff
 
 - section: Commands
+  link-title-repl:
+    - pattern: 'Command: '
+      repl: ''
   commands:
     - section: Frequently Used Commands
       links:
-        - commands/check # check 1
-        - commands/compare # compare 1
-        - commands/init # init 1
+        - commands/check
+        - commands/compare
+        - commands/init
+        - commands/ls
+        - commands/operations
+        - commands/run
+        - commands/runs
+        - commands/runs-info
+        - commands/runs-rm
 
-# ls
-# operations 1
-# run
-# runs 1
-# runs info
-# runs rm 1
+    - section: Manage Runs
+      links:
+        - commands/label
+        - commands/run
+        - commands/runs
+        - commands/runs-delete
+        - commands/runs-list
+        - commands/runs-purge
+        - commands/runs-restore
+        - commands/stop
+        - commands/watch
+    - section: Get Run Info
+      links:
+        - commands/cat
+        - commands/diff
+        - commands/ls
+        - commands/open
+        - commands/runs-info
+        - commands/view
+    - section: Compare and Diff Runs
+      links:
+        - commands/compare
+        - commands/diff
+        - commands/tensorboard
+        - commands/view
+    - section: Get Model and Operation Info
+      links:
+        - commands/help
+        - commands/models
+        - commands/operations
+    - section: Tools
+      links:
+        - commands/compare
+        - commands/diff
+        - commands/tensorboard
+        - commands/view
+    - section: Visualization
+      links:
+        - commands/open
+        - commands/tensorboard
+        - commands/view
+    - section: Input/Output
+      links:
+        - commands/cat
+        - commands/export
+        - commands/import
+        - commands/pull
+        - commands/push
+        - commands/sync
+    - section: Packaging
+      links:
+        - commands/install
+        - commands/package
+        - commands/packages
+        - commands/packages-delete
+        - commands/packages-info
+        - commands/search
+        - commands/uninstall
+    - section: Remotes
+      links:
+        - commands/pull
+        - commands/push
+        - commands/remote-start
+        - commands/remote-status
+        - commands/remote-stop
+        - commands/remotes
+        - commands/sync
+    - section: Utilities
+      links:
+        - commands/check
+        - commands/download
+        - commands/shell
+        - commands/tensorflow-inspect
 
-# Manage Runs
-# label
-# run
-# runs 1
-# runs delete
-# runs list
-# runs purge
-# runs restore
-# stop
-# watch
-# Get Run Info
-# cat
-# diff
-# ls
-# open
-# runs info
-# view
-# Compare and Diff Runs
-# compare 1
-# diff
-# tensorboard
-# view
-# Get Model and Operation Info
-# help
-# models
-# operations 1
-# Tools
-# compare 1
-# diff
-# tensorboard
-# view
-# Visualization
-# open
-# tensorboard
-# view
-# Input/Output
-# cat
-# export
-# import
-# pull
-# push
-# sync
-# Packaging
-# install
-# package
-# packages
-# packages delete
-# packages info
-# search
-# uninstall
-# Remotes
-# pull
-# push
-# remote start
-# remote status
-# remote stop
-# remotes
-# sync
-# Utilities
-# check 1
-# download
-# shell
-# tensorflow inspect
-# Reference
-# The documents below cover a variety of reference material.
-#
-# Guild File
-# Optimizers
-# Remotes
-# User Configuration
-# Plugins
-# System Requirements
-# Cheatsheets
-# Cheatsheets contain short, easy-to-copy snippets of configuration you can use in your work.
-#
-# Operations
-# Flags
-# Output Scalars
-# Remotes
+- section: Reference
+  description:
+    The documents below cover a variety of reference material.
+  link-title-repl:
+    - pattern: 'Reference: '
+      repl: ''
+  links:
+    - reference/guildfile
+    - reference/optimizers
+    - reference/remotes
+    - reference/user-config
+    - reference/plugins
 
+- section: Cheatsheets
+  description:
+    Cheatsheets contain short, easy-to-copy snippets of configuration
+    you can use in your work.
+  link-title-repl:
+    - pattern: 'Cheatsheet: '
+      repl: ''
+  links:
+    - cheatsheets/operations
+    - cheatsheets/flags
+    - cheatsheets/dependencies
+    - cheatsheets/output-scalars
+    - cheatsheets/remotes
 
-
-#- docs:
-#    - docs.md
-#    - install.md
-#
-#    - Get Started:
-#        - start/index.md
-#        - start/optimize.md
-#        - start/runs.md
-#        - start/guildfile.md
-#        - start/classifier.md
-#        - start/nextsteps.md
-#
-#    - Concepts:
-#        - cli.md
-#        - runs.md
-#        - guildfile.md
-#        - operations.md
-#        - flags.md
-#        - scalars.md
-#        - optimization.md
-#        - dependencies.md
-#        - pipelines.md
-#        - environments.md
-#        - remotes.md
-#        - queues.md
-#        - python.md
-#        #- publishing.md TODO
-#
-#    - Tools:
-#        - tools/compare.md
-#        - tools/view.md
-#        - tools/tensorboard.md
-#        - tools/diff.md
-#
-#    - Guides:
-#        - guides/add-guild.md
-#        - guides/pipelines.md
-#        #- guides/dependencies.md
-#        - guides/backup-restore.md
-#        - guides/upgrade.md
-#        - guides/tips-and-techniques.md
-#        # - guides/reproducibility.md TODO
-#
-#    - Commands:
-#        - commands/index.md
-#        - commands/cat.md
-#        - commands/check.md
-#        - commands/compare.md
-#        - commands/diff.md
-#        - commands/download.md
-#        - commands/export.md
-#        - commands/help.md
-#        - commands/import.md
-#        - commands/init.md
-#        - commands/install.md
-#        - commands/label.md
-#        - commands/ls.md
-#        - commands/models.md
-#        - commands/open.md
-#        - commands/operations.md
-#        - commands/ops.md
-#        - commands/package.md
-#        - commands/packages.md
-#        - commands/packages-delete.md
-#        - commands/packages-info.md
-#        - commands/packages-list.md
-#        - commands/pull.md
-#        - commands/push.md
-#        - commands/remote.md
-#        - commands/remote-start.md
-#        - commands/remote-status.md
-#        - commands/remote-stop.md
-#        - commands/remotes.md
-#        - commands/run.md
-#        - commands/runs.md
-#        - commands/runs-delete.md
-#        - commands/runs-diff.md
-#        - commands/runs-export.md
-#        - commands/runs-import.md
-#        - commands/runs-info.md
-#        - commands/runs-label.md
-#        - commands/runs-list.md
-#        - commands/runs-pull.md
-#        - commands/runs-purge.md
-#        - commands/runs-push.md
-#        - commands/runs-restore.md
-#        - commands/runs-rm.md
-#        - commands/runs-stop.md
-#        - commands/search.md
-#        - commands/select.md
-#        - commands/shell.md
-#        - commands/stop.md
-#        - commands/sync.md
-#        - commands/tensorboard.md
-#        - commands/tensorflow.md
-#        - commands/tensorflow-inspect.md
-#        - commands/uninstall.md
-#        - commands/view.md
-#        - commands/watch.md
-#
-#    - Reference:
-#        - reference/guildfile.md
-#        - reference/optimizers.md
-#        - reference/remotes.md
-#        - reference/user-config.md
-#        - reference/plugins.md
-#        - reference/defaults.md
-#        - reference/requirements.md
-#        - reference/design.md
-#
-#    #- Knowledge Base:
-#    #    - kb/configure-flags.md
-#    #    - kb/guild-vs-others.md
-#    #    #- kb/dependencies.md
-#    #    #- kb/autodetect-flags.md
-#    #    #- kb/model-reuse.md
-#
-#    - Cheatsheets:
-#        - cheatsheets/commands.md
-#        - cheatsheets/guildfile.md
-#        - cheatsheets/remotes.md
-#
-#    - changes.md
-#
-#- examples.md
-#- faq.md
-#- services.md
-#- about.md
-#
+- section: Other Docs
+  links:
+    - install
+    - system-requirements
