@@ -1,32 +1,5 @@
 # To Do
 
-## Use Cases for Edit
-
-### Simply open a post and edit it with emacs
-
-Run this:
-
-    $ my-guild edit docs/runs
-
-Guild gets the latest and opens it in Emacs. I can edit and save
-freely. Saved files land in a project-level directory so they don't
-get lost if system crashes.
-
-When I exit Emacs, I'm shown a diff of the changes and prompted to
-publish.
-
-Emacs is configured via `EDITOR` env var. Diff can be controlled via
-`DIFF` (e.g. use Meld).
-
-### Grab copies of everything
-
-    $ my-guild edit --fetch-all
-
-This would use the `docs-index.yml` to get a list of links, which it
-then uses to grab posts. This simply saves each post to `posts`
-(configurable with `--save-dir` command option).
-
-
 ## Work on next
 
 - Identify areas needing work with TODO (search works well)
@@ -34,6 +7,16 @@ then uses to grab posts. This simply saves each post to `posts`
 - Fix links
 
 ## Topics
+
+### Things to Replace
+
+- '^ ...' -> '&nbsp; *...*'
+- [...](xxx:yyy)
+- '!!! ...' -> '> **...**'
+
+### See Also
+
+Lots of opportunities to specify "See also" references.
 
 ### Nice to Have
 

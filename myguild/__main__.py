@@ -251,12 +251,19 @@ Use '--fetch-all' to fetch all posts to the save dir.
 @click.argument("post", required=False)
 @click.option("-f", "--fetch", is_flag=True, help="Fetch the post without editing it.")
 @click.option(
+    "-a",
+    "--fetch-all",
+    is_flag=True,
+    help="Fetch all posts without editing. Uses docs index to enumerte posts.",
+)
+@click.option(
     "-d",
     "--diff",
     is_flag=True,
     help="Show difference between local and published post",
 )
 @click.option("-p", "--publish", is_flag=True, help="Publish locally edited post.")
+@click.option("--show-changed", is_flag=True, help="Show a list of changed posts.")
 @click.option(
     "-m",
     "--comment",
@@ -267,13 +274,7 @@ Use '--fetch-all' to fetch all posts to the save dir.
     ),
 )
 @click.option(
-    "-a",
-    "--fetch-all",
-    is_flag=True,
-    help="Fetch all posts without editing. Uses docs index to enumerte posts.",
-)
-@click.option(
-    "-d",
+    "-s",
     "--save-dir",
     metavar="DIR",
     help=(
@@ -296,13 +297,14 @@ Use '--fetch-all' to fetch all posts to the save dir.
 @click.option("--skip-diff", is_flag=True, help="Don't diff changes before publishing.")
 @click.option("-y", "--yes", is_flag=True, help="Don't prompt before publishing.")
 @click.option(
-    "-f", "--force", is_flag=True, help="Publish even if published post is up-to-date."
+    "--force", is_flag=True, help="Publish even if published post is up-to-date."
 )
 def edit(
     post,
     fetch=False,
     diff=False,
     publish=False,
+    show_changed=False,
     comment=None,
     fetch_all=False,
     index_path=None,
@@ -323,6 +325,8 @@ def edit(
         if diff:
             raise SystemExit("--fetch-all and --diff cannot both be used")
         editlib.fetch_all(index_path=index_path, save_dir=save_dir)
+    elif show_changed:
+        editlib.log_changed(save_dir)
     elif not post:
         raise SystemExit("missing required POST argument")
     else:
@@ -331,7 +335,7 @@ def edit(
                 raise SystemExit("--fetch and --publish cannot both be used")
             if diff:
                 raise SystemExit("--fetch and --diff cannot both be used")
-            editlib.fetch_post(post, save_dir=save_dir)
+            editlib.fetch_post(post, save_dir=save_dir, force=force)
         elif publish:
             editlib.publish(
                 post,
@@ -339,23 +343,14 @@ def edit(
                 comment=comment,
                 diff_cmd=diff_cmd,
                 edit_cmd=edit_cmd,
-                skip_diff=skip_diff,
+                skip_diff=skip_diff or yes,
                 skip_prompt=yes,
                 force=force,
             )
         elif diff:
-            editlib.diff(
-                post, save_dir=save_dir, diff_cmd=diff_cmd
-            )
+            editlib.diff(post, save_dir=save_dir, diff_cmd=diff_cmd)
         else:
-            editlib.edit(
-                post,
-                save_dir=save_dir,
-                edit_cmd=edit_cmd,
-                diff_cmd=diff_cmd,
-                skip_diff=skip_diff,
-                skip_prompt=yes,
-            )
+            editlib.edit(post, save_dir=save_dir, edit_cmd=edit_cmd, force=force)
 
 
 ###################################################################

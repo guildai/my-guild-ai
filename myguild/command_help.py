@@ -119,7 +119,7 @@ def _get_cmd_help_data(cmd):
     if cached:
         log.info("Reading cached command info for %s", cmd_desc)
         return json.loads(cached)
-    log.info("Getting command info for %s", cmd_desc)
+    log.info("Fetching command info for %s", cmd_desc)
     help_cmd = "guild %s --help" % cmd
     help_env = dict(os.environ)
     help_env["GUILD_HELP_JSON"] = "1"
@@ -191,7 +191,7 @@ def _sync_command_impl(cmd, data, preview, check, api):
 
 def _get_command_topic_post(cmd, api):
     assert cmd
-    log.info("Getting published help topic for '%s' from server", cmd)
+    log.info("Fetching published help topic for '%s' from server", cmd)
     try:
         # Try permalink first.
         topic = api._get(_command_permalink(cmd))
@@ -419,7 +419,7 @@ def _cmd_summary(data):
 
 
 def _commands_index_post(api):
-    log.info("Getting commands index topic")
+    log.info("Fetching commands index topic")
     try:
         topic = api._get("/commands")
     except DiscourseClientError:

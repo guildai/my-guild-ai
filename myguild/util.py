@@ -44,3 +44,7 @@ def _edit_msg_text(prompt):
 
 def _strip_comments(s):
     return "\n".join([s for s in s.split("\n") if s[:1] != "#"])
+
+
+def edit(path, editor=None):
+    return click.edit(filename=path, editor=editor)

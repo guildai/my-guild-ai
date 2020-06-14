@@ -81,7 +81,7 @@ def _publish_index(preview, check, diff, index_path, force, diff_cmd, api):
     if check:
         log.action("Docs index post (%s) is out-of-date", post["id"])
         if diff:
-            _diff_post(post["id"], post_raw, formatted_index, diff_cmd)
+            diff_post(post["id"], post_raw, formatted_index, diff_cmd)
         return
     comment = _publish_index_comment()
     log.action("Updating docs index post (%s)", post["id"])
@@ -117,6 +117,25 @@ def _format_docs_index(index_path, force):
         _apply_index_item(item, force, lines)
     _check_lines(lines)
     return "\n".join(lines).rstrip()
+
+
+def iter_index_links(index_path):
+    index = _load_index(index_path)
+    seen = set()
+    for item in index:
+        if "section" in item:
+            for link in _iter_section_links(item):
+                if link not in seen:
+                    yield link
+                seen.add(link)
+
+
+def _iter_section_links(section):
+    for link in section.get("links") or []:
+        yield link
+    for command_section in section.get("commands") or []:
+        for link in _iter_section_links(command_section):
+            yield link
 
 
 def _check_lines(lines):
@@ -228,7 +247,7 @@ def _get_link_topic(link):
     if cached:
         log.info("Reading cached link info for %s", link)
         return json.loads(cached)
-    log.info("Getting topic info for %s", link)
+    log.info("Fetching topic info for %s", link)
     link_topic_json = _get_link_topic_json(link)
     cache.write(_link_cache_key(link), link_topic_json)
     return json.loads(link_topic_json)
@@ -308,7 +327,7 @@ def _apply_command_links(section, force, lines):
 
 
 def _docs_index_post(api):
-    log.info("Getting docs index topic")
+    log.info("Fetching docs index topic")
     try:
         topic = api._get("/docs")
     except DiscourseClientError:
