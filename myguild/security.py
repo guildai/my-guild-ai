@@ -1,7 +1,7 @@
 from .api import init as init_api
-from .log_util import getLogger
+from .log_util import get_logger
 
-log = getLogger()
+log = get_logger()
 
 GROUP_PERM_COL = 20
 

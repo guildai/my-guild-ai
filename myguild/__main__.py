@@ -9,6 +9,7 @@ import yaml
 from . import cache
 from . import command_help
 from . import docs
+from . import edit as editlib
 from . import log_util
 from . import security
 
@@ -62,6 +63,16 @@ to a topic, the command exits with an error.
     help="Check a docs link.",
 )
 @click.option("-f", "--force", is_flag=True, help="Continue even when errors occur.")
+@click.option(
+    "index_path",
+    "-i",
+    "--index",
+    metavar="FILE",
+    help="Docs index used to publish (defaults to project 'docs-index.yml')",
+)
+@click.option(
+    "-D", "--diff-cmd", metavar="CMD", help="Command used when diffing index."
+)
 def publish_docs_index(**opts):
     docs.publish_index(**opts)
 
@@ -207,6 +218,144 @@ Show audit information.
 @main.command("audit", help=audit_help)
 def audit():
     security.audit()
+
+
+###################################################################
+# edit
+###################################################################
+
+edit_help = """
+Edit a topic.
+
+Specify a post link or ID.
+
+A post is fetched from my.guild.ai and opened in the system editor
+(defined by the EDITOR environent variable).
+
+Make changes to the post and save as needed. Posts are saved to the
+directory specified by '--save-dir', which defaults to the project
+'posts'. To apply the changes, exit the editor, review the changed
+present as a diff, and confirm that you want to publish the post.
+
+Leave the post unchanged and exit to cancel the edit.
+
+Use '--fetch' to fetch the post without editing.
+
+Use '--publish' to publish a locally edited post.
+
+Use '--fetch-all' to fetch all posts to the save dir.
+"""
+
+
+@main.command("edit", help=edit_help)
+@click.argument("post", required=False)
+@click.option("-f", "--fetch", is_flag=True, help="Fetch the post without editing it.")
+@click.option(
+    "-d",
+    "--diff",
+    is_flag=True,
+    help="Show difference between local and published post",
+)
+@click.option("-p", "--publish", is_flag=True, help="Publish locally edited post.")
+@click.option(
+    "-m",
+    "--comment",
+    metavar="TEXT",
+    help=(
+        "Comment used when publishing posts. If omitted, editor "
+        "is used to write comment."
+    ),
+)
+@click.option(
+    "-a",
+    "--fetch-all",
+    is_flag=True,
+    help="Fetch all posts without editing. Uses docs index to enumerte posts.",
+)
+@click.option(
+    "-d",
+    "--save-dir",
+    metavar="DIR",
+    help=(
+        "Location where posts are saved. Posts are saved as "
+        "'<id>.md' in this directory."
+    ),
+)
+@click.option(
+    "index_path",
+    "-i",
+    "--index",
+    metavar="FILE",
+    help=(
+        "Docs index used when fetching all posts (defaults "
+        "to project 'docs-index.yml')"
+    ),
+)
+@click.option("-E", "--edit-cmd", metavar="CMD", help="Command used to edit post.")
+@click.option("-D", "--diff-cmd", metavar="CMD", help="Command used to diff changes.")
+@click.option("--skip-diff", is_flag=True, help="Don't diff changes before publishing.")
+@click.option("-y", "--yes", is_flag=True, help="Don't prompt before publishing.")
+@click.option(
+    "-f", "--force", is_flag=True, help="Publish even if published post is up-to-date."
+)
+def edit(
+    post,
+    fetch=False,
+    diff=False,
+    publish=False,
+    comment=None,
+    fetch_all=False,
+    index_path=None,
+    save_dir=None,
+    edit_cmd=None,
+    diff_cmd=None,
+    skip_diff=False,
+    yes=False,
+    force=False,
+):
+    if fetch_all:
+        if fetch:
+            raise SystemExit("--fetch and --fetch-all cannot both be used")
+        if post:
+            raise SystemExit("--fetch-all cannot be used with POST")
+        if publish:
+            raise SystemExit("--fetch-all and --publish cannot both be used")
+        if diff:
+            raise SystemExit("--fetch-all and --diff cannot both be used")
+        editlib.fetch_all(index_path=index_path, save_dir=save_dir)
+    elif not post:
+        raise SystemExit("missing required POST argument")
+    else:
+        if fetch:
+            if publish:
+                raise SystemExit("--fetch and --publish cannot both be used")
+            if diff:
+                raise SystemExit("--fetch and --diff cannot both be used")
+            editlib.fetch_post(post, save_dir=save_dir)
+        elif publish:
+            editlib.publish(
+                post,
+                save_dir=save_dir,
+                comment=comment,
+                diff_cmd=diff_cmd,
+                edit_cmd=edit_cmd,
+                skip_diff=skip_diff,
+                skip_prompt=yes,
+                force=force,
+            )
+        elif diff:
+            editlib.diff(
+                post, save_dir=save_dir, diff_cmd=diff_cmd
+            )
+        else:
+            editlib.edit(
+                post,
+                save_dir=save_dir,
+                edit_cmd=edit_cmd,
+                diff_cmd=diff_cmd,
+                skip_diff=skip_diff,
+                skip_prompt=yes,
+            )
 
 
 ###################################################################

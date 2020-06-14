@@ -15,11 +15,11 @@ import yaml
 
 from .api import init as init_api
 from .api import DiscourseClientError
-from .log_util import getLogger
+from .log_util import get_logger
 
 from . import cache
 
-log = getLogger()
+log = get_logger()
 
 
 DEFAULT_LINK_ICON = "far-file-alt"
@@ -38,14 +38,20 @@ class TopicLookupError(Exception):
 
 
 def publish_index(
-    preview=False, check=False, diff=False, check_links=None, force=False
+    preview=False,
+    check=False,
+    diff=False,
+    check_links=None,
+    force=False,
+    index_path=None,
+    diff_cmd=None,
 ):
     check = check or diff
     api = init_api()
     if check_links:
         _check_publish_links(check_links)
     else:
-        _publish_index(preview, check, diff, force, api)
+        _publish_index(preview, check, diff, index_path, force, diff_cmd, api)
 
 
 def _check_publish_links(check_links):
@@ -60,50 +66,57 @@ def _check_publish_links(check_links):
             )
 
 
-def _publish_index(preview, check, diff, force, api):
+def _publish_index(preview, check, diff, index_path, force, diff_cmd, api):
     log.info("Generating docs index")
-    formatted_index = _format_docs_index(force)
+    formatted_index = _format_docs_index(index_path, force)
     if preview:
         print(formatted_index)
         if not check:
             return
     post = _docs_index_post(api)
-    post_raw = post["raw"].strip()
+    post_raw = post["raw"]
     if post_raw == formatted_index:
         log.info("Docs index post (%s) is up-to-date", post["id"])
         return
     if check:
         log.action("Docs index post (%s) is out-of-date", post["id"])
         if diff:
-            _diff_post(post["id"], post_raw, formatted_index)
+            _diff_post(post["id"], post_raw, formatted_index, diff_cmd)
         return
     comment = _publish_index_comment()
     log.action("Updating docs index post (%s)", post["id"])
     api.update_post(post["id"], formatted_index, comment)
 
 
-def _diff_post(post_id, published, generated):
+def diff_post(post_id, published, generated, diff_cmd):
     tmp = tempfile.mkdtemp(prefix="myguild-diff-")
     published_path = os.path.join(tmp, "post-%s.md" % post_id)
     generated_path = os.path.join(tmp, "generated.md")
+    diff_cmd = shlex.split(diff_cmd or default_diff_cmd()) + [
+        published_path,
+        generated_path,
+    ]
     with open(published_path, "w") as f:
         f.write(published)
     with open(generated_path, "w") as f:
         f.write(generated)
-    diff_cmd = shlex.split(os.getenv("DIFF") or "diff -u") + [published_path, generated_path]
     subprocess.call(diff_cmd)
     assert sorted(os.listdir(tmp)) == ["generated.md", "post-%s.md" % post_id], tmp
     shutil.rmtree(tmp)
 
 
-def _format_docs_index(force):
+def default_diff_cmd():
+    return os.getenv("DIFF") or "diff -u"
+
+
+def _format_docs_index(index_path, force):
     lines = []
-    index = _load_index()
+    index = _load_index(index_path)
     _apply_index_header(lines)
     for item in index:
         _apply_index_item(item, force, lines)
     _check_lines(lines)
-    return "\n".join(lines)
+    return "\n".join(lines).rstrip()
 
 
 def _check_lines(lines):
@@ -121,10 +134,17 @@ def _check_lines(lines):
         raise SystemExit(1)
 
 
-def _load_index():
-    index_path = os.path.join(os.path.dirname(__file__), "docs-index.yml")
+def _load_index(index_path):
+    index_path = index_path or default_index_path()
+    if not os.path.exists(index_path):
+        raise SystemExit("doc index '%s' does not exist" % index_path)
     with open(index_path) as f:
         return yaml.safe_load(f)
+
+
+def default_index_path():
+    project_dir = os.path.dirname(os.path.dirname(__file__))
+    return os.path.join(project_dir, "docs-index.yml")
 
 
 def _apply_index_header(lines):

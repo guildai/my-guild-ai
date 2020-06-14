@@ -1,10 +1,13 @@
 import errno
 import hashlib
-import logging
 import os
 import shutil
 
-log = logging.getLogger()
+from .log_util import get_logger
+
+from . import util
+
+log = get_logger()
 
 cache_dir = os.path.abspath(os.path.expanduser("~/.cache/myguild"))
 
@@ -41,17 +44,9 @@ def _key_path(key):
 
 def write(key, value):
     path = _key_path(key)
-    _ensure_dir(os.path.dirname(path))
+    util.ensure_dir(os.path.dirname(path))
     with open(path, "w") as f:
         f.write(value)
-
-
-def _ensure_dir(dir):
-    try:
-        os.makedirs(dir)
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
 
 
 def get_info():

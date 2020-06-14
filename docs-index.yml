@@ -41,6 +41,9 @@
     - docs/diff
 
 - section: Commands
+  description:
+    Refer to [Guild Commands Index](/commands) for an alphabetized
+    list.
   link-title-repl:
     - pattern: 'Command: '
       repl: ''

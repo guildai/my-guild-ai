@@ -29,7 +29,7 @@ class Formatter(logging.Formatter):
 class ConsoleLogHandler(logging.StreamHandler):
     def __init__(self):
         super(ConsoleLogHandler, self).__init__()
-        self._action = Formatter("ACTION: [%(name)s] %(message)s")
+        self._action = Formatter("INFO: [%(name)s] %(message)s")
         self._default = Formatter("%(levelname)s: [%(name)s] %(message)s")
 
     def format(self, record):
@@ -50,7 +50,7 @@ def init(debug=False):
         }
     )
 
-def getLogger():
+def get_logger():
     log = logging.getLogger()
     log.action = lambda *args: log.log(ACTION, *args)
     return log

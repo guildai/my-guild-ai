@@ -12,11 +12,11 @@ import requests
 
 from .api import init as init_api
 from .api import DiscourseClientError
-from .log_util import getLogger
+from .log_util import get_logger
 
 from . import cache
 
-log = getLogger()
+log = get_logger()
 
 
 COMMAND_HELP_POST_TEMPLATE = """
