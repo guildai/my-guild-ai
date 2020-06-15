@@ -20,6 +20,9 @@ log = get_logger()
 
 
 COMMAND_HELP_POST_TEMPLATE = """
+<!-- -*- eval: (visual-line-mode 1) -*- -->
+<!-- {title} -->
+
 <div data-theme-toc="true"></div>
 <div data-guild-cmd="true"></div>
 
@@ -270,6 +273,7 @@ def _publish_command(cmd, help_data, post, api, preview, check):
 
 def _format_command_help_post(cmd, help_data):
     post = COMMAND_HELP_POST_TEMPLATE.format(
+        title=_command_help_title(cmd),
         formatted_help=_format_command_help(help_data),
         formatted_options=_format_command_help_options(help_data),
         formatted_subcommands=_format_command_subcommands(cmd, help_data),

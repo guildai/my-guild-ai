@@ -228,5 +228,6 @@ def log_changed(save_dir=None):
             log.warning("Post %s missing sha", os.path.relpath(sha_path))
         base_sha = open(sha_path).read()
         cur_sha = hashlib.sha1(open(post_path).read()).hexdigest()
+        log.debug("testing %s: base=%s cur=%s", post_path, base_sha, cur_sha)
         if base_sha != cur_sha:
             log.info(os.path.relpath(post_path))
