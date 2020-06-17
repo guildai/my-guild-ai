@@ -21,7 +21,6 @@ log = get_logger()
 
 COMMAND_HELP_POST_TEMPLATE = """
 <!-- -*- eval: (visual-line-mode 1) -*- -->
-<!-- {title} -->
 
 <div data-theme-toc="true"></div>
 <div data-guild-cmd="true"></div>

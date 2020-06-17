@@ -12,11 +12,18 @@ from .log_util import get_logger
 log = get_logger()
 
 
-class LocalPostChanged(SystemExit):
-    def __init__(self, post, local_path):
-        super(LocalPostChanged, self).__init__(1)
-        self.post = post
+class LocalTopicChanged(SystemExit):
+    def __init__(self, topic, local_path):
+        super(LocalTopicChanged, self).__init__(1)
+        self.topic = topic
         self.local_path = local_path
+
+
+class Topic(object):
+    def __init__(self, topic_id, post_id, raw):
+        self.topic_id = topic_id
+        self.post_id = post_id
+        self.raw = raw
 
 
 ###################################################################
@@ -24,17 +31,17 @@ class LocalPostChanged(SystemExit):
 ###################################################################
 
 
-def edit(post_link_or_id, save_dir=None, edit_cmd=None, force=False):
-    post, path = _ensure_post(post_link_or_id, save_dir, force)
+def edit(topic_link_or_id, save_dir=None, edit_cmd=None, force=False):
+    topic, path = _ensure_topic(topic_link_or_id, save_dir, force)
     log.info("Editing %s" % os.path.relpath(path))
     util.edit(path, edit_cmd)
 
 
-def _ensure_post(post_link_or_id, save_dir, force):
+def _ensure_topic(topic_link_or_id, save_dir, force):
     try:
-        return fetch_post(post_link_or_id, save_dir, force)
-    except LocalPostChanged as e:
-        return e.post, e.local_path
+        return fetch_topic(topic_link_or_id, save_dir, force)
+    except LocalTopicChanged as e:
+        return e.topic, e.local_path
 
 
 ###################################################################
@@ -43,7 +50,7 @@ def _ensure_post(post_link_or_id, save_dir, force):
 
 
 def publish(
-    post_link_or_id,
+    topic_link_or_id,
     save_dir=None,
     comment=None,
     diff_cmd=None,
@@ -53,53 +60,58 @@ def publish(
     force=False,
 ):
     api = init_api()
-    post = _get_post(post_link_or_id, api)
-    local_post = _local_post(post, save_dir)
-    post_raw = _post_raw(post)
-    if not force and local_post == post_raw:
-        log.info("Post %i is up-to-date", post["id"])
+    topic = _get_topic(topic_link_or_id, api)
+    local_topic = _local_topic(topic, save_dir)
+    topic_raw = _topic_raw(topic)
+    if not force and local_topic == topic_raw:
+        log.info("Topic %i is up-to-date", topic["id"])
         raise SystemExit(0)
     if not skip_diff:
-        _diff_post(post, local_post, diff_cmd)
+        _diff_topic(topic, local_topic, diff_cmd)
     if not skip_prompt:
-        _verify_publish(post)
-    _publish_post(post, local_post, comment, edit_cmd, api)
+        _verify_publish(topic)
+    _publish_topic(topic, local_topic, comment, edit_cmd, api)
 
-def _post_raw(post):
+
+def _topic_raw(topic):
     # Discourse strips trailing LF so we add back support compare to
-    # local posts.
-    return post["raw"] + "\n"
+    # local topics.
+    return topic["raw"] + "\n"
 
-def _local_post(post, save_dir):
+
+def _local_topic(topic, save_dir):
     save_dir = save_dir or default_save_dir()
-    save_path = _save_path_for_post(post, save_dir)
+    save_path = _save_path_for_topic(topic, save_dir)
     if not os.path.exists(save_path):
-        raise SystemExit("Cannot find local post '%s'" % save_path)
+        raise SystemExit("Cannot find local topic '%s'" % save_path)
     return open(save_path).read()
 
 
 def default_save_dir():
     project_dir = os.path.dirname(os.path.dirname(__file__))
-    return os.path.join(project_dir, "posts")
+    return os.path.join(project_dir, "topics")
 
 
-def _save_path_for_post(post, save_dir):
-    return os.path.join(save_dir, "%s.md" % post["id"])
+def _save_path_for_topic(topic, save_dir):
+    return os.path.join(save_dir, "%s.md" % topic["id"])
 
 
-def _diff_post(post, local_post, diff_cmd):
-    docs.diff_post(post["id"], _post_raw(post), local_post, diff_cmd)
+def _diff_topic(topic, local_topic, diff_cmd):
+    docs.diff_topic(topic["id"], _topic_raw(topic), local_topic, diff_cmd)
 
 
-def _verify_publish(post):
-    if not util.confirm("Publish post %i?" % post["id"], True):
+def _verify_publish(topic):
+    if not util.confirm("Publish topic %i?" % topic["id"], True):
         raise SystemExit(1)
 
 
-def _publish_post(post, local_post, comment, edit_cmd, api):
+def _publish_topic(topic, local_topic, comment, edit_cmd, api):
     comment = comment or _get_comment(edit_cmd)
-    log.action("Publishing %s", post["id"])
-    api.update_post(post["id"], local_post, comment)
+    log.action("Publishing %s", topic["id"])
+    api.update_topic(topic["id"], local_topic, comment)
+    sha_path = _sha_path_for_topic(topic, save_dir)
+    with open(sha_path, "w") as f:
+        f.write(topic_sha)
 
 
 def _get_comment(editor):
@@ -115,14 +127,14 @@ def _get_comment(editor):
 ###################################################################
 
 
-def diff(post_link_or_id, save_dir=None, diff_cmd=None):
+def diff(topic_link_or_id, save_dir=None, diff_cmd=None):
     api = init_api()
-    post = _get_post(post_link_or_id, api)
-    local_post = _local_post(post, save_dir)
-    if local_post == _post_raw(post):
-        log.info("Post %i is up-to-date", post["id"])
+    topic = _get_topic(topic_link_or_id, api)
+    local_topic = _local_topic(topic, save_dir)
+    if local_topic == _topic_raw(topic):
+        log.info("Topic %i is up-to-date", topic["id"])
         raise SystemExit(0)
-    _diff_post(post, local_post, diff_cmd)
+    _diff_topic(topic, local_topic, diff_cmd)
 
 
 ###################################################################
@@ -130,72 +142,72 @@ def diff(post_link_or_id, save_dir=None, diff_cmd=None):
 ###################################################################
 
 
-def fetch_post(post_link_or_id, save_dir=None, force=False):
+def fetch_topic(topic_link_or_id, save_dir=None, force=False):
     api = init_api()
     save_dir = save_dir or default_save_dir()
-    post = _get_post(post_link_or_id, api)
-    save_path = _save_path_for_post(post, save_dir)
-    sha_path = _sha_path_for_post(post, save_dir)
-    if not force and _local_post_changed(save_path, sha_path):
+    topic = _get_topic(topic_link_or_id, api)
+    save_path = _save_path_for_topic(topic, save_dir)
+    sha_path = _sha_path_for_topic(topic, save_dir)
+    if not force and _local_topic_changed(save_path, sha_path):
         log.warning(
-            "Local post %s changed since last fetch, skipping (use force to override)",
-            post["id"],
+            "Local topic %s changed since last fetch, skipping (use force to override)",
+            topic["id"],
         )
-        raise LocalPostChanged(post["id"], save_path)
-    post_raw = _post_raw(post)
+        raise LocalTopicChanged(topic["id"], save_path)
+    topic_raw = _topic_raw(topic)
     if not force and os.path.exists(save_path):
-        if post_raw == open(save_path).read():
-            log.info("Post %s is up-to-date", post["id"])
-            return post, save_path
-    post_sha = hashlib.sha1(post_raw).hexdigest()
-    log.action("Saving fetched post %s to %s", post["id"], os.path.relpath(save_path))
+        if topic_raw == open(save_path).read():
+            log.info("Topic %s is up-to-date", topic["id"])
+            return topic, save_path
+    topic_sha = hashlib.sha1(topic_raw).hexdigest()
+    log.action("Saving fetched topic %s to %s", topic["id"], os.path.relpath(save_path))
     util.ensure_dir(save_dir)
     with open(sha_path, "w") as f:
-        f.write(post_sha)
+        f.write(topic_sha)
     with open(save_path, "w") as f:
-        f.write(post_raw)
-    return post, save_path
+        f.write(topic_raw)
+    return topic, save_path
 
 
-def _sha_path_for_post(post, save_dir):
-    return os.path.join(save_dir, "%s.sha" % post["id"])
+def _sha_path_for_topic(topic, save_dir):
+    return os.path.join(save_dir, "%s.sha" % topic["id"])
 
 
-def _local_post_changed(post_path, sha_path):
-    if not os.path.exists(post_path) or not os.path.exists(sha_path):
+def _local_topic_changed(topic_path, sha_path):
+    if not os.path.exists(topic_path) or not os.path.exists(sha_path):
         return False
-    current_sha = hashlib.sha1(open(post_path).read()).hexdigest()
+    current_sha = hashlib.sha1(open(topic_path).read()).hexdigest()
     base_sha = open(sha_path).read()
     return current_sha != base_sha
 
 
-def _get_post(link_or_id, api):
+def _get_topic(link_or_id, api):
     try:
-        post_id = int(link_or_id)
+        topic_id = int(link_or_id)
     except ValueError:
         link = link_or_id
-        log.info("Fetching post for '%s'", link)
-        return _post_for_link(link, api)
+        log.info("Fetching topic for '%s'", link)
+        return _topic_for_link(link, api)
     else:
-        log.info("Fetching post %i", post_id)
-        return _post_for_id(post_id, api)
+        log.info("Fetching topic %i", topic_id)
+        return _topic_for_id(topic_id, api)
 
 
-def _post_for_id(post_id, api):
+def _topic_for_id(topic_id, api):
     try:
-        return api.post(post_id)
+        return api.topic(topic_id)
     except DiscourseClientError:
-        raise SystemExit("No such post: %i" % post_id)
+        raise SystemExit("No such topic: %i" % topic_id)
 
 
-def _post_for_link(link, api):
+def _topic_for_link(link, api):
     try:
         topic = api._get(_ensure_abs_link(link))
     except DiscourseClientError:
         raise SystemExit("Cannot find topic for '%s'" % link)
     else:
-        post_id = topic["post_stream"]["posts"][0]["id"]
-        return _post_for_id(post_id, api)
+        topic_id = topic["topic_stream"]["topics"][0]["id"]
+        return _topic_for_id(topic_id, api)
 
 
 def _ensure_abs_link(link):
@@ -211,8 +223,8 @@ def fetch_all(index_path=None, save_dir=None, force=False):
     index_path = index_path or docs.default_index_path()
     for link in docs.iter_index_links(index_path):
         try:
-            fetch_post(link, save_dir=save_dir, force=force)
-        except LocalPostChanged as e:
+            fetch_topic(link, save_dir=save_dir, force=force)
+        except LocalTopicChanged as e:
             assert not force
 
 
@@ -220,14 +232,15 @@ def fetch_all(index_path=None, save_dir=None, force=False):
 # Log changed
 ###################################################################
 
-def log_changed(save_dir=None):
+
+def log_locally_changed(save_dir=None):
     save_dir = save_dir or default_save_dir()
-    for post_path in glob.glob(os.path.join(save_dir, "*.md")):
-        sha_path = post_path[:-3] + ".sha"
+    for topic_path in glob.glob(os.path.join(save_dir, "*.md")):
+        sha_path = topic_path[:-3] + ".sha"
         if not os.path.exists(sha_path):
-            log.warning("Post %s missing sha", os.path.relpath(sha_path))
+            log.warning("Topic %s missing sha", os.path.relpath(sha_path))
         base_sha = open(sha_path).read()
-        cur_sha = hashlib.sha1(open(post_path).read()).hexdigest()
-        log.debug("testing %s: base=%s cur=%s", post_path, base_sha, cur_sha)
+        cur_sha = hashlib.sha1(open(topic_path).read()).hexdigest()
+        log.debug("testing %s: base=%s cur=%s", topic_path, base_sha, cur_sha)
         if base_sha != cur_sha:
-            log.info(os.path.relpath(post_path))
+            log.info(os.path.relpath(topic_path))

@@ -227,49 +227,51 @@ def audit():
 edit_help = """
 Edit a topic.
 
-Specify a post link or ID.
+Specify a topic link or ID.
 
-A post is fetched from my.guild.ai and opened in the system editor
+A topic is fetched from my.guild.ai and opened in the system editor
 (defined by the EDITOR environent variable).
 
-Make changes to the post and save as needed. Posts are saved to the
+Make changes to the topic and save as needed. Topics are saved to the
 directory specified by '--save-dir', which defaults to the project
-'posts'. To apply the changes, exit the editor, review the changed
-present as a diff, and confirm that you want to publish the post.
+'topics'. To apply the changes, exit the editor, review the changed
+present as a diff, and confirm that you want to publish the topic.
 
-Leave the post unchanged and exit to cancel the edit.
+Leave the topic unchanged and exit to cancel the edit.
 
-Use '--fetch' to fetch the post without editing.
+Use '--fetch' to fetch the topic without editing.
 
-Use '--publish' to publish a locally edited post.
+Use '--publish' to publish a locally edited topic.
 
-Use '--fetch-all' to fetch all posts to the save dir.
+Use '--fetch-all' to fetch all topics to the save dir.
 """
 
 
 @main.command("edit", help=edit_help)
-@click.argument("post", required=False)
-@click.option("-f", "--fetch", is_flag=True, help="Fetch the post without editing it.")
+@click.argument("topic", required=False)
+@click.option("-f", "--fetch", is_flag=True, help="Fetch the topic without editing it.")
 @click.option(
     "-a",
     "--fetch-all",
     is_flag=True,
-    help="Fetch all posts without editing. Uses docs index to enumerte posts.",
+    help="Fetch all topics without editing. Uses docs index to enumerte topics.",
 )
 @click.option(
     "-d",
     "--diff",
     is_flag=True,
-    help="Show difference between local and published post",
+    help="Show difference between local and published topic",
 )
-@click.option("-p", "--publish", is_flag=True, help="Publish locally edited post.")
-@click.option("--show-changed", is_flag=True, help="Show a list of changed posts.")
+@click.option("-p", "--publish", is_flag=True, help="Publish locally edited topic.")
+@click.option(
+    "--log-changed", is_flag=True, help="Show a list of locally changed topics."
+)
 @click.option(
     "-m",
     "--comment",
     metavar="TEXT",
     help=(
-        "Comment used when publishing posts. If omitted, editor "
+        "Comment used when publishing topics. If omitted, editor "
         "is used to write comment."
     ),
 )
@@ -278,7 +280,7 @@ Use '--fetch-all' to fetch all posts to the save dir.
     "--save-dir",
     metavar="DIR",
     help=(
-        "Location where posts are saved. Posts are saved as "
+        "Location where topics are saved. Topics are saved as "
         "'<id>.md' in this directory."
     ),
 )
@@ -288,23 +290,23 @@ Use '--fetch-all' to fetch all posts to the save dir.
     "--index",
     metavar="FILE",
     help=(
-        "Docs index used when fetching all posts (defaults "
+        "Docs index used when fetching all topics (defaults "
         "to project 'docs-index.yml')"
     ),
 )
-@click.option("-E", "--edit-cmd", metavar="CMD", help="Command used to edit post.")
+@click.option("-E", "--edit-cmd", metavar="CMD", help="Command used to edit topic.")
 @click.option("-D", "--diff-cmd", metavar="CMD", help="Command used to diff changes.")
 @click.option("--skip-diff", is_flag=True, help="Don't diff changes before publishing.")
 @click.option("-y", "--yes", is_flag=True, help="Don't prompt before publishing.")
 @click.option(
-    "--force", is_flag=True, help="Publish even if published post is up-to-date."
+    "--force", is_flag=True, help="Publish even if published topic is up-to-date."
 )
 def edit(
-    post,
+    topic,
     fetch=False,
     diff=False,
     publish=False,
-    show_changed=False,
+    log_changed=False,
     comment=None,
     fetch_all=False,
     index_path=None,
@@ -318,27 +320,27 @@ def edit(
     if fetch_all:
         if fetch:
             raise SystemExit("--fetch and --fetch-all cannot both be used")
-        if post:
-            raise SystemExit("--fetch-all cannot be used with POST")
+        if topic:
+            raise SystemExit("--fetch-all cannot be used with TOPIC")
         if publish:
             raise SystemExit("--fetch-all and --publish cannot both be used")
         if diff:
             raise SystemExit("--fetch-all and --diff cannot both be used")
         editlib.fetch_all(index_path=index_path, save_dir=save_dir)
-    elif show_changed:
-        editlib.log_changed(save_dir)
-    elif not post:
-        raise SystemExit("missing required POST argument")
+    elif log_changed:
+        editlib.log_locally_changed(save_dir)
+    elif not topic:
+        raise SystemExit("missing required TOPIC argument")
     else:
         if fetch:
             if publish:
                 raise SystemExit("--fetch and --publish cannot both be used")
             if diff:
                 raise SystemExit("--fetch and --diff cannot both be used")
-            editlib.fetch_post(post, save_dir=save_dir, force=force)
+            editlib.fetch_topic(topic, save_dir=save_dir, force=force)
         elif publish:
             editlib.publish(
-                post,
+                topic,
                 save_dir=save_dir,
                 comment=comment,
                 diff_cmd=diff_cmd,
@@ -348,9 +350,9 @@ def edit(
                 force=force,
             )
         elif diff:
-            editlib.diff(post, save_dir=save_dir, diff_cmd=diff_cmd)
+            editlib.diff(topic, save_dir=save_dir, diff_cmd=diff_cmd)
         else:
-            editlib.edit(post, save_dir=save_dir, edit_cmd=edit_cmd, force=force)
+            editlib.edit(topic, save_dir=save_dir, edit_cmd=edit_cmd, force=force)
 
 
 ###################################################################
