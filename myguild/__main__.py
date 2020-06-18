@@ -1,6 +1,7 @@
 from __future__ import print_function
 from __future__ import absolute_import
 
+import os
 import sys
 
 import click
@@ -15,10 +16,10 @@ from . import security
 
 
 ###################################################################
-# Main
+# myguild base
 ###################################################################
 
-main_help = """
+base_help = """
 Support for managing my.guild.ai.
 
 Commands that access my.guild.ai (publishing, etc.) require the
@@ -29,9 +30,9 @@ Refer to help for the commands below for more information.
 """
 
 
-@click.group(help=main_help)
+@click.group(help=base_help)
 @click.option("--debug", is_flag=True, help="Enable debug logging")
-def main(debug=False):
+def myguild(debug=False):
     log_util.init(debug)
 
 
@@ -48,7 +49,7 @@ to a topic, the command exits with an error.
 """
 
 
-@main.command("publish-docs-index", help=publish_docs_index_help)
+@myguild.command("publish-docs-index", help=publish_docs_index_help)
 @click.option("-p", "--preview", is_flag=True, help="Preview generated index.")
 @click.option("-c", "--check", is_flag=True, help="Check published index status.")
 @click.option(
@@ -89,7 +90,7 @@ specify one or more arguments for COMMAND.
 """
 
 
-@main.command("publish-commands", help=publish_commands_help)
+@myguild.command("publish-commands", help=publish_commands_help)
 @click.argument("commands", metavar="[COMMAND]...", nargs=-1)
 @click.option("-p", "--preview", is_flag=True, help="Preview published topics.")
 @click.option("-c", "--check", is_flag=True, help="Check published topics.")
@@ -111,7 +112,7 @@ with an error.
 """
 
 
-@main.command("publish-commands-index", help=publish_commands_index_help)
+@myguild.command("publish-commands-index", help=publish_commands_index_help)
 @click.option("-p", "--preview", is_flag=True, help="Preview generated index.")
 @click.option("-c", "--check", is_flag=True, help="Check published index status.")
 @click.option(
@@ -144,7 +145,7 @@ permalinks.
 """
 
 
-@main.command("check-command-permalinks", help=check_command_permalinks_help)
+@myguild.command("check-command-permalinks", help=check_command_permalinks_help)
 @click.argument("commands", metavar="[COMMAND]...", nargs=-1)
 def check_command_permalinks(commands):
     command_help.check_command_permalinks(commands)
@@ -165,7 +166,7 @@ options must be specified otherwise the command exits with an error.
 """
 
 
-@main.command("clear-cache", help=clear_cache_help)
+@myguild.command("clear-cache", help=clear_cache_help)
 @click.option("--all", is_flag=True, help="Clears the entire cache.")
 @click.option(
     "links", "-l", "--link", metavar="LINK", multiple=True, help="Clear cached link."
@@ -215,7 +216,7 @@ Show audit information.
 """
 
 
-@main.command("audit", help=audit_help)
+@myguild.command("audit", help=audit_help)
 def audit():
     security.audit()
 
@@ -247,7 +248,8 @@ Use '--fetch-all' to fetch all topics to the save dir.
 """
 
 
-@main.command("edit", help=edit_help)
+"""
+@myguild.command("edit", help=edit_help)
 @click.argument("topic", required=False)
 @click.option("-f", "--fetch", is_flag=True, help="Fetch the topic without editing it.")
 @click.option(
@@ -353,25 +355,124 @@ def edit(
             editlib.diff(topic, save_dir=save_dir, diff_cmd=diff_cmd)
         else:
             editlib.edit(topic, save_dir=save_dir, edit_cmd=edit_cmd, force=force)
+"""
+
+edit_help = """
+Edit a topic.
+"""
+
+
+def _edit_topics(ctx, args, incomplete):
+    if "--help" in args:
+        return []
+    params = ctx.params
+    save_dir = params.get("save_dir") or editlib.default_save_dir()
+    topics = [name[:-3] for name in os.listdir(save_dir) if name.endswith(".md")]
+    return [id for id in sorted(topics, key=_int_sort_key) if id.startswith(incomplete)]
+
+
+def _int_sort_key(s):
+    try:
+        return int(s)
+    except ValueError:
+        return 0
+
+
+@myguild.command("edit", help=edit_help)
+@click.argument("topic", type=int, autocompletion=_edit_topics)
+@click.option(
+    "-f", "--fetch", is_flag=True, help="Fetch the latest topic without editing."
+)
+@click.option(
+    "-p",
+    "--publish",
+    is_flag=True,
+    help="Publish a locally edited topic to my.guild.ai.",
+)
+@click.option("-m", "--comment", help="Comment used when publishing.")
+@click.option("--skip-diff", is_flag=True, help="Skip diff when publishing.")
+@click.option(
+    "--yes", is_flag=True, help="Publish changes without asking for confirmation."
+)
+@click.option("--keep", is_flag=True, help="Keep local topic after publish.")
+@click.option("--force", is_flag=True, help="Ignore conflicts.")
+@click.option("--diff-base", is_flag=True, help="Compare topic to its base version.")
+@click.option(
+    "--diff-latest", is_flag=True, help="Compare topic to the latest published version."
+)
+@click.option("--diff-cmd", metavar="CMD", help="Command used to diff changes.")
+@click.option("--edit-cmd", metavar="CMD", help="Command used to edit topic.")
+@click.option(
+    "--save-dir",
+    metavar="DIR",
+    help=(
+        "Location where topics are saved. Topics are saved as "
+        "'<id>.md' in this directory."
+    ),
+)
+def edit(
+    topic,
+    fetch=False,
+    publish=False,
+    comment=None,
+    skip_diff=False,
+    yes=False,
+    keep=False,
+    save_dir=None,
+    force=False,
+    diff_base=False,
+    diff_latest=False,
+    diff_cmd=None,
+    edit_cmd=None,
+):
+    if fetch:
+        editlib.fetch(topic, save_dir=save_dir, force=force)
+    elif publish:
+        editlib.publish(
+            topic,
+            save_dir=save_dir,
+            comment=comment,
+            skip_diff=skip_diff,
+            keep=keep,
+            force=force,
+            edit_cmd=edit_cmd,
+        )
+    elif diff_base:
+        editlib.diff_base(topic, save_dir=save_dir, diff_cmd=diff_cmd)
+    elif diff_latest:
+        editlib.diff_latest(topic, save_dir=save_dir, diff_cmd=diff_cmd)
+    else:
+        editlib.edit(
+            topic,
+            save_dir=save_dir,
+            comment=comment,
+            skip_diff=skip_diff,
+            yes=yes,
+            keep=keep,
+            force=force,
+            edit_cmd=edit_cmd,
+            diff_cmd=diff_cmd,
+        )
 
 
 ###################################################################
-# __main__
+# main
 ###################################################################
 
 
-def _main():
+def main():
     try:
         # pylint: disable=unexpected-keyword-arg
-        main(prog_name="my-guild")
+        myguild(prog_name="my-guild")
     except SystemExit as e:
         if e.args and e.args[0] != 0:
             if isinstance(e.args[0], int):
                 sys.exit(e.args[0])
             else:
-                sys.stderr.write("error: %s\n" % e.message)
+                log = log_util.get_logger()
+                log.error(*e.args)
                 sys.exit(1)
 
 
 if __name__ == "__main__":
-    _main()
+    main()

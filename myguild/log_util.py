@@ -29,8 +29,8 @@ class Formatter(logging.Formatter):
 class ConsoleLogHandler(logging.StreamHandler):
     def __init__(self):
         super(ConsoleLogHandler, self).__init__()
-        self._action = Formatter("INFO: [%(name)s] %(message)s")
-        self._default = Formatter("%(levelname)s: [%(name)s] %(message)s")
+        self._action = Formatter("INFO: %(message)s")
+        self._default = Formatter("%(levelname)s: %(message)s")
 
     def format(self, record):
         if record.levelno == ACTION:

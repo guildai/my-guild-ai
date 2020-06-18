@@ -3,10 +3,8 @@ import json
 import os
 import pprint
 import re
-import shlex
 import shutil
 import socket
-import subprocess
 import tempfile
 
 import requests
@@ -18,6 +16,7 @@ from .api import DiscourseClientError
 from .log_util import get_logger
 
 from . import cache
+from . import util
 
 log = get_logger()
 
@@ -81,32 +80,25 @@ def _publish_index(preview, check, diff, index_path, force, diff_cmd, api):
     if check:
         log.action("Docs index post (%s) is out-of-date", post["id"])
         if diff:
-            diff_post(post["id"], post_raw, formatted_index, diff_cmd)
+            _diff_post(post["id"], post_raw, formatted_index, diff_cmd)
         return
     comment = _publish_index_comment()
     log.action("Updating docs index post (%s)", post["id"])
     api.update_post(post["id"], formatted_index, comment)
 
 
-def diff_post(post_id, published, generated, diff_cmd):
+def _diff_post(post_id, published, generated, diff_cmd):
     tmp = tempfile.mkdtemp(prefix="myguild-diff-")
     published_path = os.path.join(tmp, "post-%s.md" % post_id)
     generated_path = os.path.join(tmp, "generated.md")
-    diff_cmd = shlex.split(diff_cmd or default_diff_cmd()) + [
-        published_path,
-        generated_path,
-    ]
     with open(published_path, "w") as f:
         f.write(published)
     with open(generated_path, "w") as f:
         f.write(generated)
-    subprocess.call(diff_cmd)
+    util.diff_files(published_path, generated_path, diff_cmd)
+    # Sanity check that we're deleting what we expect to delete.
     assert sorted(os.listdir(tmp)) == ["generated.md", "post-%s.md" % post_id], tmp
     shutil.rmtree(tmp)
-
-
-def default_diff_cmd():
-    return os.getenv("DIFF") or "diff -u"
 
 
 def _format_docs_index(index_path, force):

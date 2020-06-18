@@ -1,5 +1,7 @@
 import errno
 import os
+import shlex
+import subprocess
 import textwrap
 
 import click
@@ -48,3 +50,20 @@ def _strip_comments(s):
 
 def edit(path, editor=None):
     return click.edit(filename=path, editor=editor)
+
+
+def diff_files(path1, path2, diff_cmd=None):
+    diff_cmd = shlex.split(diff_cmd or default_diff_cmd()) + [path1, path2]
+    subprocess.call(diff_cmd)
+
+
+def default_diff_cmd():
+    return os.getenv("DIFF") or "diff -u"
+
+
+def ensure_deleted(path):
+    try:
+        os.remove(path)
+    except OSError as e:
+        if e.errno != errno.ENOENT:
+            raise

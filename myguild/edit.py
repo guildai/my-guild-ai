@@ -1,47 +1,153 @@
-import glob
-import hashlib
 import os
 
-from . import docs
-from . import util
-
-from .api import init as init_api
 from .api import DiscourseClientError
+from .api import init as init_api
 from .log_util import get_logger
+
+from . import util
 
 log = get_logger()
 
 
-class LocalTopicChanged(SystemExit):
-    def __init__(self, topic, local_path):
-        super(LocalTopicChanged, self).__init__(1)
-        self.topic = topic
-        self.local_path = local_path
-
-
 class Topic(object):
-    def __init__(self, topic_id, post_id, raw):
+    def __init__(self, topic_id, post_id, post_raw):
         self.topic_id = topic_id
         self.post_id = post_id
-        self.raw = raw
+        self.post_raw = post_raw
+
+    def __str__(self):
+        return "<myguild.Topic topic_id=%s post_id=%s>" % (self.topic_id, self.post_id)
 
 
 ###################################################################
-# Edit
+# Fetch
 ###################################################################
 
 
-def edit(topic_link_or_id, save_dir=None, edit_cmd=None, force=False):
-    topic, path = _ensure_topic(topic_link_or_id, save_dir, force)
-    log.info("Editing %s" % os.path.relpath(path))
-    util.edit(path, edit_cmd)
+def fetch(topic_id, save_dir=None, force=False):
+    api = init_api()
+    save_dir = save_dir or default_save_dir()
+    log.action("Fetching topic %s", topic_id)
+    topic = _topic_for_id(topic_id, api)
+    if force or _check_save_conflict(topic, save_dir):
+        _save_topic(topic, save_dir)
 
 
-def _ensure_topic(topic_link_or_id, save_dir, force):
+def default_save_dir():
+    project_dir = os.path.dirname(os.path.dirname(__file__))
+    return os.path.join(project_dir, "topics")
+
+
+def _topic_for_id(topic_id, api):
     try:
-        return fetch_topic(topic_link_or_id, save_dir, force)
-    except LocalTopicChanged as e:
-        return e.topic, e.local_path
+        topic = api.topic(topic_id)
+    except DiscourseClientError:
+        raise SystemExit("No such topic: %i", topic_id)
+    else:
+        post = api.post(topic["post_stream"]["posts"][0]["id"])
+        return Topic(topic_id, post["id"], _post_raw(post))
+
+
+def _post_raw(post):
+    # Append newline, which Discourse strips.
+    return post["raw"] + "\n"
+
+
+def _check_save_conflict(topic, save_dir):
+    topic_path = _topic_path(topic, save_dir)
+    if not os.path.exists(topic_path):
+        return True
+    base_path = _topic_base_path(topic, save_dir)
+    if not os.path.exists(base_path):
+        log.error(
+            "Topic %s already exists. Use --force to override this safeguard.",
+            topic.topic_id,
+        )
+        raise SystemExit()
+    if _files_differ(topic_path, base_path):
+        raise SystemExit(
+            "Topic %s has been modified locally. Use --force to override this "
+            "safeguard." % topic.topic_id
+        )
+    return True
+
+
+def _files_differ(path1, path2):
+    return open(path1).read() != open(path2).read()
+
+
+def _save_topic(topic, save_dir):
+    util.ensure_dir(save_dir)
+    _save_topic_main(topic, save_dir, topic.post_raw)
+    _save_topic_base(topic, save_dir, topic.post_raw)
+
+
+def _save_topic_main(topic, save_dir, raw):
+    with open(_topic_path(topic, save_dir), "w") as f:
+        f.write(raw)
+
+
+def _save_topic_base(topic, save_dir, raw):
+    with open(_topic_base_path(topic, save_dir), "w") as f:
+        f.write(raw)
+
+
+def _topic_path(topic, save_dir):
+    return os.path.join(save_dir, "%s.md" % _topic_id(topic))
+
+
+def _topic_id(topic):
+    if isinstance(topic, int):
+        return topic
+    elif isinstance(topic, Topic):
+        return topic.topic_id
+    else:
+        assert False, (type(topic), topic)
+
+
+def _topic_base_path(topic, save_dir):
+    return os.path.join(save_dir, "%s.base" % _topic_id(topic))
+
+
+def _topic_latest_path(topic, save_dir):
+    return os.path.join(save_dir, "%s.latest" % _topic_id(topic))
+
+
+###################################################################
+# Diff
+###################################################################
+
+
+def diff_base(topic_id, save_dir=None, diff_cmd=None):
+    save_dir = save_dir or default_save_dir()
+    topic_path = _topic_path(topic_id, save_dir)
+    if not os.path.exists(topic_path):
+        raise SystemExit("Topic %i not found in %s", topic_id, save_dir)
+    base_path = _topic_base_path(topic_id, save_dir)
+    if not os.path.exists(base_path):
+        raise SystemExit(
+            "Base version for topic %i not found in %s", topic_id, save_dir
+        )
+    util.diff_files(base_path, topic_path, diff_cmd)
+
+
+def diff_latest(topic_id, save_dir=None, diff_cmd=None):
+    save_dir = save_dir or default_save_dir()
+    topic_path = _topic_path(topic_id, save_dir)
+    if not os.path.exists(topic_path):
+        raise SystemExit("Topic %i not found in %s", topic_id, save_dir)
+    api = init_api()
+    log.info("Getting latest version of topic %i", topic_id)
+    latest_path = _fetch_topic_latest(topic_id, save_dir, api)
+    util.diff_files(topic_path, latest_path, diff_cmd)
+
+
+def _fetch_topic_latest(topic_id, save_dir, api):
+    topic = _topic_for_id(topic_id, api)
+    latest_path = _topic_latest_path(topic_id, save_dir)
+    with open(latest_path, "w") as f:
+        f.write(topic.post_raw)
+    return latest_path
 
 
 ###################################################################
@@ -50,68 +156,84 @@ def _ensure_topic(topic_link_or_id, save_dir, force):
 
 
 def publish(
-    topic_link_or_id,
+    topic_id,
     save_dir=None,
     comment=None,
+    keep=False,
+    force=False,
+    skip_diff=False,
+    yes=False,
     diff_cmd=None,
     edit_cmd=None,
-    skip_diff=False,
-    skip_prompt=False,
-    force=False,
 ):
     api = init_api()
-    topic = _get_topic(topic_link_or_id, api)
-    local_topic = _local_topic(topic, save_dir)
-    topic_raw = _topic_raw(topic)
-    if not force and local_topic == topic_raw:
-        log.info("Topic %i is up-to-date", topic["id"])
-        raise SystemExit(0)
-    if not skip_diff:
-        _diff_topic(topic, local_topic, diff_cmd)
-    if not skip_prompt:
-        _verify_publish(topic)
-    _publish_topic(topic, local_topic, comment, edit_cmd, api)
-
-
-def _topic_raw(topic):
-    # Discourse strips trailing LF so we add back support compare to
-    # local topics.
-    return topic["raw"] + "\n"
-
-
-def _local_topic(topic, save_dir):
     save_dir = save_dir or default_save_dir()
-    save_path = _save_path_for_topic(topic, save_dir)
-    if not os.path.exists(save_path):
-        raise SystemExit("Cannot find local topic '%s'" % save_path)
-    return open(save_path).read()
+    topic_path = _topic_path(topic_id, save_dir)
+    if not os.path.exists(topic_path):
+        raise SystemExit("Topic %i not found in %s", topic_id, save_dir)
+    if force or (
+        _check_local_changed(topic_id, save_dir)
+        and _check_latest_changed(topic_id, save_dir, api)
+    ):
+        if not skip_diff:
+            base_path = _topic_base_path(topic_id, save_dir)
+            if not os.path.exists(base_path):
+                raise SystemExit(
+                    "Original post for topic %i not available for diff. Use "
+                    "--skip-diff to bypass this check."
+                )
+            log.info("Diffing topic %i changed.", topic_id)
+            util.diff_files(base_path, topic_path, diff_cmd)
+        if not yes and not _confirm_publish(topic_id):
+            raise SystemExit(1)
+        comment = comment or _get_comment(edit_cmd)
+        log.action("Publishing %i", topic_id)
+        topic = _topic_for_id(topic_id, api)
+        local_raw = open(topic_path).read()
+        if not force:
+            _assert_latest_unchanged(topic_id, save_dir, topic.post_raw, api)
+        api.update_post(topic.post_id, local_raw, comment)
+        if keep:
+            log.info("Keeping local files for topic %i (--keep specified)", topic_id)
+            _save_topic_base(topic_id, save_dir, local_raw)
+        else:
+            if yes or _confirm_delete_local_files(topic_id):
+                log.action("Removing local files for topic %i", topic_id)
+                _delete_local_topic(topic_id, save_dir)
 
 
-def default_save_dir():
-    project_dir = os.path.dirname(os.path.dirname(__file__))
-    return os.path.join(project_dir, "topics")
+def _check_local_changed(topic_id, save_dir):
+    topic_path = _topic_path(topic_id, save_dir)
+    base_path = _topic_base_path(topic_id, save_dir)
+    if not _files_differ(base_path, topic_path):
+        raise SystemExit(
+            "Topic has not been modified %i. Use --force to override this check.",
+            topic_id,
+        )
+    return True
 
 
-def _save_path_for_topic(topic, save_dir):
-    return os.path.join(save_dir, "%s.md" % topic["id"])
+def _check_latest_changed(topic_id, save_dir, api):
+    base_path = _topic_base_path(topic_id, save_dir)
+    if not os.path.exists(base_path):
+        raise SystemExit(
+            "Cannot check if topic %i changed on the server (missing "
+            "base version). Use --force to override this safeguard.",
+            topic_id,
+        )
+    latest_path = _fetch_topic_latest(topic_id, save_dir, api)
+    if _files_differ(base_path, latest_path):
+        raise SystemExit(
+            "Topic %i has changed on the server since it was fetched. "
+            "Use --diff-latest to view differences. Use --force to override "
+            "this safeguard.",
+            topic_id,
+        )
+    return True
 
 
-def _diff_topic(topic, local_topic, diff_cmd):
-    docs.diff_topic(topic["id"], _topic_raw(topic), local_topic, diff_cmd)
-
-
-def _verify_publish(topic):
-    if not util.confirm("Publish topic %i?" % topic["id"], True):
-        raise SystemExit(1)
-
-
-def _publish_topic(topic, local_topic, comment, edit_cmd, api):
-    comment = comment or _get_comment(edit_cmd)
-    log.action("Publishing %s", topic["id"])
-    api.update_topic(topic["id"], local_topic, comment)
-    sha_path = _sha_path_for_topic(topic, save_dir)
-    with open(sha_path, "w") as f:
-        f.write(topic_sha)
+def _confirm_publish(topic_id):
+    return util.confirm("Publish changes to topic %i?" % topic_id, default=True)
 
 
 def _get_comment(editor):
@@ -122,125 +244,60 @@ def _get_comment(editor):
     return s
 
 
-###################################################################
-# Diff
-###################################################################
-
-
-def diff(topic_link_or_id, save_dir=None, diff_cmd=None):
-    api = init_api()
-    topic = _get_topic(topic_link_or_id, api)
-    local_topic = _local_topic(topic, save_dir)
-    if local_topic == _topic_raw(topic):
-        log.info("Topic %i is up-to-date", topic["id"])
-        raise SystemExit(0)
-    _diff_topic(topic, local_topic, diff_cmd)
-
-
-###################################################################
-# Fetch
-###################################################################
-
-
-def fetch_topic(topic_link_or_id, save_dir=None, force=False):
-    api = init_api()
-    save_dir = save_dir or default_save_dir()
-    topic = _get_topic(topic_link_or_id, api)
-    save_path = _save_path_for_topic(topic, save_dir)
-    sha_path = _sha_path_for_topic(topic, save_dir)
-    if not force and _local_topic_changed(save_path, sha_path):
-        log.warning(
-            "Local topic %s changed since last fetch, skipping (use force to override)",
-            topic["id"],
+def _assert_latest_unchanged(topic_id, save_dir, latest_raw, api):
+    latest_path = _fetch_topic_latest(topic_id, save_dir, api)
+    if open(latest_path).read() != latest_raw:
+        raise SystemExit(
+            "Topic %i changed on the server since last check. Use --force to"
+            "override this safeguard.",
+            topic_id,
         )
-        raise LocalTopicChanged(topic["id"], save_path)
-    topic_raw = _topic_raw(topic)
-    if not force and os.path.exists(save_path):
-        if topic_raw == open(save_path).read():
-            log.info("Topic %s is up-to-date", topic["id"])
-            return topic, save_path
-    topic_sha = hashlib.sha1(topic_raw).hexdigest()
-    log.action("Saving fetched topic %s to %s", topic["id"], os.path.relpath(save_path))
-    util.ensure_dir(save_dir)
-    with open(sha_path, "w") as f:
-        f.write(topic_sha)
-    with open(save_path, "w") as f:
-        f.write(topic_raw)
-    return topic, save_path
 
 
-def _sha_path_for_topic(topic, save_dir):
-    return os.path.join(save_dir, "%s.sha" % topic["id"])
+def _confirm_delete_local_files(topic_id):
+    return util.confirm("Remove local files for topic %i?" % topic_id, default=True)
 
-
-def _local_topic_changed(topic_path, sha_path):
-    if not os.path.exists(topic_path) or not os.path.exists(sha_path):
-        return False
-    current_sha = hashlib.sha1(open(topic_path).read()).hexdigest()
-    base_sha = open(sha_path).read()
-    return current_sha != base_sha
-
-
-def _get_topic(link_or_id, api):
-    try:
-        topic_id = int(link_or_id)
-    except ValueError:
-        link = link_or_id
-        log.info("Fetching topic for '%s'", link)
-        return _topic_for_link(link, api)
-    else:
-        log.info("Fetching topic %i", topic_id)
-        return _topic_for_id(topic_id, api)
-
-
-def _topic_for_id(topic_id, api):
-    try:
-        return api.topic(topic_id)
-    except DiscourseClientError:
-        raise SystemExit("No such topic: %i" % topic_id)
-
-
-def _topic_for_link(link, api):
-    try:
-        topic = api._get(_ensure_abs_link(link))
-    except DiscourseClientError:
-        raise SystemExit("Cannot find topic for '%s'" % link)
-    else:
-        topic_id = topic["topic_stream"]["topics"][0]["id"]
-        return _topic_for_id(topic_id, api)
-
-
-def _ensure_abs_link(link):
-    return link if link[:1] == "/" else "/" + link
-
+def _delete_local_topic(topic_id, save_dir):
+    util.ensure_deleted(_topic_latest_path(topic_id, save_dir))
+    util.ensure_deleted(_topic_base_path(topic_id, save_dir))
+    util.ensure_deleted(_topic_path(topic_id, save_dir))
 
 ###################################################################
-# Fetch all
+# Edit
 ###################################################################
 
 
-def fetch_all(index_path=None, save_dir=None, force=False):
-    index_path = index_path or docs.default_index_path()
-    for link in docs.iter_index_links(index_path):
-        try:
-            fetch_topic(link, save_dir=save_dir, force=force)
-        except LocalTopicChanged as e:
-            assert not force
-
-
-###################################################################
-# Log changed
-###################################################################
-
-
-def log_locally_changed(save_dir=None):
+def edit(
+    topic_id,
+    save_dir=None,
+    comment=None,
+    keep=False,
+    force=False,
+    skip_diff=False,
+    yes=False,
+    edit_cmd=None,
+    diff_cmd=None,
+):
+    api = init_api()
     save_dir = save_dir or default_save_dir()
-    for topic_path in glob.glob(os.path.join(save_dir, "*.md")):
-        sha_path = topic_path[:-3] + ".sha"
-        if not os.path.exists(sha_path):
-            log.warning("Topic %s missing sha", os.path.relpath(sha_path))
-        base_sha = open(sha_path).read()
-        cur_sha = hashlib.sha1(open(topic_path).read()).hexdigest()
-        log.debug("testing %s: base=%s cur=%s", topic_path, base_sha, cur_sha)
-        if base_sha != cur_sha:
-            log.info(os.path.relpath(topic_path))
+    topic_path = _topic_path(topic_id, save_dir)
+    if not os.path.exists(topic_path):
+        log.action("Fetching topic %s", topic_id)
+        topic = _topic_for_id(topic_id, api)
+        _save_topic(topic, save_dir)
+    util.edit(topic_path, edit_cmd)
+    base_path = _topic_base_path(topic_id, save_dir)
+    if not _files_differ(topic_path, base_path):
+        log.info("Topic %i was not modified.", topic_id)
+        raise SystemExit(0)
+    publish(
+        topic_id,
+        save_dir=save_dir,
+        comment=comment,
+        keep=keep,
+        force=force,
+        skip_diff=skip_diff,
+        yes=yes,
+        diff_cmd=diff_cmd,
+        edit_cmd=edit_cmd,
+    )

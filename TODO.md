@@ -14,11 +14,15 @@
 - Remove extra permalinks
 - Update an links
 
-### Things to Replace
+### Things to Replace/Check
 
-- '^ ...' -> '&nbsp; *...*'
+- '^ ...' -> <span data-guild-class="caption">...</span>
 - [...](xxx:yyy)
 - '!!! ...' -> '> **...**'
+- cmd:xxx -> /commands/xxx + fixed formatting
+- URL fragments inside permalinks -> use topic URLs to avoid redirects
+- Avoid italics for references to docs and sections
+- Avoid periods in captions
 
 ### See Also
 
