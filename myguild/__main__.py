@@ -225,142 +225,6 @@ def audit():
 # edit
 ###################################################################
 
-edit_help = """
-Edit a topic.
-
-Specify a topic link or ID.
-
-A topic is fetched from my.guild.ai and opened in the system editor
-(defined by the EDITOR environent variable).
-
-Make changes to the topic and save as needed. Topics are saved to the
-directory specified by '--save-dir', which defaults to the project
-'topics'. To apply the changes, exit the editor, review the changed
-present as a diff, and confirm that you want to publish the topic.
-
-Leave the topic unchanged and exit to cancel the edit.
-
-Use '--fetch' to fetch the topic without editing.
-
-Use '--publish' to publish a locally edited topic.
-
-Use '--fetch-all' to fetch all topics to the save dir.
-"""
-
-
-"""
-@myguild.command("edit", help=edit_help)
-@click.argument("topic", required=False)
-@click.option("-f", "--fetch", is_flag=True, help="Fetch the topic without editing it.")
-@click.option(
-    "-a",
-    "--fetch-all",
-    is_flag=True,
-    help="Fetch all topics without editing. Uses docs index to enumerte topics.",
-)
-@click.option(
-    "-d",
-    "--diff",
-    is_flag=True,
-    help="Show difference between local and published topic",
-)
-@click.option("-p", "--publish", is_flag=True, help="Publish locally edited topic.")
-@click.option(
-    "--log-changed", is_flag=True, help="Show a list of locally changed topics."
-)
-@click.option(
-    "-m",
-    "--comment",
-    metavar="TEXT",
-    help=(
-        "Comment used when publishing topics. If omitted, editor "
-        "is used to write comment."
-    ),
-)
-@click.option(
-    "-s",
-    "--save-dir",
-    metavar="DIR",
-    help=(
-        "Location where topics are saved. Topics are saved as "
-        "'<id>.md' in this directory."
-    ),
-)
-@click.option(
-    "index_path",
-    "-i",
-    "--index",
-    metavar="FILE",
-    help=(
-        "Docs index used when fetching all topics (defaults "
-        "to project 'docs-index.yml')"
-    ),
-)
-@click.option("-E", "--edit-cmd", metavar="CMD", help="Command used to edit topic.")
-@click.option("-D", "--diff-cmd", metavar="CMD", help="Command used to diff changes.")
-@click.option("--skip-diff", is_flag=True, help="Don't diff changes before publishing.")
-@click.option("-y", "--yes", is_flag=True, help="Don't prompt before publishing.")
-@click.option(
-    "--force", is_flag=True, help="Publish even if published topic is up-to-date."
-)
-def edit(
-    topic,
-    fetch=False,
-    diff=False,
-    publish=False,
-    log_changed=False,
-    comment=None,
-    fetch_all=False,
-    index_path=None,
-    save_dir=None,
-    edit_cmd=None,
-    diff_cmd=None,
-    skip_diff=False,
-    yes=False,
-    force=False,
-):
-    if fetch_all:
-        if fetch:
-            raise SystemExit("--fetch and --fetch-all cannot both be used")
-        if topic:
-            raise SystemExit("--fetch-all cannot be used with TOPIC")
-        if publish:
-            raise SystemExit("--fetch-all and --publish cannot both be used")
-        if diff:
-            raise SystemExit("--fetch-all and --diff cannot both be used")
-        editlib.fetch_all(index_path=index_path, save_dir=save_dir)
-    elif log_changed:
-        editlib.log_locally_changed(save_dir)
-    elif not topic:
-        raise SystemExit("missing required TOPIC argument")
-    else:
-        if fetch:
-            if publish:
-                raise SystemExit("--fetch and --publish cannot both be used")
-            if diff:
-                raise SystemExit("--fetch and --diff cannot both be used")
-            editlib.fetch_topic(topic, save_dir=save_dir, force=force)
-        elif publish:
-            editlib.publish(
-                topic,
-                save_dir=save_dir,
-                comment=comment,
-                diff_cmd=diff_cmd,
-                edit_cmd=edit_cmd,
-                skip_diff=skip_diff or yes,
-                skip_prompt=yes,
-                force=force,
-            )
-        elif diff:
-            editlib.diff(topic, save_dir=save_dir, diff_cmd=diff_cmd)
-        else:
-            editlib.edit(topic, save_dir=save_dir, edit_cmd=edit_cmd, force=force)
-"""
-
-edit_help = """
-Edit a topic.
-"""
-
 
 def _edit_topics(ctx, args, incomplete):
     if "--help" in args:
@@ -378,10 +242,27 @@ def _int_sort_key(s):
         return 0
 
 
+edit_help = """
+Edit a topic.
+
+TOPIC is required unless --fetch-docs is used.
+"""
+
+
 @myguild.command("edit", help=edit_help)
-@click.argument("topic", type=int, autocompletion=_edit_topics)
+@click.argument("topic", type=int, required=False, autocompletion=_edit_topics)
 @click.option(
     "-f", "--fetch", is_flag=True, help="Fetch the latest topic without editing."
+)
+@click.option("--fetch-docs", is_flag=True, help="Fetch all docs in docs index.")
+@click.option(
+    "index_path",
+    "-i",
+    "--index",
+    metavar="FILE",
+    help=(
+        "Docs index used when fetching docs (defaults to " "project 'docs-index.yml')"
+    ),
 )
 @click.option(
     "-p",
@@ -389,12 +270,12 @@ def _int_sort_key(s):
     is_flag=True,
     help="Publish a locally edited topic to my.guild.ai.",
 )
+@click.option("--delete", is_flag=True, help="Delete local files associatd with topic.")
 @click.option("-m", "--comment", help="Comment used when publishing.")
 @click.option("--skip-diff", is_flag=True, help="Skip diff when publishing.")
 @click.option(
     "--yes", is_flag=True, help="Publish changes without asking for confirmation."
 )
-@click.option("--keep", is_flag=True, help="Keep local topic after publish.")
 @click.option("--force", is_flag=True, help="Ignore conflicts.")
 @click.option("--diff-base", is_flag=True, help="Compare topic to its base version.")
 @click.option(
@@ -410,49 +291,70 @@ def _int_sort_key(s):
         "'<id>.md' in this directory."
     ),
 )
+@click.option(
+    "--stop-on-error",
+    is_flag=True,
+    help="Stop when an error occurs. Applies only to --fetch-docs.",
+)
 def edit(
     topic,
     fetch=False,
+    fetch_docs=False,
+    index_path=None,
+    delete=False,
     publish=False,
     comment=None,
     skip_diff=False,
     yes=False,
-    keep=False,
     save_dir=None,
     force=False,
     diff_base=False,
     diff_latest=False,
     diff_cmd=None,
     edit_cmd=None,
+    stop_on_error=False,
 ):
-    if fetch:
-        editlib.fetch(topic, save_dir=save_dir, force=force)
-    elif publish:
-        editlib.publish(
-            topic,
+    if fetch_docs:
+        editlib.fetch_docs(
             save_dir=save_dir,
-            comment=comment,
-            skip_diff=skip_diff,
-            keep=keep,
+            index_path=index_path,
             force=force,
-            edit_cmd=edit_cmd,
+            stop_on_error=stop_on_error,
         )
-    elif diff_base:
-        editlib.diff_base(topic, save_dir=save_dir, diff_cmd=diff_cmd)
-    elif diff_latest:
-        editlib.diff_latest(topic, save_dir=save_dir, diff_cmd=diff_cmd)
     else:
-        editlib.edit(
-            topic,
-            save_dir=save_dir,
-            comment=comment,
-            skip_diff=skip_diff,
-            yes=yes,
-            keep=keep,
-            force=force,
-            edit_cmd=edit_cmd,
-            diff_cmd=diff_cmd,
-        )
+        if not topic:
+            raise SystemExit(
+                "TOPIC is required for this operation.\nTry 'my-guild "
+                "--help' for details."
+            )
+        if fetch:
+            editlib.fetch(topic, save_dir=save_dir, force=force)
+        elif delete:
+            editlib.delete(topic, save_dir=save_dir, yes=yes, force=force)
+        elif publish:
+            editlib.publish(
+                topic,
+                save_dir=save_dir,
+                comment=comment,
+                skip_diff=skip_diff,
+                force=force,
+                edit_cmd=edit_cmd,
+            )
+        elif diff_base:
+            editlib.diff_base(topic, save_dir=save_dir, diff_cmd=diff_cmd)
+        elif diff_latest:
+            editlib.diff_latest(topic, save_dir=save_dir, diff_cmd=diff_cmd)
+        else:
+            editlib.edit(
+                topic,
+                save_dir=save_dir,
+                comment=comment,
+                skip_diff=skip_diff,
+                yes=yes,
+                force=force,
+                edit_cmd=edit_cmd,
+                diff_cmd=diff_cmd,
+            )
 
 
 ###################################################################

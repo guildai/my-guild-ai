@@ -1,9 +1,11 @@
+import logging
 import os
 
 from .api import DiscourseClientError
 from .api import init as init_api
 from .log_util import get_logger
 
+from . import docs
 from . import util
 
 log = get_logger()
@@ -60,7 +62,8 @@ def _check_save_conflict(topic, save_dir):
     base_path = _topic_base_path(topic, save_dir)
     if not os.path.exists(base_path):
         log.error(
-            "Topic %s already exists. Use --force to override this safeguard.",
+            "Topic %s already exists but does not have a base version "
+            "to check for changes. Use --force to override this safeguard.",
             topic.topic_id,
         )
         raise SystemExit()
@@ -159,7 +162,6 @@ def publish(
     topic_id,
     save_dir=None,
     comment=None,
-    keep=False,
     force=False,
     skip_diff=False,
     yes=False,
@@ -193,12 +195,7 @@ def publish(
         if not force:
             _assert_latest_unchanged(topic_id, save_dir, topic.post_raw, api)
         api.update_post(topic.post_id, local_raw, comment)
-        if keep:
-            log.info("Keeping local files for topic %i (--keep specified)", topic_id)
-            _save_topic_base(topic_id, save_dir, local_raw)
-        else:
-            if yes or _confirm_delete_local_files(topic_id):
-                _delete_local_topic(topic_id, save_dir)
+        _save_topic_base(topic_id, save_dir, local_raw)
 
 
 def _check_local_changed(topic_id, save_dir):
@@ -253,17 +250,6 @@ def _assert_latest_unchanged(topic_id, save_dir, latest_raw, api):
         )
 
 
-def _confirm_delete_local_files(topic_id):
-    return util.confirm("Remove local files for topic %i?" % topic_id, default=True)
-
-
-def _delete_local_topic(topic_id, save_dir):
-    log.action("Removing local files for topic %i", topic_id)
-    util.ensure_deleted(_topic_latest_path(topic_id, save_dir))
-    util.ensure_deleted(_topic_base_path(topic_id, save_dir))
-    util.ensure_deleted(_topic_path(topic_id, save_dir))
-
-
 ###################################################################
 # Edit
 ###################################################################
@@ -273,7 +259,6 @@ def edit(
     topic_id,
     save_dir=None,
     comment=None,
-    keep=False,
     force=False,
     skip_diff=False,
     yes=False,
@@ -298,10 +283,83 @@ def edit(
         topic_id,
         save_dir=save_dir,
         comment=comment,
-        keep=keep,
         force=force,
         skip_diff=skip_diff,
         yes=yes,
         diff_cmd=diff_cmd,
         edit_cmd=edit_cmd,
     )
+
+
+###################################################################
+# Delete
+###################################################################
+
+
+def delete(topic_id, save_dir=None, yes=False, force=False):
+    save_dir = save_dir or default_save_dir()
+    topic_path = _topic_path(topic_id, save_dir)
+    if not force and not os.path.exists(topic_path):
+        raise SystemExit("Topic %i not found.", topic_id)
+    base_path = _topic_base_path(topic_id, save_dir)
+    if not force and os.path.exists(base_path) and _files_differ(topic_path, base_path):
+        raise SystemExit(
+            "Topic %i has local changes. Use --diff-base to see changes. Use --force "
+            "to bypass this safeguard.",
+            topic_id,
+        )
+    if yes or _confirm_delete_local_files(topic_id):
+        _delete_local_topic(topic_id, save_dir)
+
+
+def _confirm_delete_local_files(topic_id):
+    return util.confirm("Remove local files for topic %i?" % topic_id, default=True)
+
+
+def _delete_local_topic(topic_id, save_dir):
+    log.action("Removing local files for topic %i", topic_id)
+    util.ensure_deleted(_topic_latest_path(topic_id, save_dir))
+    util.ensure_deleted(_topic_base_path(topic_id, save_dir))
+    util.ensure_deleted(_topic_path(topic_id, save_dir))
+
+
+###################################################################
+# Fetch docs
+###################################################################
+
+
+def fetch_docs(save_dir=None, index_path=None, force=None, stop_on_error=False):
+    api = init_api()
+    index_path = docs.default_index_path()
+    errors = False
+    for link in docs.iter_index_links(index_path):
+        if link.startswith("commands/"):
+            continue
+        try:
+            topic = api._get("/" + link)
+        except Exception as e:
+            if log.getEffectiveLevel() <= logging.DEBUG:
+                log.exception("topic for link '%s'", link)
+            log.error("Error reading topic for link '%s': %s", link, e)
+        else:
+            if (
+                not isinstance(topic, dict)
+                or "id" not in topic
+                or "post_stream" not in topic
+            ):
+                if log.getEffectiveLevel() <= logging.DEBUG:
+                    log.debug("Result for '%s':\n%s", link, pprint.pformat(topic))
+                log.warning("Unxpected result for link '%s': not a topic.", link)
+                continue
+            try:
+                fetch(topic["id"], save_dir=save_dir, force=force)
+            except SystemExit as e:
+                if stop_on_error:
+                    raise
+                if e.args and not isinstance(e.args[0], int):
+                    log.error(*e.args)
+                error = True
+    if errors:
+        raise SystemExit(
+            "One or more errors occurred while fetching docs. Refer to logs "
+            "above for details.")
