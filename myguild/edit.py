@@ -198,7 +198,6 @@ def publish(
             _save_topic_base(topic_id, save_dir, local_raw)
         else:
             if yes or _confirm_delete_local_files(topic_id):
-                log.action("Removing local files for topic %i", topic_id)
                 _delete_local_topic(topic_id, save_dir)
 
 
@@ -257,10 +256,13 @@ def _assert_latest_unchanged(topic_id, save_dir, latest_raw, api):
 def _confirm_delete_local_files(topic_id):
     return util.confirm("Remove local files for topic %i?" % topic_id, default=True)
 
+
 def _delete_local_topic(topic_id, save_dir):
+    log.action("Removing local files for topic %i", topic_id)
     util.ensure_deleted(_topic_latest_path(topic_id, save_dir))
     util.ensure_deleted(_topic_base_path(topic_id, save_dir))
     util.ensure_deleted(_topic_path(topic_id, save_dir))
+
 
 ###################################################################
 # Edit
@@ -289,6 +291,8 @@ def edit(
     base_path = _topic_base_path(topic_id, save_dir)
     if not _files_differ(topic_path, base_path):
         log.info("Topic %i was not modified.", topic_id)
+        if _confirm_delete_local_files(topic_id):
+            _delete_local_topic(topic_id, save_dir)
         raise SystemExit(0)
     publish(
         topic_id,

@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import datetime
 import json
 import os
@@ -69,11 +71,11 @@ def _publish_index(preview, check, diff, index_path, force, diff_cmd, api):
     log.info("Generating docs index")
     formatted_index = _format_docs_index(index_path, force)
     if preview:
-        print(formatted_index)
+        print(formatted_index, end="")
         if not check:
             return
     post = _docs_index_post(api)
-    post_raw = post["raw"]
+    post_raw = _post_raw(post)
     if post_raw == formatted_index:
         log.info("Docs index post (%s) is up-to-date", post["id"])
         return
@@ -85,6 +87,10 @@ def _publish_index(preview, check, diff, index_path, force, diff_cmd, api):
     comment = _publish_index_comment()
     log.action("Updating docs index post (%s)", post["id"])
     api.update_post(post["id"], formatted_index, comment)
+
+
+def _post_raw(post):
+    return post["raw"] + "\n"
 
 
 def _diff_post(post_id, published, generated, diff_cmd):
@@ -108,7 +114,7 @@ def _format_docs_index(index_path, force):
     for item in index:
         _apply_index_item(item, force, lines)
     _check_lines(lines)
-    return "\n".join(lines).rstrip()
+    return "\n".join(lines)
 
 
 def iter_index_links(index_path):

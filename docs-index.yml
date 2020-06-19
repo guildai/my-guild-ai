@@ -156,13 +156,12 @@
     - pattern: 'Cheatsheet: '
       repl: ''
   links:
-    - cheatsheets/operations
-    - cheatsheets/flags
-    - cheatsheets/dependencies
-    - cheatsheets/output-scalars
+    - cheatsheets/commands
+    - cheatsheets/guildfile
     - cheatsheets/remotes
 
 - section: Other Docs
   links:
     - install
     - system-requirements
+    - docs/windows
