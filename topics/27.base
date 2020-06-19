@@ -1,0 +1,106 @@
+<div data-theme-toc="true"></div>
+
+Guild files are named `guild.yml`. They contain project configuration. This document describes their format and schema.
+
+Guild files are plain text, [YAML](https://yaml.org/) formatted files.
+
+Guild files can be constructed using one of two formats:
+
+- Full format
+- Operation-only format
+
+## Full Format
+
+*Full format* is used to specify full project configuration. It contains a list of top-level objects in the format:
+
+``` yaml
+- object_type: name
+  attr_1: val_1
+  attr_2: val_2
+  ...
+
+- object_type: name
+  attr_1: val_1
+  attr_2: val_2
+  ...
+```
+
+`object_type` is an attribute that implies the object type by its presence. The type attribute value is the object name.
+
+You can include any of the following types in full mode:
+
+- `model`
+  Models define operations, which are run to generate experiments. See [Models](#models) below.
+
+- `config`
+  A named mapping of attributes that can be referenced by other top-level objects as configuration. See [Config](#config) below.
+
+- `package`
+  Packages define how Guild generates Python wheel distributions. See [Packages](#packages) below.
+
+## Operation Only Format
+
+*Operation-only* format is a simplified format that contains a map of operations in the format:
+
+``` yaml
+operation_name_1:
+  attr_1: val_1
+  attr_2: val_2
+  ...
+
+operation_name_2:
+  attr_1: val_1
+  attr_2: val_2
+  ...
+```
+
+## Which Format to Use
+
+Use full format when you want to:
+
+- Specify a model name (operation-only uses an anonymous model)
+- Define multiple models
+- Define named resources
+- Define a package
+
+Use operation-only format when you want to:
+
+- Only define operations, keeping the Guild file as simple as possible
+
+Users often start with operation-only format and move to full format as needed.
+
+Here's a simple operation-only Guild file:
+
+``` yaml
+prepare-data:
+  main: prepare
+  flags:
+    val-split: 0.2
+
+train:
+  main: train
+  flags:
+    learning-rate: 0.1
+    batch-size: 100
+```
+
+&nbsp; *Operation-only format: operations are defined at the top-level*
+
+To move to a full format, these operations can be added to a top-level `model` object:
+
+``` yaml
+- model: mlp
+  operations:
+    prepare-data:
+      main: prepare
+      flags:
+        val-split: 0.2
+
+    train:
+      main: train
+      flags:
+        learning-rate: 0.1
+        batch-size: 100
+```
+
+<span data-guild-class="caption">Full format: top-level objets defined using type attributes</span>
