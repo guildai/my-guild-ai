@@ -23,6 +23,9 @@
 - URL fragments inside permalinks -> use topic URLs to avoid redirects
 - Avoid italics for references to docs and sections
 - Avoid periods in captions
+- Caps for VAR -> <var> ??? -- NO, can't do this when referring to
+  command args
+- ``xxx`` -> `xxx`
 
 ### See Also
 
