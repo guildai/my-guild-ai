@@ -53,22 +53,6 @@ class NoSuchCommand(Exception):
     pass
 
 
-def _retry(desc, f, max_attempts=3, delay=1):
-    attempts = 0
-    while True:
-        attempts += 1
-        try:
-            return f()
-        except Exception as e:
-            if attempts == max_attempts:
-                raise
-            if log.getEffectiveLevel() <= logging.DEBUG:
-                log.exception(desc)
-            log.error("Error running %s: %s", desc, e)
-            log.info("Retrying %s after %0.1f seconds", desc, delay)
-            time.sleep(delay)
-
-
 ###################################################################
 # Publish commands
 ###################################################################
@@ -139,6 +123,7 @@ def _get_cmd_help_data(cmd):
     cache.write(_cmd_cache_key(cmd), out)
     return json.loads(out)
 
+
 def _cmd_desc(cmd):
     if cmd:
         return "'%s'" % cmd
@@ -174,11 +159,9 @@ def _join_cmd(base_cmd, subcmd):
 
 
 def _sync_command(cmd, data, preview, check, api):
-    _retry(
+    util.retry(
         "sync command '%s'" % cmd,
         lambda: _sync_command_impl(cmd, data, preview, check, api),
-        max_attempts=3,
-        delay=5,
     )
 
 

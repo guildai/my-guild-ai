@@ -18,14 +18,19 @@
 
 - '^ ...' -> <span data-guild-class="caption">...</span>
 - [...](xxx:yyy)
-- '!!! ...' -> '> **...**'
+- '!!! ...' ->
+    - <span data-guild-icon="check-info" data-guild-class="callout info"></span>
+    - <span data-guild-icon="check-circle" data-guild-class="callout tip"></span>
+    - <span data-guild-icon="excalamation-circle" data-guild-class="callout important"></span>
+
 - cmd:xxx -> /commands/xxx + fixed formatting
 - URL fragments inside permalinks -> use topic URLs to avoid redirects
 - Avoid italics for references to docs and sections
 - Avoid periods in captions
-- Caps for VAR -> <var> ??? -- NO, can't do this when referring to
-  command args
+- Refer use of <var> and go back to VAR - this is consistent with
+  naming conventions used in command help
 - ``xxx`` -> `xxx`
+- Find /terms/xxx and make sure we have permalinks to those
 
 ### See Also
 

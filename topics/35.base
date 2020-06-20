@@ -1,3 +1,5 @@
+<!-- -*- eval:(visual-line-mode 1) -*- -->
+
 <div data-theme-toc="true"> </div>
 
 ## Install Guild AI
@@ -225,7 +227,7 @@ guild open --sourcecode --path train.py
 
 Guild opens the copy `train.py` used for the run with the default system program for `py` files.
 
-![code-start|653x500](upload://rVsTFAobvJ6tXYbM9cHTbZcUADv.png) 
+![code-start|653x500](upload://rVsTFAobvJ6tXYbM9cHTbZcUADv.png)
 
 <span data-guild-class="caption">View a run file with [`guild open`](/commands/opn)</span>
 

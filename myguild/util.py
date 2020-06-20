@@ -1,8 +1,10 @@
 import errno
+import logging
 import os
 import shlex
 import subprocess
 import textwrap
+import time
 
 import click
 
@@ -10,6 +12,10 @@ try:
     input = raw_input
 except NameError:
     input = input
+
+from .log_util import get_logger
+
+log = get_logger()
 
 
 def ensure_dir(dir):
@@ -67,3 +73,19 @@ def ensure_deleted(path):
     except OSError as e:
         if e.errno != errno.ENOENT:
             raise
+
+
+def retry(desc, f, max_attempts=3, delay=3):
+    attempts = 0
+    while True:
+        attempts += 1
+        try:
+            return f()
+        except Exception as e:
+            if attempts == max_attempts:
+                raise
+            if log.getEffectiveLevel() <= logging.DEBUG:
+                log.exception(desc)
+            log.error("Error running %s: %s", desc, e)
+            log.info("Retrying %s after %0.1f seconds", desc, delay)
+            time.sleep(delay)

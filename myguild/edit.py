@@ -1,5 +1,6 @@
 import logging
 import os
+import pprint
 
 from .api import DiscourseClientError
 from .api import init as init_api
@@ -61,12 +62,11 @@ def _check_save_conflict(topic, save_dir):
         return True
     base_path = _topic_base_path(topic, save_dir)
     if not os.path.exists(base_path):
-        log.error(
+        raise SystemExit(
             "Topic %s already exists but does not have a base version "
             "to check for changes. Use --force to override this safeguard.",
             topic.topic_id,
         )
-        raise SystemExit()
     if _files_differ(topic_path, base_path):
         raise SystemExit(
             "Topic %s has been modified locally. Use --force to override this "
@@ -161,6 +161,7 @@ def _fetch_topic_latest(topic_id, save_dir, api):
 def publish(
     topic_id,
     save_dir=None,
+    no_comment=False,
     comment=None,
     force=False,
     skip_diff=False,
@@ -177,7 +178,7 @@ def publish(
         _check_local_changed(topic_id, save_dir)
         and _check_latest_changed(topic_id, save_dir, api)
     ):
-        if not skip_diff:
+        if not yes and not skip_diff:
             base_path = _topic_base_path(topic_id, save_dir)
             if not os.path.exists(base_path):
                 raise SystemExit(
@@ -188,7 +189,7 @@ def publish(
             util.diff_files(base_path, topic_path, diff_cmd)
         if not yes and not _confirm_publish(topic_id):
             raise SystemExit(1)
-        comment = comment or _get_comment(edit_cmd)
+        comment = comment or (not no_comment and _get_comment(edit_cmd)) or ""
         log.action("Publishing %i", topic_id)
         topic = _topic_for_id(topic_id, api)
         local_raw = open(topic_path).read()
@@ -199,14 +200,18 @@ def publish(
 
 
 def _check_local_changed(topic_id, save_dir):
-    topic_path = _topic_path(topic_id, save_dir)
-    base_path = _topic_base_path(topic_id, save_dir)
-    if not _files_differ(base_path, topic_path):
+    if not _topic_base_changed(topic_id, save_dir):
         raise SystemExit(
-            "Topic has not been modified %i. Use --force to override this check.",
+            "Topic %i has not been modified. Use --force to override this check.",
             topic_id,
         )
     return True
+
+
+def _topic_base_changed(topic_id, save_dir):
+    topic_path = _topic_path(topic_id, save_dir)
+    base_path = _topic_base_path(topic_id, save_dir)
+    return _files_differ(base_path, topic_path)
 
 
 def _check_latest_changed(topic_id, save_dir, api):
@@ -258,6 +263,7 @@ def _assert_latest_unchanged(topic_id, save_dir, latest_raw, api):
 def edit(
     topic_id,
     save_dir=None,
+    no_comment=False,
     comment=None,
     force=False,
     skip_diff=False,
@@ -276,12 +282,11 @@ def edit(
     base_path = _topic_base_path(topic_id, save_dir)
     if not _files_differ(topic_path, base_path):
         log.info("Topic %i was not modified.", topic_id)
-        if _confirm_delete_local_files(topic_id):
-            _delete_local_topic(topic_id, save_dir)
         raise SystemExit(0)
     publish(
         topic_id,
         save_dir=save_dir,
+        no_comment=no_comment,
         comment=comment,
         force=force,
         skip_diff=skip_diff,
@@ -352,14 +357,87 @@ def fetch_docs(save_dir=None, index_path=None, force=None, stop_on_error=False):
                 log.warning("Unxpected result for link '%s': not a topic.", link)
                 continue
             try:
-                fetch(topic["id"], save_dir=save_dir, force=force)
+                util.retry(
+                    "fetch topic %i" % topic["id"],
+                    lambda: fetch(topic["id"], save_dir=save_dir, force=force),
+                )
             except SystemExit as e:
                 if stop_on_error:
                     raise
                 if e.args and not isinstance(e.args[0], int):
                     log.error(*e.args)
-                error = True
+                errors = True
     if errors:
         raise SystemExit(
             "One or more errors occurred while fetching docs. Refer to logs "
-            "above for details.")
+            "above for details."
+        )
+
+
+###################################################################
+# Publish all
+###################################################################
+
+
+def publish_all(
+    save_dir=None,
+    no_comment=False,
+    comment=None,
+    force=False,
+    stop_on_error=False,
+    edit_cmd=None,
+):
+    init_api()  # Force early error if API creds not configured.
+    save_dir = save_dir or default_save_dir()
+    comment = comment or (not no_comment and _get_comment(edit_cmd)) or ""
+    assert comment or no_comment
+    warnings = False
+    for topic_id in sorted(_iter_local_topic_ids(save_dir)):
+        if not force and not _topic_base_changed(topic_id, save_dir):
+            log.info("Topic %i has not been modified.", topic_id)
+            continue
+        try:
+            util.retry(
+                "publish topic %i" % topic_id,
+                lambda: publish(
+                    topic_id,
+                    save_dir=save_dir,
+                    no_comment=no_comment,
+                    comment=comment,
+                    force=force,
+                    yes=True,
+                ),
+            )
+        except SystemExit as e:
+            if stop_on_error:
+                raise
+            if e.args and not isinstance(e.args[0], int):
+                log.warning(*e.args)
+            errors = True
+    if warnings:
+        raise SystemExit(
+            "One or more warnings occurred while fetching docs. Refer to logs "
+            "above for details."
+        )
+
+
+def _iter_local_topic_ids(save_dir):
+    for name in os.listdir(save_dir):
+        if name.endswith(".md"):
+            try:
+                yield int(name[:-3])
+            except ValueError:
+                pass
+
+
+###################################################################
+# Diff base all
+###################################################################
+
+
+def diff_base_all(save_dir=None, diff_cmd=None):
+    save_dir = save_dir or default_save_dir()
+    for topic_id in sorted(_iter_local_topic_ids(save_dir)):
+        if not _topic_base_changed(topic_id, save_dir):
+            continue
+        diff_base(topic_id, save_dir=save_dir, diff_cmd=diff_cmd)

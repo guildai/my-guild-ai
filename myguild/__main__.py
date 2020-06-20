@@ -244,8 +244,6 @@ def _int_sort_key(s):
 
 edit_help = """
 Edit a topic.
-
-TOPIC is required unless --fetch-docs is used.
 """
 
 
@@ -268,16 +266,29 @@ TOPIC is required unless --fetch-docs is used.
     "-p",
     "--publish",
     is_flag=True,
-    help="Publish a locally edited topic to my.guild.ai.",
+    help="Publish a locally modified topic to my.guild.ai.",
+)
+@click.option(
+    "--publish-all",
+    is_flag=True,
+    help="Publish all locally modified topics to my.guild.ai.",
 )
 @click.option("--delete", is_flag=True, help="Delete local files associatd with topic.")
 @click.option("-m", "--comment", help="Comment used when publishing.")
+@click.option(
+    "-n", "--no-comment", is_flag=True, help="Don't provide a comment when publishing."
+)
 @click.option("--skip-diff", is_flag=True, help="Skip diff when publishing.")
 @click.option(
-    "--yes", is_flag=True, help="Publish changes without asking for confirmation."
+    "-y", "--yes", is_flag=True, help="Publish changes without asking for confirmation."
 )
 @click.option("--force", is_flag=True, help="Ignore conflicts.")
 @click.option("--diff-base", is_flag=True, help="Compare topic to its base version.")
+@click.option(
+    "--diff-base-all",
+    is_flag=True,
+    help="Compare all locally modified topics to their base version.",
+)
 @click.option(
     "--diff-latest", is_flag=True, help="Compare topic to the latest published version."
 )
@@ -303,12 +314,15 @@ def edit(
     index_path=None,
     delete=False,
     publish=False,
+    publish_all=False,
     comment=None,
+    no_comment=False,
     skip_diff=False,
     yes=False,
     save_dir=None,
     force=False,
     diff_base=False,
+    diff_base_all=False,
     diff_latest=False,
     diff_cmd=None,
     edit_cmd=None,
@@ -321,6 +335,17 @@ def edit(
             force=force,
             stop_on_error=stop_on_error,
         )
+    elif publish_all:
+        editlib.publish_all(
+            save_dir=save_dir,
+            no_comment=no_comment,
+            comment=comment,
+            force=force,
+            stop_on_error=stop_on_error,
+            edit_cmd=edit_cmd,
+        )
+    elif diff_base_all:
+        editlib.diff_base_all(save_dir=save_dir, diff_cmd=diff_cmd)
     else:
         if not topic:
             raise SystemExit(
@@ -335,10 +360,13 @@ def edit(
             editlib.publish(
                 topic,
                 save_dir=save_dir,
+                no_comment=no_comment,
                 comment=comment,
                 skip_diff=skip_diff,
+                yes=yes,
                 force=force,
                 edit_cmd=edit_cmd,
+                diff_cmd=diff_cmd,
             )
         elif diff_base:
             editlib.diff_base(topic, save_dir=save_dir, diff_cmd=diff_cmd)
@@ -348,6 +376,7 @@ def edit(
             editlib.edit(
                 topic,
                 save_dir=save_dir,
+                no_comment=no_comment,
                 comment=comment,
                 skip_diff=skip_diff,
                 yes=yes,

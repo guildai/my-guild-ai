@@ -1,3 +1,5 @@
+<!-- -*- eval:(visual-line-mode 1) -*- -->
+
 <div data-theme-toc="true"> </div>
 
 <!-- TODO
@@ -8,8 +10,7 @@ This is a very light weight pass. Think about what's missing below.
 
 ## Overview
 
-Operations are used to start [runs](term:run). Operations are
-specified when calling [run](cmd:run) in the format:
+Operations are used to start [*runs*](/terms/run). Operations are specified when calling [`guild run`](/commands/run) in the format:
 
 ``` command
 guild run OPERATION
@@ -22,8 +23,7 @@ Operations are defined using one of two formats:
 - [Operation only](ref:operation-only-format)
 - [Full format](ref:full-format)
 
-*Operation only format* defines operations at the top-level of a Guild
-file, as mapping items.
+*Operation only format* defines operations at the top-level of a Guild file, as mapping items.
 
 ``` yaml
 train:
@@ -33,10 +33,9 @@ validate:
   description: Validate a model
 ```
 
-^ Two operations defined using *operation only* format
+<span data-guild-class="caption">Two operations defined using *operation only* format</span>
 
-*Full format* defines operations under *models*. Models are defined in
-the Guild file as top-level list items.
+*Full format* defines operations under *models*. Models are defined in the Guild file as top-level list items.
 
 ``` yaml
 - model: mnist
@@ -48,37 +47,28 @@ the Guild file as top-level list items.
       description: Validate model on MNIST
 ```
 
-List available operations using [operations](cmd:operations):
+List available operations using [`guild operations`](/commands/operations):
 
 ``` command
 guild operations
 ```
 
-!!! tip
-    The [ops](cmd:ops) command is a shortened alias for
-    `operations`.
+> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span> The [`ops`](/commands/ops) command is a shortened alias for `operations`.</span>
 
 ## Python Based Operations
 
-Python based operations are defined in `*.py` files and must be
-specified using their *module name* as the `main` operation attribute
-in a Guild file.
+Python based operations are defined in `*.py` files and must be specified using their *module name* as the `main` operation attribute in a Guild file.
 
 ``` yaml
 train:
   main: train_logreg
 ```
 
-^ Guild file (`guild.yml`) defining operation `train`, implemented in
-Python module `train_logreg`.
+<span data-guild-class="caption">Guild file (`guild.yml`) defining operation `train`, which is implemented in Python module `train_logreg`</span>
 
-!!! note
-    Do not include the `.py` suffix when specifying `main`. The
-    value refers to the module name, not the file name.
+> <span data-guild-icon="info-circle" data-guild-class="callout info"></span>Do not include the `.py` suffix when specifying `main`. The value refers to the module name, not the file name.
 
-Guild loads such modules as `__main__` in the same way that Python
-itself loads them when run using ``python -m <module name>`` from the
-command line.
+Guild loads such modules as `__main__` in the same way that Python itself loads them when run using ``python -m <module name>`` from the command line.
 
 You may perform operation tasks directly in the module like this:
 
@@ -88,10 +78,9 @@ from models import logreg
 logreg.train("data.csv")
 ```
 
-^ Sample Python module --- always executes task when loaded
+<span data-guild-class="caption">Sample Python module --- always executes task when loaded</span>
 
-Alternatively, check the module name and only perform operation tasks
-if it `__main__`.
+Alternatively, check the module name and only perform operation tasks if it `__main__`.
 
 ``` python
 from models import logref
@@ -103,14 +92,11 @@ if __name__ == "__main__":
     main()
 ```
 
-^ Sample Python module --- execute task only when module is loaded as
-  `__main__`
+<span data-guild-class="caption">Sample Python module --- execute task only when module is loaded as `__main__`</span>
 
 ## Other Language Operations
 
-Guild supports non-Python based operations with the `exec` operation
-attribute. Use `exec` to specify a command that Guild runs, which can
-use any executable program.
+Guild supports non-Python based operations with the `exec` operation attribute. Use `exec` to specify a command that Guild runs, which can use any executable program.
 
 For example, the following operation uses R to train a model:
 
@@ -119,30 +105,23 @@ train:
   exec: Rscript .guild/sourcecode/train.r
 ```
 
-The script `train.r` is prefixed with ``.guild/sourcecode/`` because
-operations run in the context of a [run directory](term:run-dir), not
-the project directory. Guild copies source code files from the project
-to the run directory under `.guild/sourcecode` by default. See
-[Operation Source Code](#operation-source-code) for more information.
+The script `train.r` is prefixed with `.guild/sourcecode/` because operations run in the context of a [*run directory*](/terms/run-dir), not the project directory. Guild copies source code files from the project to the run directory under `.guild/sourcecode` by default. See [Operation Source Code](#operation-source-code) for more information.
 
 ### Flags Interface
 
-When using non-Python languages to implement an operation, you can
-access flags using one of two methods:
+When using non-Python languages to implement an operation, you can access flags using one of two methods:
 
 - Command line arguments
 - Environment variables
 
 #### Command Line Arguments
 
-To use command line arguments, you must specify flag arguments in the
-`exec` specification. You can specify flag values in one of two ways:
+To use command line arguments, you must specify flag arguments in the `exec` specification. You can specify flag values in one of two ways:
 
 - Individual flag references
 - All flag assignments
 
-To include a flag value in the `exec` command, use the format
-``${FLAG_NAME}``.
+To include a flag value in the `exec` command, use the format ``${FLAG_NAME}``.
 
 ``` yaml
 train:
@@ -152,41 +131,26 @@ train:
     batch-size: 100
 ```
 
-When run using default flag values, Guild will start this operation
-using the following command:
+When run using default flag values, Guild will start this operation using the following command:
 
 ``` command
 train.sh 0.1 100
 ```
 
-!!! tip
-    Use the `--print-cmd` option with [run](cmd:run) to show the
-    command Guild uses to start an operation.
+> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span> Use the `--print-cmd` option with [`guild run`](/commands/run) to show the command Guild uses to start an operation.
 
 ### Environment Variables
 
-Guild always provides flag values as environment variables, regardless
-of language type. Environment variables provide a convenient way to
-access flags as they don't require command line processing.
+Guild always provides flag values as environment variables, regardless of language type. Environment variables provide a convenient way to access flags as they don't require command line processing.
 
 ## Operation Source Code
 
-Guild saves source code for an operation with each run. This ensures
-that the run has a record of the source code used and that changes to
-project code don't affect runs in progress.
+Guild saves source code for an operation with each run. This ensures that the run has a record of the source code used and that changes to project code don't affect runs in progress.
 
-By default, Guild copies text files within the project directory as
-source code. As a safe-guard, Guild skips files larger than 1M and
-will not copy more than 100 files. Configures these rules using the
-`sourcecode` operation attribute.
+By default, Guild copies text files within the project directory as source code. As a safe-guard, Guild skips files larger than 1M and will not copy more than 100 files. Configures these rules using the `sourcecode` operation attribute.
 
-See [*Guild File Reference - Source Code
-Specs*](/reference/guildfile.md#source-code-specs) for information on
-configuring rules for source code copies.
+See [*Guild File Reference - Source Code Specs*](/reference/guildfile.md#source-code-specs) for information on configuring rules for source code copies.
 
-See [*Guild File Cheatsheet - Source
-Code*](/cheatsheets/guildfile.md#source-code) for examples.
+See [*Guild File Cheatsheet - Source Code*](/cheatsheets/guildfile.md#source-code) for examples.
 
-By default, source code is copied to the run directory under
-`.guild/sourcecode`. You can change this location using the `dest`
-attribute of the source code spec.
+By default, source code is copied to the run directory under `.guild/sourcecode`. You can change this location using the `dest` attribute of the source code spec.
