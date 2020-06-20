@@ -8,20 +8,16 @@
 
 ## Topics
 
-### Consolidate Guildfile Cheatsheets
-
-- Move to single doc
-- Remove extra permalinks
-- Update an links
-
 ### Things to Replace/Check
 
 - '^ ...' -> <span data-guild-class="caption">...</span>
 - [...](xxx:yyy)
 - '!!! ...' ->
-    - <span data-guild-icon="check-info" data-guild-class="callout info"></span>
+    - <span data-guild-icon="info-circle" data-guild-class="callout info"></span>
+    - <span data-guild-icon="info-circle" data-guild-class="callout note"></span>
     - <span data-guild-icon="check-circle" data-guild-class="callout tip"></span>
-    - <span data-guild-icon="excalamation-circle" data-guild-class="callout important"></span>
+    - <span data-guild-icon="exclamation-circle" data-guild-class="callout important"></span>
+    - <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>
 
 - cmd:xxx -> /commands/xxx + fixed formatting
 - URL fragments inside permalinks -> use topic URLs to avoid redirects
@@ -31,6 +27,18 @@
   naming conventions used in command help
 - ``xxx`` -> `xxx`
 - Find /terms/xxx and make sure we have permalinks to those
+
+### Consolidate Guildfile Cheatsheets
+
+- Move to single doc
+- Remove extra permalinks
+- Update an links
+
+### www-pre -> main site on launch
+
+### Fill in Examples
+
+We lost the examples index. Need to fill out the content on my.guild.ai/examples.
 
 ### See Also
 

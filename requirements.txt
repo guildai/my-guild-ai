@@ -1,4 +1,4 @@
--e https://github.com/gar1t/pydiscourse.git#egg=pydiscourse
+git+https://github.com/gar1t/pydiscourse.git#egg=pydiscourse
 pyyaml
 requests
 six
