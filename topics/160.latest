@@ -38,11 +38,11 @@ loss: 0.01
 
 In this case, the logged scalar values are:
 
-| key    | value | step |
-|--------|-------|------|
-| `loss` | 0.1   | 1    |
-| `loss` | 0.05  | 2    |
-| `loss` | 0.01  | 3    |
+| key  | value | step |
+|------|-------|------|
+| loss | 0.1   | 1    |
+| loss | 0.05  | 2    |
+| loss | 0.01  | 3    |
 
 You can modify the way Guild logs output scalars using the `output-scalars` operation attribute in a [Guild file](/term/guildfile).
 

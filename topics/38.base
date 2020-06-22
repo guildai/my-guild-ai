@@ -14,11 +14,11 @@ As an engineering tool, Guild fits the ecosystem of traditional POSIX toolchains
 
 If you're not familiar with running commands from a terminal, we suggest reading one of the following guides for your platform.
 
-| | |
-|-|-|
-| Linux | [The Command Line for Beginners -- Ubuntu Tutorials](https://tutorials.ubuntu.com/tutorial/command-line-for-beginners) |
-| macOS | [Command Line Primer -- Apple Developer](https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/CommandLInePrimer/CommandLine.html) |
-| Windows | [How to use the Windows command line](https://www.computerhope.com/issues/chusedos.htm) |
-| | [Coding in Windows -- Setting Up Git and Cmder](https://www.awmoore.com/2015/01/14/setting-up-git-and-cmder/) |
-| | [Git + MinGW Command Line](https://learn.adafruit.com/windows-tools-for-the-electrical-engineer/git-plus-command-line-tools) |
-| General | [Getting to Know the Command Line](https://www.davidbaumgold.com/tutorials/command-line/) |
+|         |                                                                                                                                                                             |
+|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Linux   | [The Command Line for Beginners -- Ubuntu Tutorials](https://tutorials.ubuntu.com/tutorial/command-line-for-beginners)                                                      |
+| macOS   | [Command Line Primer -- Apple Developer](https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/CommandLInePrimer/CommandLine.html) |
+| Windows | [How to use the Windows command line](https://www.computerhope.com/issues/chusedos.htm)                                                                                     |
+|         | [Coding in Windows -- Setting Up Git and Cmder](https://www.awmoore.com/2015/01/14/setting-up-git-and-cmder/)                                                               |
+|         | [Git + MinGW Command Line](https://learn.adafruit.com/windows-tools-for-the-electrical-engineer/git-plus-command-line-tools)                                                |
+| General | [Getting to Know the Command Line](https://www.davidbaumgold.com/tutorials/command-line/)                                                                                   |

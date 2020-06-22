@@ -46,15 +46,15 @@ Guild provides the following built-in plugins:
 
 ## Custom Plugins
 
-To provide a custom plugin, create a class that extends `guild.plugins.Plugin` and register it as a [Python entry point ->](https://packaging.python.org/specifications/entry-points/).
+To provide a custom plugin, create a class that extends `guild.plugins.Plugin` and register it as a [Python entry point](https://packaging.python.org/specifications/entry-points/).
 
-Refer to [Guild AI plugins source code ->](https://github.com/guildai/guildai/tree/master/guild/plugins) for examples.
+Refer to [Guild AI plugins source code](https://github.com/guildai/guildai/tree/master/guild/plugins) for examples.
 
 Below are specific examples for various uses.
 
-| *Example*                                                                                            | *Use*                                                                                                                     |
-|------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------|
-| [cpu.py ->](https://github.com/guildai/guildai/blob/master/guild/plugins/cpu.py)                     | Log additional scalar values for a given step.                                                                            |
-| [python_script.py ->](https://github.com/guildai/guildai/blob/master/guild/plugins/python_script.py) | Support new operation types --- e.g. handling operation specs such as a path to an R script, a Java JAR file, a URL, etc. |
-| [keras_script.py ->](https://github.com/guildai/guildai/blob/master/guild/plugins/keras_script.py)   | Support new Python based frameworks.                                                                                      |
-| [skopt.py ->](https://github.com/guildai/guildai/blob/master/guild/plugins/skopt.py)                 | Add built-in operations including optimizers.                                                                             |
+| *Example*                                                                                         | *Use*                                                                                                                     |
+|---------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------|
+| [cpu.py](https://github.com/guildai/guildai/blob/master/guild/plugins/cpu.py)                     | Log additional scalar values for a given step.                                                                            |
+| [python_script.py](https://github.com/guildai/guildai/blob/master/guild/plugins/python_script.py) | Support new operation types --- e.g. handling operation specs such as a path to an R script, a Java JAR file, a URL, etc. |
+| [keras_script.py](https://github.com/guildai/guildai/blob/master/guild/plugins/keras_script.py)   | Support new Python based frameworks.                                                                                      |
+| [skopt.py](https://github.com/guildai/guildai/blob/master/guild/plugins/skopt.py)                 | Add built-in operations including optimizers.                                                                             |

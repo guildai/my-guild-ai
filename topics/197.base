@@ -370,7 +370,7 @@ An optimizer defined in this section can be specified for a run using its name w
 
 By default, the optimizer operation is the same as the mapping key. To use a different operation, use the special attribute `algorithm`.
 
-To designate an optimizer as the *default*, use the special attribute `default` with a value of `yes`. Default optimizers as used when the `--optimize` option is used with [run](cmd:run).
+    To designate an optimizer as the *default*, use the special attribute `default` with a value of `yes`. Default optimizers as used when the `--optimize` option is used with [`run`](/commands/run).
 
 See [Optimizers - Guild File Cheatsheet](/cheatsheets/guildfile.md#optimizers) for examples.
 
@@ -404,7 +404,7 @@ A mapping value may either a mapping of attributes or a default value. Supported
 
 *Flag name (required string)*
 
-The flag name is used when specifing a flag value. When specifying a value as an argument to the [run](cmd:run) command, the name is used as `NAME=VALUE`.
+The flag name is used when specifing a flag value. When specifying a value as an argument to the [`run`](/commands/run) command, the name is used as `NAME=VALUE`.
 
 <div id="flag-description"></div>
 
@@ -743,7 +743,7 @@ Patterns must be valid [regular expression](ref:regex).
 The special templates ``\key``, ``\value``, and ``\step`` may be used to represent regular expressions for valid keys, numeric values, and step values respectively.
 
 > **TIP**
-Use the `--test-output-scalars` option to [run](cmd:run) to test strings from generated output. You can test a file or interatively test strings that you type into the console (use ``-`` as the file name to read from standard intput).
+Use the `--test-output-scalars` option to [`run`](/commands/run) to test strings from generated output. You can test a file or interatively test strings that you type into the console (use ``-`` as the file name to read from standard intput).
 
 See [Output Scalars - Guild File Cheatsheet](/cheatsheets/guildfile.md#output-scalars) for additional examples of output scalar capture patterns.
 
