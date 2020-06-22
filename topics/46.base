@@ -62,8 +62,7 @@ Guild refers to numeric results like *loss* and *accuracy* as [scalars](term:sca
 
 Refer to [*Guild File Reference*](/reference/guildfile) for details about the Guild file format and available configuration options.
 
-> **NOTE**
-The values for `flags-import` and `output-scalars` used in the Guild file above are equivalent to the defaults used by Guild. They can be omitted without changing the behavior of the operation. We define them explicitly for illustration purposes.
+<span data-guild-icon="info-circle" data-guild-class="callout note"></span>The values for `flags-import` and `output-scalars` used in the Guild file above are equivalent to the defaults used by Guild. They can be omitted without changing the behavior of the operation. We define them explicitly for illustration purposes.
 
 ## Get Project Info
 
@@ -113,8 +112,7 @@ BASE OPERATIONS
 
 Press `q` to exit help.
 
-> **HIGHLIGHT**
-Guild files define the user interface to your project. This encourages reproducibility as operations are easy to recall, run, and compare.
+<span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>Guild files define the user interface to your project. This encourages reproducibility as operations are easy to recall, run, and compare.
 
 ## Run the Operation
 
@@ -131,24 +129,21 @@ You are about to run train
 Continue? (Y/n)
 ```
 
-> **NOTE**
-You use ``train`` rather than ``train.py`` above. `train` is the *operation* defined in the Guild file. `train.py` refers to the Python script directly. Guild supports both methods: running operations defined in Guild files and running scripts.
+<span data-guild-icon="info-circle" data-guild-class="callout note"></span>You use ``train`` rather than ``train.py`` above. `train` is the *operation* defined in the Guild file. `train.py` refers to the Python script directly. Guild supports both methods: running operations defined in Guild files and running scripts.
 
 Press `Enter` to start the operation.
 
 Guild runs `train`, which is equivalent to the operations you've run
 to this point, but is explicitly defined in `guild.yml`.
 
-> ***TIP**
-While it's convenient to run scripts directly in Guild, we recommend that you use a Guild file to explicitly define operations for your day-to-day workflow. Guild file operations are configured explicitly and discoverable as show above. They support a wide range of features that are not available when running scripts directly. For more information, see [*Guild File Reference*](/reference/guildfile.md).
+<span data-guild-icon="check-circle" data-guild-class="callout tip"></span>While it's convenient to run scripts directly in Guild, we recommend that you use a Guild file to explicitly define operations for your day-to-day workflow. Guild file operations are configured explicitly and discoverable as show above. They support a wide range of features that are not available when running scripts directly. For more information, see [*Guild File Reference*](/reference/guildfile.md).
 
 ## Summary
 
 In this section, you create a Guild file to explicitly define a
 `train` operation.
 
-> **HIGHLIGHTS**
-> - Guild files help you and your colleagues effectively use a project.
+<span data-guild-icon="thumbs-up" data-guild-class="callout highlights"></span>> - Guild files help you and your colleagues effectively use a project.
 > - Guild files let you control and customize Guild support without modifying your source code. This ensures that your project code and your tools remain independent.
 
 In the [next section](/start/classifier), you create a real-world classifier and use Guild to track and compare results.

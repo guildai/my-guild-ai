@@ -1,11 +1,5 @@
 # To Do
 
-## Work on next
-
-- Identify areas needing work with TODO (search works well)
-- Link scanner?
-- Fix links
-
 ## Topics
 
 ### Things to Replace/Check
@@ -29,6 +23,26 @@
 - Find /terms/xxx and make sure we have permalinks to those
 - Replace any remaining images `![](...)`
 - Any refs to *.md
+
+### Consistent formatting of list of options/choices
+
+Using different patterns currently. Lots of tables. Some bullets.
+
+|     |                |
+|-----|----------------|
+| foo | A sample       |
+| bar | Another sample |
+
+- *foo*
+  A sample
+- *bar*
+  Another sample
+
+*foo*
+A sample
+
+*bar*
+Another sample
 
 ### GitHub icons on header
 

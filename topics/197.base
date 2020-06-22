@@ -742,8 +742,7 @@ Patterns must be valid [regular expression](ref:regex).
 
 The special templates ``\key``, ``\value``, and ``\step`` may be used to represent regular expressions for valid keys, numeric values, and step values respectively.
 
-> **TIP**
-Use the `--test-output-scalars` option to [`run`](/commands/run) to test strings from generated output. You can test a file or interatively test strings that you type into the console (use ``-`` as the file name to read from standard intput).
+<span data-guild-icon="check-circle" data-guild-class="callout tip"></span>Use the `--test-output-scalars` option to [`run`](/commands/run) to test strings from generated output. You can test a file or interatively test strings that you type into the console (use ``-`` as the file name to read from standard intput).
 
 See [Output Scalars - Guild File Cheatsheet](/cheatsheets/guildfile.md#output-scalars) for additional examples of output scalar capture patterns.
 
@@ -782,8 +781,7 @@ train:
 
 &nbsp; *Use the `compare` operation attribute to define the columns shown in [Guild Compare](/tools/compare.md)*
 
-> **NOTE**
-Column specs are used with any column-spec command option. For example, use the above syntax for `STEPS` in `guild compare --columns SPECS`.
+<span data-guild-icon="info-circle" data-guild-class="callout note"></span>Column specs are used with any column-spec command option. For example, use the above syntax for `STEPS` in `guild compare --columns SPECS`.
 
 ### Steps
 
@@ -819,8 +817,7 @@ Names are used as links within the stepped run.
 
 *Flag values used for the step operation (mapping of flag names to values)*
 
-> **IMPORTANT**
-`flags` defined for a step is different from `flags` defined for an operation. When defined for a step, `flags` represent the flag *values* used for a run. This attribute is a mapping of name to value.
+<span data-guild-icon="exclamation-circle" data-guild-class="callout important"></span>`flags` defined for a step is different from `flags` defined for an operation. When defined for a step, `flags` represent the flag *values* used for a run. This attribute is a mapping of name to value.
 
 Use `flags` to specify flag values used for a step run. You may include references to step flag values as needed to pass through user-specified values.
 
