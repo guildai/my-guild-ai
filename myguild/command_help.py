@@ -1,12 +1,10 @@
 import datetime
 import json
-import logging
 import os
 import pprint
 import re
 import socket
 import subprocess
-import time
 
 import requests
 
@@ -15,6 +13,7 @@ from .api import DiscourseClientError
 from .log_util import get_logger
 
 from . import cache
+from . import util
 
 log = get_logger()
 
@@ -45,8 +44,6 @@ COMMAND_INDEX_TEMPLATE = """
 
 *Guild AI version {version}*
 """
-
-_cache = {}
 
 
 class NoSuchCommand(Exception):
@@ -214,12 +211,12 @@ def _command_help_title(cmd):
 
 
 def _commands_category(api):
-    try:
-        return _cache["commands_category"]
-    except KeyError:
-        id = _guild_commands_topic_category(api)
-        _cache["commands_category"] = id
-        return id
+    cached = cache.read("commands_category")
+    if cached:
+        return int(cached)
+    id = _guild_commands_topic_category(api)
+    cache.write("commands_category", str(id))
+    return id
 
 
 def _guild_commands_topic_category(api):

@@ -1,3 +1,5 @@
+<!-- -*- eval:(visual-line-mode 1) -*- -->
+
 <div data-theme-toc="true"> </div>
 
 ## Install Guild AI
@@ -14,7 +16,7 @@ Altnernatively, to install to the [user install directory](https://pip.pypa.io/e
 pip install guildai --user
 ```
 
-For detailed installation instructions, see [Install Guild AI](/install).
+For detailed installation instructions, see [*Install Guild AI*](/install).
 
 When Guild is installed, check the environment:
 
@@ -34,7 +36,7 @@ Show all Guild commands:
 guild --help
 ```
 
-See [Guild Commands](/commands) for online help.
+See [*Guild Commands*](/commands) for online help.
 
 ## Create a Sample Training Script
 
@@ -46,8 +48,7 @@ Create a new project directory:
 mkdir guild-start
 ```
 
-> **NOTE**
-You can name this directory anything you want. The examples that follow use `guild-start` to denote the project directory for this guide.
+> <span data-guild-icon="info-circle" data-guild-class="callout note"></span>You can name this directory anything you want. The examples that follow use `guild-start` to denote the project directory for this guide.
 
 Change to the project directory:
 
@@ -69,8 +70,7 @@ loss = (np.sin(5 * x) * (1 - np.tanh(x ** 2)) + np.random.randn() * noise)
 
 print("loss: %f" % loss)
 ```
-
-&nbsp; *Sample script `train.py` --- adapted from [Bayesian optimization with skopt](https://scikit-optimize.github.io/stable/auto_examples/bayesian-optimization.html)*
+<span data-guild-class="caption">Sample script `train.py` --- adapted from [Bayesian optimization with skopt](https://scikit-optimize.github.io/stable/auto_examples/bayesian-optimization.html)</span>
 
 This script simulates a loss function. It accepts hyperparameters `x` and `noise` and prints the resulting `loss`.
 
@@ -102,8 +102,7 @@ Guild runs `train.py`, which prints a simulated loss.
 
 When Guild runs a script, it generates a new experiment, or [*run*](/docs/runs). Each run tracks experiment details including results.
 
-> **HIGHLIGHT**
-Guild lets you track experiments without changing your scripts. This saves time and keeps your source independent of an experiment management framework.
+> <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>Guild lets you track experiments without changing your scripts. This saves time and keeps your source independent of the experiment management system.
 
 Guild detects two hyperparameters from `train.py`: *noise* and *x*. Guild refers to these variables as [*flags*](/docs/flags). By default, Guild treats global constants in Python scripts as flags. This behavior can be controlled through explicit configuration, which you learn about later.
 
@@ -120,8 +119,7 @@ Guild starts the application, and opens a tab in your browser. Guild View runs i
 Use Guild View to browse runs, view run details including metadata, files, and log output. You can compare run results and run artifacts in TensorBoard.
 
 ![view-start|685x500](upload://1j2gFVZeJ89JGiqgCa6yviRlK9K.png)
-
-&nbsp; *Guild View --- a web based application for viewing runs and comparing results*
+<span data-guild-class="caption">Guild View --- a web based application for viewing runs and comparing results</span>
 
 Return to the command terminal and type `Ctrl-C` to stop Guild View.
 
@@ -174,8 +172,7 @@ scalars:
 
 By default, Guild shows information for the latest run.
 
-> **HIGHLIGHT**
-Guild captures detailed information for each run so you have a complete record of each result. This information is essential for making informed decisions and tracking changes to your model.
+> <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>Guild captures detailed information for each run so you have a complete record of each result. This information is essential for making informed decisions and tracking changes to your model.
 
 ### Project Source Code
 
@@ -212,8 +209,7 @@ loss = (np.sin(5 * x) * (1 - np.tanh(x ** 2)) + np.random.randn() * noise)
 print("loss: %f" % loss)
 ```
 
-> **HIGHLIGHT**
-Guild copies source code files for each run so you have an exact record of the code that generated the result.
+> <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>Guild copies source code files for each run so you have an exact record of the code that generated the result.
 
 You can open a run file using a system program.
 
@@ -225,19 +221,16 @@ guild open --sourcecode --path train.py
 
 Guild opens the copy `train.py` used for the run with the default system program for `py` files.
 
-![code-start|653x500](upload://rVsTFAobvJ6tXYbM9cHTbZcUADv.png) 
-
-<span data-guild-class="caption">View a run file with [`guild open`](/commands/opn)</span>
+![code-start|653x500](upload://rVsTFAobvJ6tXYbM9cHTbZcUADv.png)
+<span data-guild-class="caption">View a run file with [`guild open`](/commands/open)</span>
 
 ## Summary
 
 In this section, you use Guild AI to capture experiments for a sample training script.
 
-> **HIGHLIGHTS**
+> <span data-guild-icon="thumbs-up" data-guild-class="callout highlights"></span>
 > - Track experiments without changing your code.
->
 > - Guild is easy to install and use. It doesn't require databases or external systems.
->
 > - Guild details about your run. Use this information to optimize your model, catch mistakes, and resolve issues.
 
 In the [next section](/start/optimize), you use Guild's built-in hyperparamter tuning features to find values for `x` that minimize `loss` for the sample training script.

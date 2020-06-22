@@ -142,7 +142,6 @@
       repl: ''
   links:
     - reference/guildfile
-    - reference/operations
     - reference/optimizers
     - reference/remotes
     - reference/user-config

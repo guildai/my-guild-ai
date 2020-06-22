@@ -1,3 +1,5 @@
+<!-- -*- eval:(visual-line-mode 1) -*- -->
+
 <div data-theme-toc="true"></div>
 
 Guild AI provides a Python interface via the module [`guild.ipy`](https://github.com/guildai/guildai/blob/master/guild/ipy.py). The module name stands for *interactive Python*.

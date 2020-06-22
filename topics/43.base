@@ -1,46 +1,31 @@
 <!-- -*- eval:(visual-line-mode 1) -*- -->
 
-<div data-theme-toc="true"> </div>
+<div data-theme-toc="true"></div>
 
 ## Overview
 
-An *optimizer* is a Guild [batch operation](ref:batch) that attempts
-to optimize an objective by adjusting flag values over a series of
-trials.
+An *optimizer* is a Guild [batch operation](ref:batch) that attempts to optimize an objective by adjusting flag values over a series of trials.
 
 Below is a list of supported optimizers.
 
-[`gp`](#gp)
-: Sequential optimizer using Gaussian processes.
+|                     |                                                               |
+|---------------------|---------------------------------------------------------------|
+| [gp](#gp)         | Sequential optimizer using Gaussian processes.                |
+| [forest](#forest) | Sequential optimizer using decision trees.                    |
+| [gbrt](#gbrt)     | Sequential optimizer using gradient boosted regression trees. |
+| [random](#random) | Batch processor using randomly selected values.               |
 
-[`forest`](#forest)
-: Sequential optimizer using decision trees.
-
-[`gbrt`](#gbrt)
-: Sequential optimizer using gradient boosted regression trees.
-
-[`random`](#random)
-: Batch processor using randomly selected values.
-
-Refer to [Optimizers](#optimizers) below for details on each
-optimizer.
+Refer to [Optimizers](#optimizers) below for details on each optimizer.
 
 ## Usage
 
-Use the default optimizer for an operation by specifying the
-`--optimize` option to [run](cmd:run). The default optimizer may be
-specified in the operation definition.
+Use the default optimizer for an operation by specifying the `--optimize` option to [`run`](/commands/run). The default optimizer may be specified in the operation definition.
 
-Specify a named optimizer with the `--optimizer` option to
-[run](cmd:run). A name may be one of the optimizers below or may be
-the name of an optimizer defined for the operation.
+Specify a named optimizer with the `--optimizer` option to [`run`](/commands/run). A name may be one of the optimizers below or may be the name of an optimizer defined for the operation.
 
-Refer to help on [`optimizers` operation
-attribute](/reference/guildfile.md#operation-optimizers) for details
-on defining optimizers for an operation.
+Refer to help on [`optimizers` operation attribute](/reference/guildfile.md#operation-optimizers) for details on defining optimizers for an operation.
 
-Optimizer flags may be set using `--opt-flag` or `-Fo`. Optimizer
-flags are specified like other flags using the format ``NAME=VALUE``.
+Optimizer flags may be set using `--opt-flag` or `-Fo`. Optimizer flags are specified like other flags using the format ``NAME=VALUE``.
 
 For example, run the default optimizer for `train`:
 
@@ -54,8 +39,7 @@ Use the `forest` optimizer:
 guild run train --optimizer forest
 ```
 
-For more examples, see [Optimizers - Guild File
-Cheatsheet](/cheatsheets/guildfile.md#optimizers).
+For more examples, see [Optimizers - Guild File Cheatsheet](/cheatsheets/guildfile.md#optimizers).
 
 ## Optimizers
 
@@ -63,101 +47,88 @@ Cheatsheet](/cheatsheets/guildfile.md#optimizers).
 
 Bayesian optimizer using Gaussian processes.
 
-Refer to [skopt API
-documentation](https://scikit-optimize.github.io/#skopt.gp_minimize)
-for details on this algorithm and its flags.
+Refer to [skopt API documentation](https://scikit-optimize.github.io/#skopt.gp_minimize) for details on this algorithm and its flags.
 
 Aliases: `gaussian`, `bayesian`
 
-Flags:
+#### Flags
 
-`acq-func`
-: Function to minimize over the gaussian prior (default is `gp_hedge`)
+##### `acq-func`
 
-    Choices:
+Function to minimize over the gaussian prior (default is `gp_hedge`)
 
-    `LCB`
-    : Lower confidence bound
+Choices:
 
-    `EI`
-    : Negative expected improvement
+|||
+|-|-|
+| `LCB` | Lower confidence bound |
+| `EI` | Negative expected improvement |
+| `PI` | Negative probability of improvement |
+| `gp_hedge` | Probabilistically use LCB, EI, or PI at every iteration |
+| `EIps` | Negative expected improvement per second |
+| `PIps` | Negative probability of improvement per second |
 
-    `PI`
-    : Negative probability of improvement
+##### `kappa`
 
-    `gp_hedge`
-    : Probabilistically use LCB, EI, or PI at every iteration
+Degree to which variance in the predicted values is taken into account (default is `1.96`)
 
-    `EIps`
-    : Negative expected improvement per second
+##### `noise`
 
-    `PIps`
-    : Negative probability of improvement per second
+Level of noise associated with the objective (default is `gaussian`)
 
-`kappa`
-: Degree to which variance in the predicted values is taken into
-  account (default is `1.96`)
+Use `gaussian` if the objective returns noisy observations, otherwise specify the expected variance of the noise.
 
-`noise`
-: Level of noise associated with the objective (default is `gaussian`)
+##### `random-starts`
 
-    Use `gaussian` if the objective returns noisy observations,
-    otherwise specify the expected variance of the noise.
+Number of trials using random values before optimizing (default is `3`)
 
-`random-starts`
-: Number of trials using random values before optimizing (default is `3`)
+##### `xi`
 
-`xi`
-: Improvement to seek over the previous best values (default is `0.05`)
+Improvement to seek over the previous best values (default is `0.05`)
 
 ### forest
 
-Sequential optimization using decision trees. Refer to [skopt API
-documentation](https://scikit-optimize.github.io/#skopt.forest_minimize)
-for details on this algorithm and its flags.
+Sequential optimization using decision trees. Refer to [skopt API documentation](https://scikit-optimize.github.io/#skopt.forest_minimize) for details on this algorithm and its flags.
 
-Flags:
+#### Flags
 
-`kappa`
-: Degree to which variance in the predicted values is taken into
-  account (default is `1.96`)
+##### `kappa`
 
-`random-starts`
-: Number of trials using random values before optimizing (default is
-  `3`)
+Degree to which variance in the predicted values is taken into account (default is `1.96`)
 
-`xi`
-: Improvement to seek over the previous best values (default is
-  `0.05`)
+##### `random-starts`
+
+Number of trials using random values before optimizing (default is `3`)
+
+##### `xi`
+
+Improvement to seek over the previous best values (default is `0.05`)
 
 ### gbrt
 
 Sequential optimization using gradient boosted regression trees.
 
-Refer to [skopt API
-documentation](https://scikit-optimize.github.io/#skopt.gbrt_minimize)
-for details on this algorithm and its flags.
+Refer to [skopt API documentation](https://scikit-optimize.github.io/#skopt.gbrt_minimize) for details on this algorithm and its flags.
 
-Flags:
+#### Flags
 
-`kappa`
-: Degree to which variance in the predicted values is taken into
-  account (default is `1.96`)
+##### `kappa`
 
-`random-starts`
-: Number of trials using random values before optimizing (default is
-  `3`)
+Degree to which variance in the predicted values is taken into account (default is `1.96`)
 
-`xi`
-: Improvement to seek over the previous best values (default is
-  `0.05`)
+##### `random-starts`
+
+Number of trials using random values before optimizing (default is `3`)
+
+##### `xi`
+
+Improvement to seek over the previous best values (default is `0.05`)
 
 ### random
 
 Batch processor supporting random flag value generation.
 
-Values are selected from the search space distribution specified for
-each flag value.
+Values are selected from the search space distribution specified for each flag value.
 
 This optimizer does not attempt to optimize an objective.
 

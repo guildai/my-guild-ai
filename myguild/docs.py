@@ -58,7 +58,7 @@ def publish_index(
 def _check_publish_links(check_links):
     for link in check_links:
         try:
-            topic = _get_link_topic(link)
+            topic = get_link_topic(link)
         except TopicLookupError:
             raise SystemExit(1)
         else:
@@ -211,7 +211,7 @@ def _section_div_open(section_class, link_icon_class):
 
 def _format_section_link(link, force, section):
     try:
-        topic = _get_link_topic(link)
+        topic = get_link_topic(link)
     except TopicLookupError:
         if force:
             return (
@@ -240,22 +240,22 @@ def _required(name, mapping):
         raise SystemExit(1)
 
 
-def _get_link_topic(link):
-    cached = cache.read(_link_cache_key(link))
+def get_link_topic(link):
+    cached = cache.read(link_topic_cache_key(link))
     if cached:
         log.info("Reading cached link info for %s", link)
         return json.loads(cached)
     log.info("Fetching topic info for %s", link)
-    link_topic_json = _get_link_topic_json(link)
-    cache.write(_link_cache_key(link), link_topic_json)
+    link_topic_json = get_link_topic_json(link)
+    cache.write(link_topic_cache_key(link), link_topic_json)
     return json.loads(link_topic_json)
 
 
-def _link_cache_key(link):
+def link_topic_cache_key(link):
     return "link:%s" % link
 
 
-def _get_link_topic_json(link):
+def get_link_topic_json(link):
     resp = requests.get("https://my.guild.ai/%s" % link, allow_redirects=False)
     if resp.status_code == 404:
         log.error("Topic or permalink for '%s' does not exist", link)

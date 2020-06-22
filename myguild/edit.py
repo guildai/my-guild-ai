@@ -1,11 +1,12 @@
 import logging
 import os
-import pprint
 
 from .api import DiscourseClientError
 from .api import init as init_api
+from .api import public_get_data
 from .log_util import get_logger
 
+from . import cache
 from . import docs
 from . import util
 
@@ -28,12 +29,22 @@ class Topic(object):
 
 
 def fetch(topic_id, save_dir=None, force=False):
-    api = init_api()
     save_dir = save_dir or default_save_dir()
     log.action("Fetching topic %s", topic_id)
-    topic = _topic_for_id(topic_id, api)
-    if force or _check_save_conflict(topic, save_dir):
-        _save_topic(topic, save_dir)
+    try:
+        topic = _topic_for_id(topic_id)
+    except DiscourseClientError as e:
+        _handle_fetch_topic_error(e, topic_id)
+    else:
+        if force or _check_save_conflict(topic, save_dir):
+            _save_topic(topic, save_dir)
+
+
+def _handle_fetch_topic_error(e, topic_id):
+    if "not found" in str(e):
+        raise SystemExit("Topic %i does not exit", topic_id)
+    else:
+        raise SystemExit("Error occurred fetching topic %i: %s", topic_id, e)
 
 
 def default_save_dir():
@@ -41,14 +52,37 @@ def default_save_dir():
     return os.path.join(project_dir, "topics")
 
 
-def _topic_for_id(topic_id, api):
+def _topic_for_id(topic_id):
+    post_id = _post_id_for_topic(topic_id)
+    post = _get_post(post_id)
+    assert post["id"] == post_id, (topic_id, post_id, post)
+    return Topic(topic_id, post_id, _post_raw(post))
+
+
+def _post_id_for_topic(topic_id):
+    cached = cache.read(topic_post_cache_key(topic_id))
+    if cached:
+        return int(cached)
     try:
-        topic = api.topic(topic_id)
+        topic = _get_topic(topic_id)
     except DiscourseClientError:
         raise SystemExit("No such topic: %i", topic_id)
     else:
-        post = api.post(topic["post_stream"]["posts"][0]["id"])
-        return Topic(topic_id, post["id"], _post_raw(post))
+        post_id = topic["post_stream"]["posts"][0]["id"]
+        cache.write(topic_post_cache_key(topic_id), str(post_id))
+        return post_id
+
+
+def topic_post_cache_key(topic_id):
+    return "topic-post:%i" % topic_id
+
+
+def _get_topic(topic_id):
+    return public_get_data("https://my.guild.ai/t/%i.json" % topic_id)
+
+
+def _get_post(post_id):
+    return public_get_data("https://my.guild.ai/posts/%i.json" % post_id)
 
 
 def _post_raw(post):
@@ -139,14 +173,13 @@ def diff_latest(topic_id, save_dir=None, diff_cmd=None):
     topic_path = _topic_path(topic_id, save_dir)
     if not os.path.exists(topic_path):
         raise SystemExit("Topic %i not found in %s", topic_id, save_dir)
-    api = init_api()
     log.info("Getting latest version of topic %i", topic_id)
-    latest_path = _fetch_topic_latest(topic_id, save_dir, api)
+    latest_path = _fetch_topic_latest(topic_id, save_dir)
     util.diff_files(topic_path, latest_path, diff_cmd)
 
 
-def _fetch_topic_latest(topic_id, save_dir, api):
-    topic = _topic_for_id(topic_id, api)
+def _fetch_topic_latest(topic_id, save_dir):
+    topic = _topic_for_id(topic_id)
     latest_path = _topic_latest_path(topic_id, save_dir)
     with open(latest_path, "w") as f:
         f.write(topic.post_raw)
@@ -176,7 +209,7 @@ def publish(
         raise SystemExit("Topic %i not found in %s", topic_id, save_dir)
     if force or (
         _check_local_changed(topic_id, save_dir)
-        and _check_latest_changed(topic_id, save_dir, api)
+        and _check_latest_changed(topic_id, save_dir)
     ):
         if not yes and not skip_diff:
             base_path = _topic_base_path(topic_id, save_dir)
@@ -191,10 +224,10 @@ def publish(
             raise SystemExit(1)
         comment = comment or (not no_comment and _get_comment(edit_cmd)) or ""
         log.action("Publishing %i", topic_id)
-        topic = _topic_for_id(topic_id, api)
+        topic = _topic_for_id(topic_id)
         local_raw = open(topic_path).read()
         if not force:
-            _assert_latest_unchanged(topic_id, save_dir, topic.post_raw, api)
+            _assert_latest_unchanged(topic_id, save_dir, topic.post_raw)
         api.update_post(topic.post_id, local_raw, comment)
         _save_topic_base(topic_id, save_dir, local_raw)
 
@@ -214,7 +247,7 @@ def _topic_base_changed(topic_id, save_dir):
     return _files_differ(base_path, topic_path)
 
 
-def _check_latest_changed(topic_id, save_dir, api):
+def _check_latest_changed(topic_id, save_dir):
     base_path = _topic_base_path(topic_id, save_dir)
     if not os.path.exists(base_path):
         raise SystemExit(
@@ -222,7 +255,7 @@ def _check_latest_changed(topic_id, save_dir, api):
             "base version). Use --force to override this safeguard.",
             topic_id,
         )
-    latest_path = _fetch_topic_latest(topic_id, save_dir, api)
+    latest_path = _fetch_topic_latest(topic_id, save_dir)
     if _files_differ(base_path, latest_path):
         raise SystemExit(
             "Topic %i has changed on the server since it was fetched. "
@@ -245,8 +278,8 @@ def _get_comment(editor):
     return s
 
 
-def _assert_latest_unchanged(topic_id, save_dir, latest_raw, api):
-    latest_path = _fetch_topic_latest(topic_id, save_dir, api)
+def _assert_latest_unchanged(topic_id, save_dir, latest_raw):
+    latest_path = _fetch_topic_latest(topic_id, save_dir)
     if open(latest_path).read() != latest_raw:
         raise SystemExit(
             "Topic %i changed on the server since last check. Use --force to"
@@ -334,44 +367,40 @@ def _delete_local_topic(topic_id, save_dir):
 
 
 def fetch_docs(save_dir=None, index_path=None, force=None, stop_on_error=False):
-    api = init_api()
     index_path = docs.default_index_path()
-    errors = False
+    warnings = False
     for link in docs.iter_index_links(index_path):
         if link.startswith("commands/"):
             continue
         try:
-            topic = api._get("/" + link)
+            topic_id = _topic_id_for_link(link)
         except Exception as e:
             if log.getEffectiveLevel() <= logging.DEBUG:
                 log.exception("topic for link '%s'", link)
             log.error("Error reading topic for link '%s': %s", link, e)
+            warnings = True
         else:
-            if (
-                not isinstance(topic, dict)
-                or "id" not in topic
-                or "post_stream" not in topic
-            ):
-                if log.getEffectiveLevel() <= logging.DEBUG:
-                    log.debug("Result for '%s':\n%s", link, pprint.pformat(topic))
-                log.warning("Unxpected result for link '%s': not a topic.", link)
-                continue
             try:
                 util.retry(
-                    "fetch topic %i" % topic["id"],
-                    lambda: fetch(topic["id"], save_dir=save_dir, force=force),
+                    "fetch topic %i" % topic_id,
+                    # pylint: disable=cell-var-from-loop
+                    lambda: fetch(topic_id, save_dir=save_dir, force=force),
                 )
             except SystemExit as e:
                 if stop_on_error:
                     raise
                 if e.args and not isinstance(e.args[0], int):
-                    log.error(*e.args)
-                errors = True
-    if errors:
+                    log.warning(*e.args)
+                warnings = True
+    if warnings:
         raise SystemExit(
-            "One or more errors occurred while fetching docs. Refer to logs "
+            "One or more warnings occurred while fetching docs. Refer to logs "
             "above for details."
         )
+
+
+def _topic_id_for_link(link):
+    return docs.get_link_topic(link)["id"]
 
 
 ###################################################################
@@ -380,31 +409,44 @@ def fetch_docs(save_dir=None, index_path=None, force=None, stop_on_error=False):
 
 
 def publish_all(
-    save_dir=None,
-    no_comment=False,
     comment=None,
+    no_comment=False,
+    skip_diff=False,
+    yes=False,
     force=False,
     stop_on_error=False,
+    save_dir=None,
     edit_cmd=None,
+    diff_cmd=None,
 ):
     init_api()  # Force early error if API creds not configured.
     save_dir = save_dir or default_save_dir()
+    if not skip_diff:
+        topic_ids = diff_base_all(save_dir, diff_cmd)
+    else:
+        topic_ids = sorted(_iter_local_topic_ids(save_dir))
+    if not topic_ids:
+        log.info("Nothing to publish")
+        raise SystemExit(1)
+    if not yes and not _confirm_publish_all():
+        raise SystemExit(1)
     comment = comment or (not no_comment and _get_comment(edit_cmd)) or ""
     assert comment or no_comment
     warnings = False
-    for topic_id in sorted(_iter_local_topic_ids(save_dir)):
+    for topic_id in topic_ids:
         if not force and not _topic_base_changed(topic_id, save_dir):
             log.info("Topic %i has not been modified.", topic_id)
             continue
         try:
             util.retry(
                 "publish topic %i" % topic_id,
+                # pylint: disable=cell-var-from-loop
                 lambda: publish(
                     topic_id,
                     save_dir=save_dir,
-                    no_comment=no_comment,
                     comment=comment,
                     force=force,
+                    skip_diff=True,
                     yes=True,
                 ),
             )
@@ -413,7 +455,7 @@ def publish_all(
                 raise
             if e.args and not isinstance(e.args[0], int):
                 log.warning(*e.args)
-            errors = True
+            warnings = True
     if warnings:
         raise SystemExit(
             "One or more warnings occurred while fetching docs. Refer to logs "
@@ -430,6 +472,10 @@ def _iter_local_topic_ids(save_dir):
                 pass
 
 
+def _confirm_publish_all():
+    return util.confirm("Publish these changes?", default=True)
+
+
 ###################################################################
 # Diff base all
 ###################################################################
@@ -437,7 +483,36 @@ def _iter_local_topic_ids(save_dir):
 
 def diff_base_all(save_dir=None, diff_cmd=None):
     save_dir = save_dir or default_save_dir()
+    diffed = []
     for topic_id in sorted(_iter_local_topic_ids(save_dir)):
         if not _topic_base_changed(topic_id, save_dir):
             continue
         diff_base(topic_id, save_dir=save_dir, diff_cmd=diff_cmd)
+        diffed.append(topic_id)
+    return diffed
+
+
+###################################################################
+# Diff latest all
+###################################################################
+
+
+def diff_latest_all(save_dir=None, diff_cmd=None):
+    save_dir = save_dir or default_save_dir()
+    latest = []
+    for topic_id in sorted(_iter_local_topic_ids(save_dir)):
+        log.action("Getting latest version of topic %i", topic_id)
+        try:
+            latest_path = _fetch_topic_latest(topic_id, save_dir)
+        except DiscourseClientError as e:
+            log.warning("Could not get latest for topic %i: %s", topic_id, e)
+        else:
+            latest.append((topic_id, latest_path))
+    diffed = []
+    for topic_id, latest_path in latest:
+        topic_path = _topic_path(topic_id, save_dir)
+        if not _files_differ(latest_path, topic_path):
+            continue
+        util.diff_files(topic_path, latest_path, diff_cmd)
+        diffed.append(topic_id)
+    return diffed

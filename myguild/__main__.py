@@ -161,45 +161,60 @@ Clears the program cache.
 Use this command to ensure that command help info is refreshed on
 subsequent commands.
 
-Either '--all' must be specified or specific '--link' or '--command'
-options must be specified otherwise the command exits with an error.
+Either '--all' must be specified or specific '--link-topic',
+'--command', or '--topic-post' options must be specified otherwise the
+command exits with an error.
 """
 
 
 @myguild.command("clear-cache", help=clear_cache_help)
 @click.option("--all", is_flag=True, help="Clears the entire cache.")
 @click.option(
-    "links", "-l", "--link", metavar="LINK", multiple=True, help="Clear cached link."
+    "link_topics",
+    "-l",
+    "--link-topic",
+    metavar="LINK",
+    multiple=True,
+    help="Clear cached link topic.",
 )
 @click.option(
     "commands",
     "-c",
-    "--commands",
+    "--command",
     metavar="LINK",
     multiple=True,
     help="Clear cached command.",
+)
+@click.option(
+    "topic_posts",
+    "-t",
+    "--topic-post",
+    metavar="TOPIC",
+    type=int,
+    multiple=True,
+    help="Clear topic post.",
 )
 @click.option(
     "--cache-info",
     is_flag=True,
     help="Show cache information and exit. Does not clear anything.",
 )
-def clear_cache(all=False, links=None, commands=None, cache_info=False):
+def clear_cache(
+    all=False, link_topics=None, commands=None, topic_posts=None, cache_info=False,
+):
     if cache_info:
         _print_cache_info()
         raise SystemExit()
-    if not (all or links or commands):
-        raise SystemExit("specify an option: --all, --link, --command")
+    if not (all or link_topics or commands or topic_posts):
+        raise SystemExit("specify an option: --all, --link-topic, --command")
     if all:
-        if links:
-            raise SystemExit("--link cannot be used with --all")
-        if commands:
-            raise SystemExit("--command cannot be used with --all")
         cache.clear_all()
-    for link in links or []:
-        cache.delete(docs._link_cache_key(link))
+    for link in link_topics or []:
+        cache.delete(docs.link_topic_cache_key(link))
     for cmd in commands or []:
-        cache.delete(command_help._cmd_cache_key(cmd))
+        cache.delete(command_help.cmd_cache_key(cmd))
+    for topic_id in topic_posts or []:
+        cache.delete(editlib.topic_post_cache_key(topic_id))
 
 
 def _print_cache_info():
@@ -226,7 +241,7 @@ def audit():
 ###################################################################
 
 
-def _edit_topics(ctx, args, incomplete):
+def _autocomplete_topics(ctx, args, incomplete):
     if "--help" in args:
         return []
     params = ctx.params
@@ -248,7 +263,7 @@ Edit a topic.
 
 
 @myguild.command("edit", help=edit_help)
-@click.argument("topic", type=int, required=False, autocompletion=_edit_topics)
+@click.argument("topic", type=int, required=False, autocompletion=_autocomplete_topics)
 @click.option(
     "-f", "--fetch", is_flag=True, help="Fetch the latest topic without editing."
 )
@@ -262,17 +277,6 @@ Edit a topic.
         "Docs index used when fetching docs (defaults to " "project 'docs-index.yml')"
     ),
 )
-@click.option(
-    "-p",
-    "--publish",
-    is_flag=True,
-    help="Publish a locally modified topic to my.guild.ai.",
-)
-@click.option(
-    "--publish-all",
-    is_flag=True,
-    help="Publish all locally modified topics to my.guild.ai.",
-)
 @click.option("--delete", is_flag=True, help="Delete local files associatd with topic.")
 @click.option("-m", "--comment", help="Comment used when publishing.")
 @click.option(
@@ -283,15 +287,6 @@ Edit a topic.
     "-y", "--yes", is_flag=True, help="Publish changes without asking for confirmation."
 )
 @click.option("--force", is_flag=True, help="Ignore conflicts.")
-@click.option("--diff-base", is_flag=True, help="Compare topic to its base version.")
-@click.option(
-    "--diff-base-all",
-    is_flag=True,
-    help="Compare all locally modified topics to their base version.",
-)
-@click.option(
-    "--diff-latest", is_flag=True, help="Compare topic to the latest published version."
-)
 @click.option("--diff-cmd", metavar="CMD", help="Command used to diff changes.")
 @click.option("--edit-cmd", metavar="CMD", help="Command used to edit topic.")
 @click.option(
@@ -313,17 +308,12 @@ def edit(
     fetch_docs=False,
     index_path=None,
     delete=False,
-    publish=False,
-    publish_all=False,
     comment=None,
     no_comment=False,
     skip_diff=False,
     yes=False,
     save_dir=None,
     force=False,
-    diff_base=False,
-    diff_base_all=False,
-    diff_latest=False,
     diff_cmd=None,
     edit_cmd=None,
     stop_on_error=False,
@@ -335,43 +325,11 @@ def edit(
             force=force,
             stop_on_error=stop_on_error,
         )
-    elif publish_all:
-        editlib.publish_all(
-            save_dir=save_dir,
-            no_comment=no_comment,
-            comment=comment,
-            force=force,
-            stop_on_error=stop_on_error,
-            edit_cmd=edit_cmd,
-        )
-    elif diff_base_all:
-        editlib.diff_base_all(save_dir=save_dir, diff_cmd=diff_cmd)
     else:
-        if not topic:
-            raise SystemExit(
-                "TOPIC is required for this operation.\nTry 'my-guild "
-                "--help' for details."
-            )
         if fetch:
             editlib.fetch(topic, save_dir=save_dir, force=force)
         elif delete:
             editlib.delete(topic, save_dir=save_dir, yes=yes, force=force)
-        elif publish:
-            editlib.publish(
-                topic,
-                save_dir=save_dir,
-                no_comment=no_comment,
-                comment=comment,
-                skip_diff=skip_diff,
-                yes=yes,
-                force=force,
-                edit_cmd=edit_cmd,
-                diff_cmd=diff_cmd,
-            )
-        elif diff_base:
-            editlib.diff_base(topic, save_dir=save_dir, diff_cmd=diff_cmd)
-        elif diff_latest:
-            editlib.diff_latest(topic, save_dir=save_dir, diff_cmd=diff_cmd)
         else:
             editlib.edit(
                 topic,
@@ -384,6 +342,217 @@ def edit(
                 edit_cmd=edit_cmd,
                 diff_cmd=diff_cmd,
             )
+
+
+###################################################################
+# fetch
+###################################################################
+
+
+fetch_help = """
+Fetch a topic.
+"""
+
+
+@myguild.command("fetch", help=fetch_help)
+@click.argument("topic", required=False, type=int, autocompletion=_autocomplete_topics)
+@click.option("--all-docs", is_flag=True, help="Fetch all docs.")
+@click.option(
+    "index_path",
+    "-i",
+    "--index",
+    metavar="FILE",
+    help=(
+        "Docs index used when fetching all docs (defaults to project 'docs-index.yml')"
+    ),
+)
+@click.option("-f", "--force", is_flag=True, help="Ignore conflicts.")
+@click.option(
+    "--save-dir",
+    metavar="DIR",
+    help=(
+        "Location where topics are saved. Topics are saved as "
+        "'<id>.md' in this directory."
+    ),
+)
+@click.option(
+    "--stop-on-error",
+    is_flag=True,
+    help="Stop when an error occurs. Applies only to --fetch-docs.",
+)
+def fetch(
+    topic,
+    all_docs=False,
+    index_path=None,
+    force=False,
+    save_dir=None,
+    stop_on_error=False,
+):
+    if all_docs:
+        editlib.fetch_docs(
+            save_dir=save_dir,
+            index_path=index_path,
+            force=force,
+            stop_on_error=stop_on_error,
+        )
+    else:
+        _require_topic(topic)
+        editlib.fetch(topic, save_dir=save_dir, force=force)
+
+
+###################################################################
+# publish
+###################################################################
+
+
+publish_help = """
+Publish a topic.
+
+To publish all modified topics, use --all.
+"""
+
+
+@myguild.command("publish", help=edit_help)
+@click.argument("topic", type=int, required=False, autocompletion=_autocomplete_topics)
+@click.option("-a", "--all", is_flag=True, help="Publish all locally modified topics.")
+@click.option("-m", "--comment", help="Comment used when publishing.")
+@click.option(
+    "-n", "--no-comment", is_flag=True, help="Don't provide a comment when publishing."
+)
+@click.option("--skip-diff", is_flag=True, help="Skip diff when publishing.")
+@click.option(
+    "-y", "--yes", is_flag=True, help="Publish changes without asking for confirmation."
+)
+@click.option("-f", "--force", is_flag=True, help="Ignore conflicts.")
+@click.option(
+    "--stop-on-error",
+    is_flag=True,
+    help="Stop when an error occurs. Applies only to --fetch-docs.",
+)
+@click.option("--diff-cmd", metavar="CMD", help="Command used to diff changes.")
+@click.option("--edit-cmd", metavar="CMD", help="Command used to specify comment.")
+@click.option(
+    "--save-dir",
+    metavar="DIR",
+    help=(
+        "Location where topics are saved. Topics are saved as "
+        "'<id>.md' in this directory."
+    ),
+)
+def publish(
+    topic,
+    all=False,
+    comment=None,
+    no_comment=False,
+    skip_diff=False,
+    yes=False,
+    save_dir=None,
+    force=False,
+    stop_on_error=False,
+    diff_cmd=None,
+    edit_cmd=None,
+):
+    if all:
+        editlib.publish_all(
+            comment=comment,
+            no_comment=no_comment,
+            skip_diff=skip_diff,
+            yes=yes,
+            force=force,
+            stop_on_error=stop_on_error,
+            save_dir=save_dir,
+            edit_cmd=edit_cmd,
+            diff_cmd=diff_cmd,
+        )
+    else:
+        _require_topic(topic)
+        editlib.publish(
+            topic,
+            comment=comment,
+            no_comment=no_comment,
+            skip_diff=skip_diff,
+            yes=yes,
+            force=force,
+            save_dir=save_dir,
+            edit_cmd=edit_cmd,
+            diff_cmd=diff_cmd,
+        )
+
+
+def _require_topic(topic):
+    if not topic:
+        raise SystemExit("TOPIC is required for this operation.")
+
+
+###################################################################
+# delete
+###################################################################
+
+
+delete_help = """
+Delete a local topic.
+
+Note this does not delete the server topic.
+"""
+
+
+@myguild.command("delete", help=delete_help)
+@click.argument("topic", type=int, autocompletion=_autocomplete_topics)
+@click.option(
+    "-y", "--yes", is_flag=True, help="Publish changes without asking for confirmation."
+)
+@click.option("-f", "--force", is_flag=True, help="Ignore conflicts.")
+@click.option(
+    "--save-dir",
+    metavar="DIR",
+    help=(
+        "Location where topics are saved. Topics are saved as "
+        "'<id>.md' in this directory."
+    ),
+)
+def delete(topic, yes=False, save_dir=None, force=False):
+    editlib.delete(topic, save_dir=save_dir, yes=yes, force=force)
+
+
+###################################################################
+# diff
+###################################################################
+
+
+diff_help = """
+Diff changes to topics.
+"""
+
+
+@myguild.command("diff", help=diff_help)
+@click.argument("topic", type=int, required=False, autocompletion=_autocomplete_topics)
+@click.option(
+    "-l", "--latest", is_flag=True, help="Compare local topic to latest on server."
+)
+@click.option(
+    "--save-dir",
+    metavar="DIR",
+    help=(
+        "Location where topics are saved. Topics are saved as "
+        "'<id>.md' in this directory."
+    ),
+)
+@click.option(
+    "-D", "--diff-cmd", metavar="CMD", help="Command used when diffing index."
+)
+def diff(
+    topic, latest=False, save_dir=None, diff_cmd=None,
+):
+    if not topic:
+        if latest:
+            editlib.diff_latest_all(save_dir=save_dir, diff_cmd=diff_cmd)
+        else:
+            editlib.diff_base_all(save_dir=save_dir, diff_cmd=diff_cmd)
+    else:
+        if latest:
+            editlib.diff_latest(topic, save_dir=save_dir, diff_cmd=diff_cmd)
+        else:
+            editlib.diff_base(topic, save_dir=save_dir, diff_cmd=diff_cmd)
 
 
 ###################################################################

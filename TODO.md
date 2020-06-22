@@ -18,7 +18,7 @@
     - <span data-guild-icon="check-circle" data-guild-class="callout tip"></span>
     - <span data-guild-icon="exclamation-circle" data-guild-class="callout important"></span>
     - <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>
-
+- Def list -> tables
 - cmd:xxx -> /commands/xxx + fixed formatting
 - URL fragments inside permalinks -> use topic URLs to avoid redirects
 - Avoid italics for references to docs and sections
@@ -27,6 +27,31 @@
   naming conventions used in command help
 - ``xxx`` -> `xxx`
 - Find /terms/xxx and make sure we have permalinks to those
+- Replace any remaining images `![](...)`
+- Any refs to *.md
+
+### GitHub icons on header
+
+This requires some code in Tweaks theme.
+
+### Consistent command reference
+
+We're all over the map with command reference convention:
+
+- Use the `init` command
+- Use `init`
+- Use `guild init`
+
+I prefer `guild <cmd>` I think as it's clearly a command, esp when
+linked and formatted as monospace.
+
+### Make sure all refs are working
+
+Find all `term:xxx` amd `ref:xxx` and `/term/xxx`, etc.
+
+Can't use permalinks as these require URL fragments in many cases. We
+don't want to split up terms between fully spelled and not based on
+whether they have fragments.
 
 ### Consolidate Guildfile Cheatsheets
 
@@ -34,8 +59,8 @@
 - Remove extra permalinks
 - Update an links
 
+### Consolildate Guilfile Reference
 ### www-pre -> main site on launch
-
 ### Fill in Examples
 
 We lost the examples index. Need to fill out the content on my.guild.ai/examples.
@@ -55,7 +80,6 @@ etc.
 - Move to GitHub when it's stable
 
 ### TOC Component
-
 ### Related Links and See Other Links
 
 Once content is stabilized, fill in with cross references.
@@ -80,9 +104,7 @@ Solid progress by simply ordering categories.
 All docs and categories need permalinks.
 
 ### Transfer docs over
-
 ### Cleanup main site to point here
-
 ### Cleanup links
 
 Once we have the site structure settled we need to go through
@@ -110,7 +132,6 @@ Scenarios:
 - Link to docs
 
 ### Scheme to customize CSS without losing changes
-
 ### Header links
 
 Consider this theme component:
@@ -152,6 +173,7 @@ We'd want to follow the same support for commands I think.
 This can go in after 0.7 ships.
 
 OR, modify README to point to the docs on my. This is better I think.
+
 
 ## Done
 
