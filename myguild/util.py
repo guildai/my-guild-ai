@@ -64,7 +64,7 @@ def diff_files(path1, path2, diff_cmd=None):
 
 
 def default_diff_cmd():
-    return os.getenv("DIFF") or "diff -u"
+    return os.getenv("DIFF") or "diff -u --color"
 
 
 def ensure_deleted(path):
