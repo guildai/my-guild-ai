@@ -264,20 +264,6 @@ Edit a topic.
 
 @myguild.command("edit", help=edit_help)
 @click.argument("topic", type=int, required=False, autocompletion=_autocomplete_topics)
-@click.option(
-    "-f", "--fetch", is_flag=True, help="Fetch the latest topic without editing."
-)
-@click.option("--fetch-docs", is_flag=True, help="Fetch all docs in docs index.")
-@click.option(
-    "index_path",
-    "-i",
-    "--index",
-    metavar="FILE",
-    help=(
-        "Docs index used when fetching docs (defaults to " "project 'docs-index.yml')"
-    ),
-)
-@click.option("--delete", is_flag=True, help="Delete local files associatd with topic.")
 @click.option("-m", "--comment", help="Comment used when publishing.")
 @click.option(
     "-n", "--no-comment", is_flag=True, help="Don't provide a comment when publishing."
@@ -297,11 +283,6 @@ Edit a topic.
         "'<id>.md' in this directory."
     ),
 )
-@click.option(
-    "--stop-on-error",
-    is_flag=True,
-    help="Stop when an error occurs. Applies only to --fetch-docs.",
-)
 def edit(
     topic,
     fetch=False,
@@ -318,31 +299,17 @@ def edit(
     edit_cmd=None,
     stop_on_error=False,
 ):
-    if fetch_docs:
-        editlib.fetch_docs(
-            save_dir=save_dir,
-            index_path=index_path,
-            force=force,
-            stop_on_error=stop_on_error,
-        )
-    else:
-        if fetch:
-            editlib.fetch(topic, save_dir=save_dir, force=force)
-        elif delete:
-            editlib.delete(topic, save_dir=save_dir, yes=yes, force=force)
-        else:
-            editlib.edit(
-                topic,
-                save_dir=save_dir,
-                no_comment=no_comment,
-                comment=comment,
-                skip_diff=skip_diff,
-                yes=yes,
-                force=force,
-                edit_cmd=edit_cmd,
-                diff_cmd=diff_cmd,
-            )
-
+    editlib.edit(
+        topic,
+        save_dir=save_dir,
+        no_comment=no_comment,
+        comment=comment,
+        skip_diff=skip_diff,
+        yes=yes,
+        force=force,
+        edit_cmd=edit_cmd,
+        diff_cmd=diff_cmd,
+    )
 
 ###################################################################
 # fetch
