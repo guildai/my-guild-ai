@@ -311,6 +311,7 @@ def edit(
         diff_cmd=diff_cmd,
     )
 
+
 ###################################################################
 # fetch
 ###################################################################
@@ -507,9 +508,17 @@ Diff changes to topics.
 @click.option(
     "-D", "--diff-cmd", metavar="CMD", help="Command used when diffing index."
 )
+@click.option(
+    "-c",
+    "--color",
+    is_flag=True,
+    help="Always use color when diffing. Ignored if --diff-cmd is used.",
+)
 def diff(
-    topic, latest=False, save_dir=None, diff_cmd=None,
+    topic, latest=False, save_dir=None, diff_cmd=None, color=False,
 ):
+    if not diff_cmd and color:
+        diff_cmd = "diff -u --color=always"
     if not topic:
         if latest:
             editlib.diff_latest_all(save_dir=save_dir, diff_cmd=diff_cmd)

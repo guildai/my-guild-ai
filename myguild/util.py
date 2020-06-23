@@ -63,7 +63,7 @@ def diff_files(path1, path2, diff_cmd=None):
     subprocess.call(diff_cmd)
 
 
-def default_diff_cmd():
+def default_diff_cmd(force_color=False):
     return os.getenv("DIFF") or "diff -u --color"
 
 
