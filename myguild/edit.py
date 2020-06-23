@@ -220,7 +220,7 @@ def publish(
                 )
             log.info("Diffing topic %i changed.", topic_id)
             util.diff_files(base_path, topic_path, diff_cmd)
-        if not yes and not _confirm_publish(topic_id):
+        if not yes and not skip_diff and not _confirm_publish(topic_id):
             raise SystemExit(1)
         comment = comment or (not no_comment and _get_comment(edit_cmd)) or ""
         log.action("Publishing %i", topic_id)
@@ -428,7 +428,7 @@ def publish_all(
     if not topic_ids:
         log.info("Nothing to publish")
         raise SystemExit(1)
-    if not yes and not _confirm_publish_all():
+    if not yes and not skip_diff and not _confirm_publish_all():
         raise SystemExit(1)
     comment = comment or (not no_comment and _get_comment(edit_cmd)) or ""
     assert comment or no_comment

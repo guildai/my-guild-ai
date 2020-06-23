@@ -285,10 +285,6 @@ Edit a topic.
 )
 def edit(
     topic,
-    fetch=False,
-    fetch_docs=False,
-    index_path=None,
-    delete=False,
     comment=None,
     no_comment=False,
     skip_diff=False,
@@ -297,15 +293,14 @@ def edit(
     force=False,
     diff_cmd=None,
     edit_cmd=None,
-    stop_on_error=False,
 ):
     editlib.edit(
         topic,
-        save_dir=save_dir,
-        no_comment=no_comment,
         comment=comment,
+        no_comment=no_comment,
         skip_diff=skip_diff,
         yes=yes,
+        save_dir=save_dir,
         force=force,
         edit_cmd=edit_cmd,
         diff_cmd=diff_cmd,
