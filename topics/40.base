@@ -99,7 +99,7 @@ In [*Get Started*](/start) you [run a mock training script](/start/index#run-the
 guild run train.py
 ```
 
-<span data-guild-class="caption">Example of running a Python script directly. `train.py` in this case is a file in the current directory.</span>
+<span data-guild-class="caption">Example of running a Python script directly. `train.py` in this case is a file in the current directory</span>
 
 This is often a good place to start because it doesn't require additional configuration. For more control over a run, see [Run an Operation](#run-an-operation) below.
 
@@ -127,7 +127,7 @@ args = pargser.parse_args()
 print("learning rate is %f" % args.learning_rate)
 ```
 
-<span data-guild-class="caption">Guild detects use of `argparse` and assumes that command options are used as [*flag*](/terms/flag).</span>
+<span data-guild-class="caption">Guild detects use of `argparse` and assumes that command options are used as [*flag*](/terms/flag)</span>
 
 Guild detects `learning_rate` from this code:
 
@@ -136,7 +136,7 @@ learning_rate = 0.01
 print("learning rate is %s" % learning_date)
 ```
 
-<span data-guild-class="caption">When `argparse` is not used, Guild considers global variables not starting with ``_`` and that are assigned a constant value (string, number, or boolean) as flags.</span>
+<span data-guild-class="caption">When `argparse` is not used, Guild considers global variables not starting with `_` and that are assigned a constant value (string, number, or boolean) as flags</span>
 
 #### Auto-Detect Python Script Scalars
 
@@ -157,7 +157,7 @@ print("loss: %f" % loss)
 print("accuracy: %f" % accuracy)
 ```
 
-<span data-guild-class="caption">By default, Guild logs numeric values printed as ``KEY: VALUE`` as scalars.</span>
+<span data-guild-class="caption">By default, Guild logs numeric values printed as `KEY: VALUE` as scalars</span>
 
 This behavior can be modified by defining `output-scalars` for an operation in a Guild file. See [Scalars](/docs/scalars) for more information.
 

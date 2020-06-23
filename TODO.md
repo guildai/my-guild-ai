@@ -15,6 +15,10 @@
 - Find /terms/xxx and make sure we have permalinks to those
 - Replace any remaining images `![](...)`
 
+### Cleanup references and cheatsheets to make more usable
+
+Maybe flatten the structure to make TOC more useful.
+
 ### Consistent formatting of list of options/choices
 
 Two standards, tables and sections. Use tables for term lists that

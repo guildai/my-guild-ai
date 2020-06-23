@@ -243,9 +243,9 @@ def _required(name, mapping):
 def get_link_topic(link):
     cached = cache.read(link_topic_cache_key(link))
     if cached:
-        log.info("Reading cached link info for %s", link)
+        log.info("Using cached link info for %s", link)
         return json.loads(cached)
-    log.info("Fetching topic info for %s", link)
+    log.info("Refreshing topic info for %s", link)
     link_topic_json = get_link_topic_json(link)
     cache.write(link_topic_cache_key(link), link_topic_json)
     return json.loads(link_topic_json)

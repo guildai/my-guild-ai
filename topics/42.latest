@@ -78,7 +78,7 @@ train:
       arg-name: bs
 ```
 
-!!! tip Use the `--print-cmd` option with [`run`](/commands/run) to print the full command Guild uses when running an operation. This command includes the flag related options as described above.
+> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span>Use the `--print-cmd` option with [`run`](/commands/run) to print the full command Guild uses when running an operation. This command includes the flag related options as described above.
 
 ### Environment Variables
 
@@ -97,7 +97,7 @@ op:
       env-name: X
 ```
 
-!!! tip Use environment variables from non-Python scripts as a convenient way to read flag values without having to process command line arguments.
+> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span>Use environment variables from non-Python scripts as a convenient way to read flag values without having to process command line arguments.
 
 ### Python Global Variables
 
@@ -122,7 +122,7 @@ y = 2
 print("z: %i" % (x + y))
 ```
 
-^ `train.py` using global variables for flags
+<span data-guild-class="caption">`train.py` using global variables for flags</span>
 
 You can alternatively set flag values in a Python global dict variable ``global:<variable name>`` for `flags-dest`.
 
@@ -142,7 +142,7 @@ params = {"x": 1, "y": 2}
 print("z: %i" % (params["x"] + params["y"]))
 ```
 
-^ `train.py` using global `param` dict for flags
+<span data-guild-class="caption">`train.py` using global `param` dict for flags</span>
 
 The variable specified using ``global:<variable>`` must be defined in the Python module. Guild does not define new variables in modules.
 
@@ -156,7 +156,7 @@ To import flags, Guild must inspect a script and look for possible flag definiti
 
 Guild uses the rules below for inferring flags according to the specified interface.
 
-|||
+| | |
 |-|-|
 | *Interface* | *Flag Detection Method* |
 | `args` | Guild runs the script with the `--help` option and inspects `argparse` generated option. From this Guild infers flag name, description, type, available choices, and default value. |
@@ -181,11 +181,11 @@ op:
   flags-import: no
 ```
 
-^ Disable flag imports
+<span data-guild-class="caption">Disable flag imports</span>
 
 In this case, you must explicitly define each flag your script supports.
 
-!!! tip When `flags-import` is ``no``, Guild will not inspect your script for flags. Use this value to avoid processing your scripts when you don't need to.
+> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span>When `flags-import` is ``no``, Guild will not inspect your script for flags. Use this value to avoid processing your scripts when you don't need to.
 
 To import all detected flags, use the value ``all`` or ``yes`` for `flags-import`.
 
@@ -194,7 +194,7 @@ op:
   flags-import: all
 ```
 
-^ Import all flags
+<span data-guild-class="caption">Import all flags</span>
 
 To import a list of detected flags, specify the flag names in a list.
 
@@ -203,7 +203,7 @@ op:
   flags-import: [x, y, z]
 ```
 
-^ Import some flags
+<span data-guild-class="caption">Import some flags</span>
 
 You may alternatively omit `flags-import` and define the flags.
 
@@ -215,7 +215,7 @@ op:
     z: 3
 ```
 
-^ Implicitly import each defined flags --- use `flags-import` or `flags-import-skip` to control this
+<span data-guild-class="caption">Implicitly import each defined flags --- use `flags-import` or `flags-import-skip` to control this</span>
 
 You can combine `flags-import: all` with `flags-import-skip` to import all flags but skip those specified.
 
@@ -245,7 +245,7 @@ For information on batch file format, see [Batch Files](/runs.md#batch-files).
 
 Guild supports a number of special flag value types that influence the way Guild runs an operation.
 
-|||
+| | |
 |-|-|
 | [*Value list*](#value-lists) | Used in manual searches to generate runs for a list of values. |
 | [*Sequence function*](#sequence-functions) | Used in grid search to generate a sequential list of values. |
@@ -271,7 +271,7 @@ guild run train lr=[0.001,0.01,0.1] batch-size=[100,500,1000]
 
 Sequence functions are specified in the format ``NAME[ARGS]`` where ``NAME`` is one of the functions below and ``ARGS`` is a list of values separated by a colon ``:``.
 
-|||
+| | |
 |-|-|
 | [`range`](#range) | Specifies a range with *start*, *end*, and an optional step size. |
 | [`linspace`](#linspace) | Specifies an evenly spaced sequence along a linear scale with *start*, *end*, and an optional value count. |

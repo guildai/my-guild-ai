@@ -91,7 +91,7 @@ For help setting environment variables on Windows, see [Help with Windows](/docs
 
 New environments may be created using the following methods:
 
-- Use Guild's [`init`](/commands/init) command
+- Use [`guild init`](/commands/init)
 - Use one of the standard Python tools: [`virtualenv`](https://virtualenv.pypa.io/en/latest/), [`venv`](https://docs.python.org/library/venv.html), or [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
 - Create a new directory and [set it as Guild home](#set-guild-home)
 
@@ -104,7 +104,7 @@ New environments may be created using the following methods:
 
 You must activate a virtual environment before using it. Activate a virtual environment using the applicable method.
 
-To activate an environment created with [`guild init`](/commands/init):
+To activate an environment created with [`guild init`](/commands/init) run:
 
 ``` command
 source guild-env [<env path>]
@@ -114,7 +114,7 @@ source guild-env [<env path>]
 
 You may omit `<env path>` if the environment is defined in the current directory or in a `venv` subdirectory.
 
-<span data-guild-icon="info-circle" data-guild-class="callout note"></span>Virtual environments created using [`init`](/commands/init) are standard Python virtual environments and can be activated by sourcing the `bin/activate` environment. The `guild-env` command provides a convenient alternative.
+<span data-guild-icon="info-circle" data-guild-class="callout note"></span>Virtual environments created using [`guild init`](/commands/init) are standard Python virtual environments and can be activated by sourcing the `bin/activate` environment. The `guild-env` command provides a convenient alternative.
 
 To activate an environment created using `virtualenv` or `venv` use:
 

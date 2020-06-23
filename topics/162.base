@@ -134,8 +134,7 @@ train:
    - file: data.csv
 ```
 
-<span data-guild-class="caption">Sample operation that requires `data.csv` located in the project
-  directory
+<span data-guild-class="caption">Sample operation that requires `data.csv` located in the project directory</span>
 
 ``` yaml
 train:
@@ -143,7 +142,7 @@ train:
     - url: https://my.co/data.csv
 ```
 
-<span data-guild-class="caption">Sample operation that requires `data.csv` located by a URL
+<span data-guild-class="caption">Sample operation that requires `data.csv` located by a URL</span>
 
 ``` yaml
 train:

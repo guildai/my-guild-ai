@@ -71,11 +71,11 @@ train:
 
 <span data-guild-class="caption">Custom `output-scalars` attribute to support alternative output</span>
 
-Output patterns are [regular expressions](https://docs.python.org/library/re.html#regular-expression-syntax). Guild supports a variety of pattern formats for logging output scalars.
+Output patterns are [*regular expressions*](https://docs.python.org/library/re.html#regular-expression-syntax). Guild supports a variety of pattern formats for logging output scalars.
 
-Refer to [Output Scalar Specs - Guild File Reference](/t/reference-guild-file/197#output-scalar-specs) for a complete specification of the `output-scalars` attribute.
+Refer to [*Output Scalar Specs - Guild File Reference*](/t/reference-guild-file/197#output-scalar-specs) for a complete specification of the `output-scalars` attribute.
 
-Refer to [Output Scalars - Guild File Cheatsheet](/t/cheatsheet-guild-file/192#output-scalars) for examples of `output-scalars`.
+Refer to [*Output Scalars - Guild File Cheatsheet*](/t/cheatsheet-guild-file/192#output-scalars) for examples of `output-scalars`.
 
 ### TensorBoard Summaries
 
@@ -92,18 +92,18 @@ op:
 
 There are several methods for logging TensorBoard summaries. Refer to the links below for more information including sample code.
 
-| Method                                                                  | When to Use                                                              |
-|-------------------------------------------------------------------------|--------------------------------------------------------------------------|
-| [TensorFlow API](https://www.tensorflow.org/api_docs/python/tf/summary) | Operation uses TensorFlow or Keras                                       |
-| [PyTorch API](https://pytorch.org/docs/stable/tensorboard.html)         | Operation uses PyTorch                                                   |
-| [MXBoard](https://github.com/awslabs/mxboard)                           | Operation uses MXNet                                                     |
-| [tensorBoardX](https://github.com/lanpa/tensorboardX)                   | Log TensorBoard summaries without incurring a large framework dependency |
+| Method | When to Use |
+|-|-|
+| [TensorFlow API](https://www.tensorflow.org/api_docs/python/tf/summary) | Operation uses TensorFlow or Keras |
+| [PyTorch API](https://pytorch.org/docs/stable/tensorboard.html) | Operation uses PyTorch |
+| [MXBoard](https://github.com/awslabs/mxboard) | Operation uses MXNet |
+| [tensorBoardX](https://github.com/lanpa/tensorboardX) | Log TensorBoard summaries without incurring a large framework dependency |
 
-> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span>[tensorBoardX](https://github.com/lanpa/tensorboardX) is a light-weight library that is not tied to a large framework like TensorFlow or PyTorch. If you don't otherwise have access to a summary logging API, we recommend that you use this library.
+> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span>[tensorBoardX](https://github.com/lanpa/tensorboardX) is a light-weight library that is not tied to a large framework like TensorFlow or PyTorch. Consider it if you don't otherwise have access to a summary logging API.
 
 ## Viewing Run Scalars
 
-Show runs scalars using [`runs info`](/commands/runs-info).
+Show runs scalars using [`guild runs info`](/commands/runs-info).
 
 ``` command
 guild runs info

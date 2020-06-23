@@ -1,6 +1,7 @@
 <!-- -*- eval:(visual-line-mode 1) -*- -->
 
 <div data-theme-toc="true"></div>
+<div data-guild-docs="true"></div>
 
 ## Overview
 
@@ -30,16 +31,13 @@ guild compare -p data.csv
 
 You can alternatively diff specific parts of two runs using other options.
 
-`--output`
-: Diff run output.
+|            |                       |
+|------------|-----------------------|
+| `--output` | Diff run output.      |
+| `--source` | Diff run source code. |
+| `--flags`  | Diff run flags.       |
 
-`--source`
-: Diff run source code.
-
-`--flags`
-: Diff run flags.
-
-For a complete list of options, see [`diff` command help](/commands/diff).
+For a complete list of options, see [`guild diff`](/commands/diff).
 
 ## Diff to Working Source Code
 
@@ -62,4 +60,4 @@ To specify the diff program used, use the `--cmd` or `-c` option. Guild passes t
 guild compare -c meld
 ```
 
-You can configure the diff program that Guild uses by default in *user configuration*. For more information, see [User Configuration - Diff](/reference/user-config.md#diff).
+You can configure the diff program that Guild uses by default in *user configuration*. For more information, see [User Configuration - Diff](/t/reference-user-config/173#diff).

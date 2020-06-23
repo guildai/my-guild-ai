@@ -31,27 +31,23 @@ guild compare -p data.csv
 
 You can alternatively diff specific parts of two runs using other options.
 
-`--output`
-: Diff run output.
+|            |                       |
+|------------|-----------------------|
+| `--output` | Diff run output.      |
+| `--source` | Diff run source code. |
+| `--flags`  | Diff run flags.       |
 
-`--source`
-: Diff run source code.
-
-`--flags`
-: Diff run flags.
-
-For a complete list of options, see [`diff` command help](/commands/diff).
+For a complete list of options, see [`guild diff`](/commands/diff).
 
 ## Diff to Working Source Code
 
-Use the `--working` option to compare run source code to the working
-project copy.
+Use the `--working` option to compare run source code to the working project copy.
 
 ``` command
 guild diff --working
 ```
 
-<span data-guild-icon="check-info" data-guild-class="callout note"></span>Guild does not apply `sourcecode` filter rules when diffing with `--working`. Guild runs the configured diff program on the specified run's source code directory (`.guild/sourcecode`) to the project source code root. Files that are excluded using filter rules appear in the diff comparison only in the project.
+> <span data-guild-icon="check-info" data-guild-class="callout note"></span>Guild does not apply `sourcecode` filter rules when diffing with `--working`. Guild runs the configured diff program on the specified run's source code directory (`.guild/sourcecode`) to the project source code root. Files that are excluded using filter rules appear in the diff comparison only in the project.
 
 ## Diff Programs
 
@@ -63,4 +59,4 @@ To specify the diff program used, use the `--cmd` or `-c` option. Guild passes t
 guild compare -c meld
 ```
 
-You can configure the diff program that Guild uses by default in *user configuration*. For more information, see [User Configuration - Diff](/reference/user-config.md#diff).
+You can configure the diff program that Guild uses by default in *user configuration*. For more information, see [*Reference: User Config*](/t/reference-user-config/173#diff).

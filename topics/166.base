@@ -5,7 +5,7 @@
 
 ## Overview
 
-Guild Compare is a [curses based application ->](https://en.wikipedia.org/wiki/Curses_(programming_library)) that you run from the command line. It's convenient both for local and remote comparisons as it works equally well over ssh.
+Guild Compare is a [curses based application](https://en.wikipedia.org/wiki/Curses_(programming_library)) that you run from the command line. It's convenient both for local and remote comparisons as it works equally well over ssh.
 
 Use Guild Compare to view runs in a spreadsheet format including flags and scalar values.
 
@@ -23,7 +23,7 @@ To start Guild Compare, run:
 guild compare
 ```
 
-This shows all available runs. You can limit the runs using filters like operation, status, and start time. For a list of filters, see [`compare`](/commands/compare).
+This shows all available runs. You can limit the runs using filters like operation, status, and start time. For a list of filters, see [`guild compare`](/commands/compare).
 
 ## Interactive Mode
 
@@ -54,7 +54,7 @@ guild compare --csv runs.csv
 
 <span data-guild-class="caption">Writes runs compare data to `runs.csv`</span>
 
-To print the CSV contents to the console, use ``-`` for the file name:
+To print the CSV contents to the console, use `-` for the file name:
 
 ``` command
 guild compare --csv -
@@ -76,9 +76,9 @@ guild compare --tool hiplot
 
 Supported tools:
 
-`hiplot`
-: Use [HiPlot ->](https://facebookresearch.github.io/hiplot/) to
-  compare runs.
+|          |                                                                              |
+|----------|------------------------------------------------------------------------------|
+| `hiplot` | Use [HiPlot](https://facebookresearch.github.io/hiplot/) to compare runs. |
 
 Refer to the sections below for detail on each tool.
 

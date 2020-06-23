@@ -54,7 +54,7 @@ To use a queue to stage runs, first start a queue in the background:
 guild run queue --background
 ```
 
-Check status of the operation as needed using ``guild runs``.
+Check status of the operation as needed using `guild runs`.
 
 To list running runs, use:
 
@@ -62,7 +62,7 @@ To list running runs, use:
 guild runs --running
 ```
 
-You can stop runs using [`stop`](/commands/stop).
+You can stop runs using [`guild stop`](/commands/stop).
 
 Stage a run by specifying the `--stage` option. For example, to stage an run for `train`, run:
 
@@ -72,7 +72,7 @@ guild run train --stage
 
 Guild initializes the run but does not start it. Instead, the queue, running in the background, starts the queue and waits for it to finish. You can continue staging runs as needed.
 
-Staged runs have a status of ``staged``, which you can filter by running:
+Staged runs have a status of `staged`, which you can filter by running:
 
 ``` command
 guild runs --staged

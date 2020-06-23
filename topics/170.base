@@ -54,7 +54,7 @@ List available operations using [`guild operations`](/commands/operations):
 guild operations
 ```
 
-> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span> The [`ops`](/commands/ops) command is a shortened alias for `operations`.</span>
+> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span> The [`guild ops`](/commands/ops) command is a shortened alias for `operations`.</span>
 
 ## Python Based Operations
 
@@ -69,7 +69,7 @@ train:
 
 > <span data-guild-icon="info-circle" data-guild-class="callout info"></span>Do not include the `.py` suffix when specifying `main`. The value refers to the module name, not the file name.
 
-Guild loads such modules as `__main__` in the same way that Python itself loads them when run using ``python -m <module name>`` from the command line.
+Guild loads such modules as `__main__` in the same way that Python itself loads them when run using `python -m <module name>` from the command line.
 
 You may perform operation tasks directly in the module like this:
 
@@ -122,7 +122,7 @@ To use command line arguments, you must specify flag arguments in the `exec` spe
 - Individual flag references
 - All flag assignments
 
-To include a flag value in the `exec` command, use the format ``${FLAG_NAME}``.
+To include a flag value in the `exec` command, use the format `${FLAG_NAME}`.
 
 ``` yaml
 train:

@@ -33,14 +33,14 @@ A number of things are different when you run TensorBoard with Guild:
 
 - Guild dynamically adds summaries so that flags and scalars can be compared in the **HParams** tab. This lets you use TensorBoard to compare hyperparameter results without having to write summaries yourself.
 
-- Guild filters runs shown in TensorBoard according to the run filter options used with [`guild tensorboard`](/commands/tensorboard) command. This lets you quickly compare runs matching various criteria without having to manually create a TensorBoard log directory.
+- Guild filters runs shown in TensorBoard according to the run filter options used with [`guild tensorboard`](/commands/tensorboard). This lets you quickly compare runs matching various criteria without having to manually create a TensorBoard log directory.
 
 ## Running TensorBoard Manually
 
-To run TensorBoard manually to view Guild runs, use [`check`](/commands/check) to find [Guild home](term:guild-home):
+To run TensorBoard manually to view Guild runs, use [`guild check`](/commands/check) to find [Guild home](term:guild-home):
 
 ``` command
 guild check
 ```
 
-Find the path listed for ``guild_home:`` in the output. Use the following command to run TensorBoard manually:
+Find the path listed for `guild_home:` in the output. Use the following command to run TensorBoard manually:

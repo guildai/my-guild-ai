@@ -112,7 +112,7 @@ iris-svm:train  Train SVM model on Iris data set
 sample:train    Generate a sample loss
 ```
 
-<span data-guild-icon="info-circle" data-guild-class="callout note"></span>The [`ops`](/commands/ops) command is a shortened alias for [`operations`](/commands/operations).
+<span data-guild-icon="info-circle" data-guild-class="callout note"></span>[`guild ops`](/commands/ops) is a shortened alias for [`guild operations`](/commands/operations).
 
 If you don't see `iris-svm:fit` in the list, verify that `guild.yml` is the same as above and that you're running the command from `guild-start`.
 
@@ -225,7 +225,7 @@ Your project directory should look like this:
 
 ### Initialize the Environment
 
-Initialize a new environment in the project using [`init`](/commands/init):
+Initialize a new environment in the project using [`guild init`](/commands/init):
 
 ``` command
 guild init
@@ -262,17 +262,17 @@ Activate the environment:
 source guild-env
 ```
 
-<span data-guild-icon="info-circle" data-guild-class="callout note"></span>You can alternatively use the traditional method of activating a Python virtual environment, which is to source the virtual environment script `bin/activate` --- for example, by running ``source venv/bin/activate``. Guild environments are standard Python virtual environments.
+<span data-guild-icon="info-circle" data-guild-class="callout note"></span>You can alternatively use the traditional method of activating a Python virtual environment, which is to source the virtual environment script `bin/activate` --- for example, by running `source venv/bin/activate`. Guild environments are standard Python virtual environments.
 
 When you activate an environment, software libraries and runs are isolated.
 
-Verify that the environment is activated using [`check`](/commands/check):
+Verify that the environment is activated using [`guild check`](/commands/check):
 
 ``` command
 guild check
 ```
 
-Note the location of ``guild_home`` --- it should be located under the project directory in ``venv/.guild``.
+Note the location of `guild_home` --- it should be located under the project directory in `venv/.guild`.
 
 List the current runs:
 
@@ -367,7 +367,7 @@ Guild runs `iris-svm:train` twice --- once for each specified kernel.
 
 ## Compare Runs
 
-Use [`compare`](/commands/compare) to compare results:
+Use [`guild compare`](/commands/compare) to compare results:
 
 ``` command
 guild compare

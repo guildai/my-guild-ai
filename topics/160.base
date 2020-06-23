@@ -22,7 +22,7 @@ TensorBoard summaries are written to files supported by [TensorBoard](https://ww
 
 ### Output Scalars
 
-By default, Guild logs for scalars in script output in the format ``key: value`` where each value is written on a single line without leading whitespace. Guild sets the current scalar step when the `step` key is used. Subsequently logged values are associated with the latest step.
+By default, Guild logs for scalars in script output in the format `key: value` where each value is written on a single line without leading whitespace. Guild sets the current scalar step when the `step` key is used. Subsequently logged values are associated with the latest step.
 
 The following output generates a series of 3 scalar values for `loss`:
 
@@ -60,7 +60,7 @@ Epoch 3/3
 
 <span data-guild-class="caption">Alternative sample output --- requires custom configuration</span>
 
-The default format ``key: value`` will not work in this case. To capture scalars for this output, the operation needs a custom `output-scalars` attribute.
+The default format `key: value` will not work in this case. To capture scalars for this output, the operation needs a custom `output-scalars` attribute.
 
 ``` yaml
 train:
