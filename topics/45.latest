@@ -102,8 +102,7 @@ guild label --tag best <run ID from previous command>
 
 Guild prompts you with the proposed change. Press `Enter` to modify the run label.
 
-> **TIP**
-If you are running on Linux, macOS, or another POSIX environment, you can use [command substitution](https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html) and the [`select`](/commands/select) command to specify a run ID argument. For example, ``guild run --tag best $(guild select -o train --min loss)`` can be used to tag the "best" run --- i.e. with the lowest `loss`.
+<span data-guild-icon="check-circle" data-guild-class="callout tip"></span>If you are running on Linux, macOS, or another POSIX environment, you can use [command substitution](https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html) and the [`select`](/commands/select) command to specify a run ID argument. For example, ``guild run --tag best $(guild select -o train --min loss)`` can be used to tag the "best" run --- i.e. with the lowest `loss`.
 
 Show runs with "best" in their label:
 
@@ -185,8 +184,7 @@ Guild shows the list of runs in the directory.
 
 If you want to import any runs back into your list, use [`import`](/commands/import). For this guide, keep the runs list empty for the next section.
 
-> **TIP**
-Use [`export`](/commands/export) to keep your list clear of runs you're no longer working with. Use different export directories to categorize your runs as needed. If you want to move runs to a remote location, use [`push`](/commands/push) with a [remote configuration](ref:remote).
+<span data-guild-icon="check-circle" data-guild-class="callout tip"></span>Use [`export`](/commands/export) to keep your list clear of runs you're no longer working with. Use different export directories to categorize your runs as needed. If you want to move runs to a remote location, use [`push`](/commands/push) with a [remote configuration](ref:remote).
 
 ## Next Steps
 

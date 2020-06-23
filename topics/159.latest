@@ -94,8 +94,7 @@ train:
   main: train_classifier
 ```
 
-> **NOTE**
-Do not include the file name extension when specifying a main module for an operation. The attribute value specifies a Python *module* and not a file name.
+<span data-guild-icon="info-circle" data-guild-class="callout note"></span>Do not include the file name extension when specifying a main module for an operation. The attribute value specifies a Python *module* and not a file name.
 
 ### Other Language Operations
 

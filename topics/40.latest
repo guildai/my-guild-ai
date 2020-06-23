@@ -102,14 +102,11 @@ guild run train.py
 
 This is often a good place to start because it doesn't require additional configuration. For more control over a run, see [Run an Operation](#run-an-operation) below.
 
-> **NOTE**
-While Guild supports other languages, Guild currently only supports direct execution of Python scripts. To run a script in a different language, define an operation. See [Run an Operation](#run-an-operation) below for more information.
+> <span data-guild-icon="info-circle" data-guild-class="callout note"></span> While Guild supports other languages, Guild currently only supports direct execution of Python scripts. To run a script in a different language, define an operation. See [Run an Operation](#run-an-operation) below for more information.
 
-For more information on Guild's default behavior, see [*Default
-Behavior - Python Scripts*](/reference/defaults.md#python-scripts).
+For more information on Guild's default behavior, see [*Default Behavior - Python Scripts*](/reference/defaults.md#python-scripts).
 
-> **TIP**
-Guild's support for directly script execution is a convenience to get started quickly. Without additional information, Guild makes various [assumptions](/reference/defaults) that may not hold true for your script. Consider using [operations](/docs/operations) for more control over how Guild runs your script. See [Run an Operation](#run-an-operation) below for more information.
+> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span> Guild's support for directly script execution is a convenience to get started quickly. Without additional information, Guild makes various [assumptions](/reference/defaults) that may not hold true for your script. Consider using [operations](/docs/operations) for more control over how Guild runs your script. See [Run an Operation](#run-an-operation) below for more information.
 
 #### Auto-Detect Python Script Flags
 

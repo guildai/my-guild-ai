@@ -46,8 +46,7 @@ To stop Guild View, in the command line terminal where you start Guild, type `Ct
 
 Close any browser tabs that use Guild View to save memory.
 
-> **IMPORTANT**
-Guild View tabs in your browser will no longer work properly after you stop Guild View in the command line terminal. To restart Guild View, close the tabs and re-run [`guild view`](/commands/view) from the command line. Guild will open a new tab in your browser.
+<span data-guild-icon="exclamation-circle" data-guild-class="callout important"></span>Guild View tabs in your browser will no longer work properly after you stop Guild View in the command line terminal. To restart Guild View, close the tabs and re-run [`guild view`](/commands/view) from the command line. Guild will open a new tab in your browser.
 
 ## Run Guild View Remotely
 
@@ -63,5 +62,4 @@ guild view --port 8080
 Running Guild View at http://hostname:8080 (Type Ctrl-C to quit)
 ```
 
-> **IMPORTANT**
-Guild will not automatically open Guild View in your browser when you run `guild view` remotely. You must open the URL show in the console terminal.
+<span data-guild-icon="exclamation-circle" data-guild-class="callout important"></span>Guild will not automatically open Guild View in your browser when you run `guild view` remotely. You must open the URL show in the console terminal.

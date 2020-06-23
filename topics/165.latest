@@ -9,11 +9,9 @@ queues and parallel runs, esp with batches.
 
 -->
 
-!!! important
-    Queues are currently experimental in Guild.
+> <span data-guild-icon="exclamation-circle" data-guild-class="callout important"></span> Queues are currently experimental in Guild.
 
-A *queue* is a long-running runs implemented by the built-in `queue`
-operation. A queue is used to start staged runs.
+A *queue* is a long-running runs implemented by the built-in `queue` operation. A queue is used to start staged runs.
 
 Queues can be used to:
 
@@ -27,15 +25,12 @@ To start a queue, run:
 guild run queue
 ```
 
-Once running, queues look for staged runs and start them under the
-following conditions:
+Once running, queues look for staged runs and start them under the following conditions:
 
-- If started with `wait-for-running`, the queue is not waiting for a
-  run to complete
+- If started with `wait-for-running`, the queue is not waiting for a run to complete
 - The staged run is compatible with the queue GPU affinity
 
-A queue waits for a run to complete if any of the following conditions
-are met:
+A queue waits for a run to complete if any of the following conditions are met:
 
 - The queue starts the run
 - The queue is started with the `wait-for-running`
@@ -46,14 +41,11 @@ A run matches a queue GPU affinity when:
   the staged run does specify a GPU affinity
 - The queue `gpu` flag value matches the staged run GPU affinity
 
-Queues coordinate among themselves when starting runs so you can
-start multiple queues as needed.
+Queues coordinate among themselves when starting runs so you can start multiple queues as needed.
 
 ## Schedule Staged Runs
 
-Use a queue to start staged runs in the order staged. This is useful
-when you want to run several operations back-to-back without attending
-them.
+Use a queue to start staged runs in the order staged. This is useful when you want to run several operations back-to-back without attending them.
 
 To use a queue to stage runs, first start a queue in the background:
 
@@ -69,21 +61,17 @@ To list running runs, use:
 guild runs --running
 ```
 
-You can stop runs using [stop](cmd:stop).
+You can stop runs using [`stop`](/commands/stop).
 
-Stage a run by specifying the `--stage` option. For example, to stage
-an run for `train`, run:
+Stage a run by specifying the `--stage` option. For example, to stage an run for `train`, run:
 
 ```
 guild run train --stage
 ```
 
-Guild initializes the run but does not start it. Instead, the queue,
-running in the background, starts the queue and waits for it to
-finish. You can continue staging runs as needed.
+Guild initializes the run but does not start it. Instead, the queue, running in the background, starts the queue and waits for it to finish. You can continue staging runs as needed.
 
-Staged runs have a status of ``staged``, which you can filter by
-running:
+Staged runs have a status of ``staged``, which you can filter by running:
 
 ``` command
 guild runs --staged

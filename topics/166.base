@@ -1,6 +1,7 @@
 <!-- -*- eval:(visual-line-mode 1) -*- -->
 
 <div data-theme-toc="true"></div>
+<div data-guild-docs="true"></div>
 
 ## Overview
 
@@ -10,9 +11,9 @@ Use Guild Compare to view runs in a spreadsheet format including flags and scala
 
 ![](/assets/img/compare-feature-2.png)
 
-^ Guild Compare shows runs in a spreadsheet format
+<span data-guild-class="caption">Guild Compare shows runs in a spreadsheet format</span>
 
-!!! tip Guild Compare runs in terminals across SSH connections. It's convenient for viewing results on remote servers without having to run servers or copy files.
+> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span> Guild Compare runs in terminals across SSH connections. It's convenient for viewing results on remote servers without having to run servers or copy files.
 
 ## Start Guild Compare
 
@@ -32,14 +33,14 @@ For a list of supported key commands, press `?` when running in interactive mode
 
 Below are some common actions you perform in interactive mode.
 
-|                                                 |                                                                                                                               |
-|-------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| Navigate                                        | Use the arrow keys to move the active cell to different rows and columns.                                                     |
-| Sort runs by a column                           | Use the arrow keys to navigate to the column you want to sort by. Press `1` to sort in ascending order or `2` for descending. |
-| Refresh the display with the latest information | Press `r` (for refresh) at any point to show the latest information. Guild does not automatically update the display.         |
-| View run details                                | Press `Enter` to view details for a selected run. Press `q` to exit the detail window.                                        |
-| List key bindings                               | Press `?` to show the list of key bindings. To exit the list, press `q`.                                                      |
-| Exit                                            | Press `q` to exit Guild Compare.                                                                                              |
+| | |
+|-|-|
+| Navigate | Use the arrow keys to move the active cell to different rows and columns. |
+| Sort runs by a column | Use the arrow keys to navigate to the column you want to sort by. Press `1` to sort in ascending order or `2` for descending. |
+| Refresh the display with the latest information | Press `r` (for refresh) at any point to show the latest information. Guild does not automatically update the display. |
+| View run details | Press `Enter` to view details for a selected run. Press `q` to exit the detail window. |
+| List key bindings | Press `?` to show the list of key bindings. To exit the list, press `q`. |
+| Exit | Press `q` to exit Guild Compare. |
 
 ## Export Data
 
@@ -51,7 +52,7 @@ To export data to a CSV file, use the `--csv` option.
 guild compare --csv runs.csv
 ```
 
-^ Writes runs compare data to `runs.csv`
+<span data-guild-class="caption">Writes runs compare data to `runs.csv`</span>
 
 To print the CSV contents to the console, use ``-`` for the file name:
 
@@ -59,7 +60,7 @@ To print the CSV contents to the console, use ``-`` for the file name:
 guild compare --csv -
 ```
 
-^ Prints runs compare data to the console
+<span data-guild-class="caption">Prints runs compare data to the console</span>
 
 ## Compare Tools
 
@@ -87,7 +88,7 @@ HiPlot is a visualization tool developed by Facebook used to discover correlatio
 
 ![](/assets/img/hiplot.png)
 
-^ Compare runs using Facebook's HiPlot visualization tool
+<span data-guild-class="caption">Compare runs using Facebook's HiPlot visualization tool</span>
 
 To use HiPlot with Guild Compare, first install the HiPlot Python library:
 

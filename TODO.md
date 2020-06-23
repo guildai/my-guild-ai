@@ -4,45 +4,45 @@
 
 ### Things to Replace/Check
 
-- '^ ...' -> <span data-guild-class="caption">...</span>
+
+- Any refs to *.md
 - [...](xxx:yyy)
-- '!!! ...' ->
-    - <span data-guild-icon="info-circle" data-guild-class="callout info"></span>
-    - <span data-guild-icon="info-circle" data-guild-class="callout note"></span>
-    - <span data-guild-icon="check-circle" data-guild-class="callout tip"></span>
-    - <span data-guild-icon="exclamation-circle" data-guild-class="callout important"></span>
-    - <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>
-- Def list -> tables
-- cmd:xxx -> /commands/xxx + fixed formatting
+
 - URL fragments inside permalinks -> use topic URLs to avoid redirects
-- Avoid italics for references to docs and sections
-- Avoid periods in captions
-- Refer use of <var> and go back to VAR - this is consistent with
+- Consistent used of italics when referencing docs or help topics
+- Refer use of lower case <var> and go back to VAR - this is consistent with
   naming conventions used in command help
-- ``xxx`` -> `xxx`
 - Find /terms/xxx and make sure we have permalinks to those
 - Replace any remaining images `![](...)`
-- Any refs to *.md
 
 ### Consistent formatting of list of options/choices
 
-Using different patterns currently. Lots of tables. Some bullets.
+Two standards, tables and sections. Use tables for term lists that
+don't require structured paragraph content. Use sections for term
+lists that do.
+
+Table example:
 
 |     |                |
 |-----|----------------|
 | foo | A sample       |
 | bar | Another sample |
 
-- *foo*
-  A sample
-- *bar*
-  Another sample
+Section example:
 
-*foo*
-A sample
+##### foo
 
-*bar*
-Another sample
+A sample.
+
+Another line for foo.
+
+##### bar
+
+Another sample.
+
+- Item 1
+- Item 2
+- Item 3
 
 ### GitHub icons on header
 

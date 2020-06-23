@@ -1,45 +1,53 @@
 # my.guild.ai
 
-## Command Help Topics
+## Setup
 
-The following fork of `pydiscourse` is required:
-
-    https://github.com/gar1t/pydiscourse
-
-Use the following for auth:
-
-    $ source <( gpg -d api-creds.gpg )
-
-Commands:
+Install this toolkit by running:
 
 ```
-Usage: myguild [OPTIONS] COMMAND [ARGS]...
-
-  Support for managing my.guild.ai.
-
-  Commands that access my.guild.ai (publishing, etc.) require the
-  environment variable MY_GUILD_API_KEY. If this variable is not set, the
-  commands exits with an error.
-
-  Refer to help for the commands below for more information.
-
-Options:
-  --debug  Enable debug logging
-  --help   Show this message and exit.
-
-Commands:
-  publish-command  Publish command help to a topic.
-  publish-index    Publish command index.
-  sync-commands    Synchronize command help.
-
+python setup.py develop
 ```
 
-Use `publish-command` to publish a single command. Support preview.
+## CLI
 
-    $ my-guild publish-command [CMD]
+Run `my-guild --help` for help.
 
-Use `sync-commands` to sync all commands. Note this does not detect
-deleted commands. Deleted commands must be removed manually.
+## Doc Templates
 
-Use `publish-index` to generate an up-to-date index and publish it
-under [`guild-commands`](https://my.guild.ai/t/guild-commands) topic.
+### Doc Header
+
+```
+<!-- -*- eval:(visual-line-mode 1) -*- -->
+
+<div data-theme-toc="true"></div>
+<div data-guild-docs="true"></div>
+```
+
+### Callouts
+
+```
+> <span data-guild-icon="info-circle" data-guild-class="callout info"></span> ...
+> <span data-guild-icon="info-circle" data-guild-class="callout note"></span> ...
+> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span> ...
+> <span data-guild-icon="exclamation-circle" data-guild-class="callout important"></span> ...
+> <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span> ...
+```
+
+### Captions
+
+```
+<span data-guild-class="caption">...</span>
+```
+
+- Avoid using periods to terminate captions. Instead use dashes or
+  semicolons to make compound statements. Uperiods only when a caption
+  must use multiple sentences.
+
+### Commands
+
+```
+[`guild runs`](/commands/run)
+```
+
+- Do not use "the [guild run](/commands/run) command" but instead use
+  "[guild run](/commands/run)".

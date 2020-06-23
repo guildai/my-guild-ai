@@ -1,28 +1,19 @@
 <!-- -*- eval:(visual-line-mode 1) -*- -->
 
-<div data-theme-toc="true"> </div>
-
-sidenav_title: Remotes
+<div data-theme-toc="true"></div>
+<div data-guild-docs="true"></div>
 
 # Remote Cheatsheet
 
 [TOC]
 
-The examples below apply to Guild [user
-configuration](ref:user-config). For a complete reference of remote
-configuration, see [Remotes Reference](/reference/remotes.md).
+The examples below apply to Guild [user configuration](ref:user-config). For a complete reference of remote configuration, see [Remotes Reference](/reference/remotes.md).
 
-!!! note
-    Each example includes the top-level `remotes` attribute. This
-    attribute may only appear once in a configuration file. If your
-    configuration file already has a `remotes` top-level attribute,
-    ensure that you don't include it again when pasting content from
-    the examples.
+!!! note Each example includes the top-level `remotes` attribute. This attribute may only appear once in a configuration file. If your configuration file already has a `remotes` top-level attribute, ensure that you don't include it again when pasting content from the examples.
 
 ## s3 Examples
 
-s3 remotes must use the `s3` type. Refer to [Remotes Reference -
-S3](/reference/remotes.md#s3) for full configuration details.
+s3 remotes must use the `s3` type. Refer to [Remotes Reference - S3](/reference/remotes.md#s3) for full configuration details.
 
 ### Minimal Definition
 

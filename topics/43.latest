@@ -8,8 +8,8 @@ An *optimizer* is a Guild [batch operation](ref:batch) that attempts to optimize
 
 Below is a list of supported optimizers.
 
-|                     |                                                               |
-|---------------------|---------------------------------------------------------------|
+|                   |                                                               |
+|-------------------|---------------------------------------------------------------|
 | [gp](#gp)         | Sequential optimizer using Gaussian processes.                |
 | [forest](#forest) | Sequential optimizer using decision trees.                    |
 | [gbrt](#gbrt)     | Sequential optimizer using gradient boosted regression trees. |
@@ -59,14 +59,14 @@ Function to minimize over the gaussian prior (default is `gp_hedge`)
 
 Choices:
 
-|||
-|-|-|
-| `LCB` | Lower confidence bound |
-| `EI` | Negative expected improvement |
-| `PI` | Negative probability of improvement |
+|            |                                                         |
+|------------|---------------------------------------------------------|
+| `LCB`      | Lower confidence bound                                  |
+| `EI`       | Negative expected improvement                           |
+| `PI`       | Negative probability of improvement                     |
 | `gp_hedge` | Probabilistically use LCB, EI, or PI at every iteration |
-| `EIps` | Negative expected improvement per second |
-| `PIps` | Negative probability of improvement per second |
+| `EIps`     | Negative expected improvement per second                |
+| `PIps`     | Negative probability of improvement per second          |
 
 ##### `kappa`
 

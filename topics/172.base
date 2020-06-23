@@ -1,6 +1,7 @@
 <!-- -*- eval:(visual-line-mode 1) -*- -->
 
 <div data-theme-toc="true"></div>
+<div data-guild-docs="true"></div>
 
 ## Overview
 
@@ -284,14 +285,14 @@ The commands below can be used with EC2 remotes.
 
 The following environment variables must be defined when starting or stopping an EC2 remote.
 
-|||
+| | |
 |-|-|
 | `AWS_ACCESS_KEY_ID` | The AWS access key ID that has the requisite permissions for starting or terminating the applicable EC2 instance. |
 | `AWS_SECRET_ACCESS_KEY` | The AWS secret access key associated with the access key ID. |
 
 The following environment variables may be optionally defined:
 
-|||
+| | |
 |-|-|
 | `AWS_DEFAULT_REGION` | The AWS region the remote instance is created in. This value may alternatively be defined in the EC2 remote configuration. |
 
@@ -347,7 +348,7 @@ On [`remote status`](/commands/remote-status), Guild checks that the bucket exis
 
 S3 remotes can be started and stopped. When started, Guild creates the remote bucket as needed. When stopped, Guild deletes the remote bucket if it exists.
 
-!!! important Stopping an S3 remote will delete all contents of the remote bucket, including Guild runs any objects that were copied to the bucket independently of Guild. This operation cannot be undone.
+> <span data-guild-icon="exclamation-circle" data-guild-class="callout important"></span>Stopping an S3 remote will delete all contents of the remote bucket, including Guild runs any objects that were copied to the bucket independently of Guild. This operation cannot be undone.
 
 <a id="s3-remote-commands"></a>
 
@@ -367,14 +368,14 @@ The following commands can be used with S3 remotes.
 
 The following environment variables must be defined when running any command on an S3 remote.
 
-|||
+| | |
 |-|-|
 | `AWS_ACCESS_KEY_ID` | The AWS access key ID that has the requisite permissions on the remote S3 bucket. |
 | `AWS_SECRET_ACCESS_KEY` | The AWS secret access key associated with the access key ID. |
 
 The following environment variables may be optionally defined:
 
-|||
+| | |
 |-|-|
 | `AWS_DEFAULT_REGION` | The AWS region associated with the bucket. This value may alternatively be defined in the S3 remote configuration. |
 

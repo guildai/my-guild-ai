@@ -1,12 +1,10 @@
 <!-- -*- eval:(visual-line-mode 1) -*- -->
 
-<div data-theme-toc="true"> </div>
+<div data-theme-toc="true"></div>
 
 ## Overview
 
-A *dependency* is a file or other resource required by an
-operation. Dependencies are declared for an operation in a Guild file
-using the `requires` attribute.
+A *dependency* is a file or other resource required by an operation. Dependencies are declared for an operation in a Guild file using the `requires` attribute.
 
 Here's an example of a required *file* dependency:
 
@@ -16,40 +14,30 @@ train:
     - file: data.csv
 ```
 
-When Guild runs an operation, it *resolves* each required
-dependency. Dependency resolution is specific to each dependency
-type. File dependencies, for example, are resolved by creating links
-to required files.
+When Guild runs an operation, it *resolves* each required dependency. Dependency resolution is specific to each dependency type. File dependencies, for example, are resolved by creating links to required files.
 
-For example, when Guild runs `train` above it resolves the required
-file `data.csv` as follows:
+For example, when Guild runs `train` above it resolves the required file `data.csv` as follows:
 
 - Guild looks for `data.csv` relative to the Guild file location.
-- If Guild finds `data.csv` it creates a symbolic link named
-  `data.csv` in the [run directory](term:run-dir).
+- If Guild finds `data.csv` it creates a symbolic link named `data.csv` in the [run directory](/t/runs/40#run-directory).
 - Otherwise Guild exits with an error message.
 
 Use dependencies to ensure that an operation has what it needs to run.
 
 ## Required Resources
 
-Use the `requires` operation attribute to declare that the operation
-requires one or more resources.
+Use the `requires` operation attribute to declare that the operation requires one or more resources.
 
 A resource declaration may be one of two types:
 
 - Resource name
 - Inline resource definition
 
-Resource definition format is the same in either case. Refer to
-[*Guild File Reference -
-Resources*](/reference/guildfile.md#resources) for a complete
-description of the resource format.
+Resource definition format is the same in either case. Refer to [*Guild File Reference - Resources*](/reference/guildfile.md#resources) for a complete description of the resource format.
 
 ### Named Resources
 
-Resource *names* must refer named resources, defined in a model using
-[full format](ref:full-format) Guild file.
+Resource *names* must refer named resources, defined in a model using [full format](ref:full-format) Guild file.
 
 Below is an example of an operation that requires a named resource.
 
@@ -64,20 +52,13 @@ Below is an example of an operation that requires a named resource.
      - file: data.csv
 ```
 
-^ Sample operation using *named resource* `data` --- requires a full
-  format Guild file
+<span data-guild-class="caption">Sample operation using *named resource* `data` --- requires a full format Guild file</span>
 
-The `data` resource defines a single dependency, or *resource source:*
-a `data.csv` file, located in the project directory. Guild resolves
-this dependency prior to executing the train script by creating a link
-to the file in the run directory. If Guild can't resolve the
-dependency --- e.g. the file is missing --- it exits with an error
-message.
+The `data` resource defines a single dependency, or *resource source:* a `data.csv` file, located in the project directory. Guild resolves this dependency prior to executing the train script by creating a link to the file in the run directory. If Guild can't resolve the dependency --- e.g. the file is missing --- it exits with an error message.
 
 ### Inline Resources
 
-A resource may alternatively be defined *inline* as an item of the
-operation `requires` attribute.
+A resource may alternatively be defined *inline* as an item of the operation `requires` attribute.
 
 
 ``` yaml
@@ -86,14 +67,11 @@ train:
     - file: data.csv
 ```
 
-Use named resources when more than one operation requires the same
-resource, or simply to consolidate resource definitions. Otherwise use
-inline resources.
+Use named resources when more than one operation requires the same resource, or simply to consolidate resource definitions. Otherwise use inline resources.
 
 ## Share Resources Across Models
 
-Use `config` objects and inheritance to share resource definitions
-across models.
+Use `config` objects and inheritance to share resource definitions across models.
 
 Example:
 
@@ -118,20 +96,15 @@ Example:
       requires: data
 ```
 
-^ Use of inheritance to share a common resource `data` across
-  models
+<span data-guild-class="caption">.Use of inheritance to share a common resource `data` across models</span>
 
 ## Dependency Types
 
-Guild supports a number of dependency types, or *resource source*
-types, which are described below. Refer to [Guild File Reference -
-Resource Sources](/reference/guildfile.md#resource-sources) for a
-specification of each type.
+Guild supports a number of dependency types, or *resource source* types, which are described below. Refer to [Guild File Reference - Resource Sources](/reference/guildfile.md#resource-sources) for a specification of each type.
 
 ### Files
 
-The most common required resource is a *file*. Guild supports
-different ways to reference files:
+The most common required resource is a *file*. Guild supports different ways to reference files:
 
 - Path relative to the project directory
 - URL
@@ -139,23 +112,18 @@ different ways to reference files:
 
 In some cases, Guild resolves multiple files:
 
-- Path or URL refers to an *archive* (e.g. a file ending in `zip`,
-  `tar`, etc.) which Guild unpacks unless `unpack` is set to `no`
+- Path or URL refers to an *archive* (e.g. a file ending in `zip`, `tar`, etc.) which Guild unpacks unless `unpack` is set to `no`
 - Operation that generates more than one file
 
-In such cases, you may use `select` to limit the resolved files to
-those matching a pattern.
+In such cases, you may use `select` to limit the resolved files to those matching a pattern.
 
-When resolving *operation* files, Guild first selects a suitable run
-based on the operation name. Guild uses the following rules when
-selecting a run, in the order listed:
+When resolving *operation* files, Guild first selects a suitable run based on the operation name. Guild uses the following rules when selecting a run, in the order listed:
 
 1. User specified run ID for the resource name
 2. Latest marked non-error run matching `operation`
 2. Latest unmarked non-error run matching `operation`
 
-Resolved resource links may be renamed using `rename`. This is useful
-when a script expects a different path.
+Resolved resource links may be renamed using `rename`. This is useful when a script expects a different path.
 
 Examples:
 
@@ -165,7 +133,7 @@ train:
    - file: data.csv
 ```
 
-^ Sample operation that requires `data.csv` located in the project
+<span data-guild-class="caption">Sample operation that requires `data.csv` located in the project
   directory
 
 ``` yaml
@@ -174,7 +142,7 @@ train:
     - url: https://my.co/data.csv
 ```
 
-^ Sample operation that requires `data.csv` located by a URL
+<span data-guild-class="caption">Sample operation that requires `data.csv` located by a URL
 
 ``` yaml
 train:
@@ -183,8 +151,7 @@ train:
      select: data.csv
 ```
 
-^ Sample operation that requires `data.csv` generated by the
-`prepare-data` operation
+<span data-guild-class="caption">Sample operation that requires `data.csv` generated by the `prepare-data` operation</span>
 
 ``` yaml
 train:
@@ -193,17 +160,13 @@ train:
       rename: train-data.csv data.csv
 ```
 
-^ Sample operation that requires `data.csv` located in the project
-  directory as `train-data.csv`
+<span data-guild-class="caption">Sample operation that requires `data.csv` located in the project directory as `train-data.csv`</span>
 
-For more examples, see [Guildfile Cheatsheet -
-Resources](/cheatsheets/guildfile.md#resources).
+For more examples, see [Guildfile Cheatsheet - Resources](/cheatsheets/guildfile.md#resources).
 
 ### Modules
 
-An operation may require a particular software library, or
-*module*. Required modules are defined using the `module` type
-attribute.
+An operation may require a particular software library, or *module*. Required modules are defined using the `module` type attribute.
 
 ``` yaml
 train:
@@ -212,27 +175,17 @@ train:
    - module: keras
 ```
 
-^ Sample operation that requires two Python modules: `pandas` and
-  `keras`
+<span data-guild-class="caption">Sample operation that requires two Python modules: `pandas` and `keras`</span>
 
-Guild resolves required modules by verifying they are installed in
-current environment. If Guild cannot verify a module, it exits with an
-error message.
+Guild resolves required modules by verifying they are installed in current environment. If Guild cannot verify a module, it exits with an error message.
 
-!!! important
-    Guild does not *install* modules defined for `requires`
-    --- it merely *verifies* that the modules are available. Ensure
-    that required modules are installed in the environment before
-    running the operation.
+> <span data-guild-icon="exclamation-circle" data-guild-class="callout important"></span> Guild does not *install* modules defined for `requires` --- it merely *verifies* that the modules are available. Ensure that required modules are installed in the environment before running the operation.
 
-Use a required module to preemptively verify that the module is available
-before starting the script.
+Use a required module to preemptively verify that the module is available before starting the script.
 
 ### Configuration
 
-An operation can require a configuration file. Guild resolves
-configuration files by re-writing the specified file to include run
-flag values.
+An operation can require a configuration file. Guild resolves configuration files by re-writing the specified file to include run flag values.
 
 Guild currently supports only YAML formatted configuration files.
 
@@ -255,8 +208,7 @@ train:
     - config: config.yml
 ```
 
-When Guild resolves the dependency, it re-writes `config.yml` to
-reflect modified flag values.
+When Guild resolves the dependency, it re-writes `config.yml` to reflect modified flag values.
 
 Consider the following command:
 
@@ -272,5 +224,4 @@ batch-size: 100
 dropout: 0.3
 ```
 
-^ Resolved version of `config.yml` reflects the flag values for the
-  run
+<span data-guild-class="caption">Resolved version of `config.yml` reflects the flag values for the run</span>
