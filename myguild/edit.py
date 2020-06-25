@@ -259,8 +259,9 @@ def _check_latest_changed(topic_id, save_dir):
     if _files_differ(base_path, latest_path):
         raise SystemExit(
             "Topic %i has changed on the server since it was fetched. "
-            "Use --diff-latest to view differences. Use --force to override "
-            "this safeguard.",
+            "Use 'my-guild diff --latest %i' to view differences. Use --force to "
+            "override this safeguard.",
+            topic_id,
             topic_id,
         )
     return True

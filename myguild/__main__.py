@@ -268,7 +268,7 @@ Edit a topic.
 @click.option(
     "-n", "--no-comment", is_flag=True, help="Don't provide a comment when publishing."
 )
-@click.option("--skip-diff", is_flag=True, help="Skip diff when publishing.")
+@click.option("-s", "--skip-diff", is_flag=True, help="Skip diff when publishing.")
 @click.option(
     "-y", "--yes", is_flag=True, help="Publish changes without asking for confirmation."
 )
@@ -382,7 +382,7 @@ To publish all modified topics, use --all.
 @click.option(
     "-n", "--no-comment", is_flag=True, help="Don't provide a comment when publishing."
 )
-@click.option("--skip-diff", is_flag=True, help="Skip diff when publishing.")
+@click.option("-s", "--skip-diff", is_flag=True, help="Skip diff when publishing.")
 @click.option(
     "-y", "--yes", is_flag=True, help="Publish changes without asking for confirmation."
 )

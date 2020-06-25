@@ -1,7 +1,7 @@
 <!-- -*- eval:(visual-line-mode 1) -*- -->
 
-<div data-theme-toc="true"></div>
 <div data-guild-docs="true"></div>
+<div data-theme-toc="true"></div>
 
 ## Install Guild AI
 
@@ -11,7 +11,7 @@ If you're familiar with installing Python packages using `pip`, simply install t
 pip install guildai
 ```
 
-Altnernatively, to install to the [user install directory](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-user), run:
+Alternatively, to install to the [user install directory](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-user), run:
 
 ``` command
 pip install guildai --user
@@ -29,7 +29,7 @@ For help troubleshooting, [ask for help](/help) from the Guild AI Community.
 
 ## Get Command Help
 
-Guild's primary interface is the [command line](/docs/cli). Commands are run using the format ``guild <command>``. Use the `--help` option to show information for a command.
+Guild's primary interface is the [command line](/docs/cli). Commands are run using the format `guild COMMAND`. Use the `--help` option to show information for a command.
 
 Show all Guild commands:
 
@@ -223,6 +223,7 @@ guild open --sourcecode --path train.py
 Guild opens the copy `train.py` used for the run with the default system program for `py` files.
 
 ![code-start|653x500](upload://rVsTFAobvJ6tXYbM9cHTbZcUADv.png)
+
 <span data-guild-class="caption">View a run file with [`guild open`](/commands/open)</span>
 
 ## Summary
@@ -230,7 +231,7 @@ Guild opens the copy `train.py` used for the run with the default system program
 In this section, you use Guild AI to capture experiments for a sample training script.
 
 > <span data-guild-icon="thumbs-up" data-guild-class="callout highlights"></span>
-> - Track experiments without changing your code.
+> - Guild lets you track experiments without changing your code.
 > - Guild is easy to install and use. It doesn't require databases or external systems.
 > - Guild details about your run. Use this information to optimize your model, catch mistakes, and resolve issues.
 
