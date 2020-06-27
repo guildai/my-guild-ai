@@ -21,7 +21,7 @@ train:
 ```
 
 > **NOTE**
-Invalid Python module characters in the operation name are converted to underscores ``_``. For example, Guild assumes that the operation ``mnist-train`` is implemented in the Python module named ``mnist_train``.
+Invalid Python module characters in the operation name are converted to underscores `_`. For example, Guild assumes that the operation `mnist-train` is implemented in the Python module named `mnist_train`.
 
 Use the `main` attribute to specify the main Python module for an operation.
 
@@ -74,7 +74,7 @@ train:
     learning-rate: 0.1
 ```
 
-Use ``${flag_args}`` to pass all flags as arguments:
+Use `${flag_args}` to pass all flags as arguments:
 
 ``` yaml
 train:
@@ -163,7 +163,7 @@ train:
 
 #### All Flag Args with `exec`
 
-Use `exec` for non-Python scripts. Flags may be specified as command line arguments using ``${flag_args}`` in an `exec` command.
+Use `exec` for non-Python scripts. Flags may be specified as command line arguments using `${flag_args}` in an `exec` command.
 
 ``` yaml
 train:
@@ -183,7 +183,7 @@ Continue? (Y/n)
 
 #### Flag Values with `exec`
 
-Include specific flag values in an `exec` command using the format ``${<flag name>}``:
+Include specific flag values in an `exec` command using the format `${<flag name>}`:
 
 ``` yaml
 train:
@@ -417,7 +417,7 @@ train:
 ```
 
 > **NOTE**
-The captured key is always the *first group* and value is the *second group*. ``\key`` and ``\value`` above are pattern templates and are not used to identify what is captured.
+The captured key is always the *first group* and value is the *second group*. `\key` and `\value` above are pattern templates and are not used to identify what is captured.
 >
 > To reverse the order, use named groups with names `_key` and `_val` for the key and value groups respectively.
 >

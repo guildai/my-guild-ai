@@ -43,7 +43,7 @@ You can filter the runs displayed by Guild View using command options. Refer to 
 
 ## Stop Guild View
 
-To stop Guild View, in the command line terminal where you start Guild, type `Ctrl-C`.
+To stop Guild View, in the command line terminal where you start Guild, press **Ctrl-C**.
 
 Close any browser tabs that use Guild View to save memory.
 

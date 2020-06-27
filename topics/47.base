@@ -231,7 +231,7 @@ Initialize a new environment in the project using [`guild init`](/commands/init)
 guild init
 ```
 
-Guild prompts with the environment settings. Press `Enter` to create the environment.
+Guild prompts with the environment settings. Press **Enter** to create the environment.
 
 Guild initializes a virtual environment in the project under a `venv` subdirectory.
 
@@ -300,7 +300,7 @@ You are about to run iris-svm:train
 Continue? (Y/n)
 ```
 
-Press `Enter` to start the operation.
+Press **Enter** to start the operation.
 
 Guild runs the operation, which is implemented by the [`plot_iris_exercise` module](https://github.com/guildai/guildai/blob/master/examples/iris-svm/plot_iris_exercise.py).
 
@@ -361,7 +361,7 @@ You are about to run iris-svm:train as a batch (2 trials)
 Continue? (Y/n)
 ```
 
-Press `Enter` to confirm.
+Press **Enter** to confirm.
 
 Guild runs `iris-svm:train` twice --- once for each specified kernel.
 
@@ -375,7 +375,7 @@ guild compare
 
 Use arrow keys to scroll right to view values for `test_accuracy`. Note that the `linear` kernel performs better the other two, at least with the default hyperparameters.
 
-Press `q` to exit Guild Compare.
+Press **q** to exit Guild Compare.
 
 Compare run plots using TensorBoard:
 
@@ -391,7 +391,7 @@ Guild starts TensorBoard and opens the **IMAGES** tab. TensorBoard shows each of
 
 > <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>Guild automatically shows run-generated images in TensorBoard so you don't need to log them as summaries. This is a useful way to compare run plots and other images side-by-side.
 
-Return to the command terminal and type `Ctrl-C` to stop TensorBoard.
+Return to the command terminal and press **Ctrl-C** to stop TensorBoard.
 
 ## Summary
 

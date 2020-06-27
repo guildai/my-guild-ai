@@ -77,7 +77,7 @@ The final modified `guild.yml` should be:
         test_accuracy: 'Test accuracy: (\value)'
 ```
 
-&nbsp; *`guild.yml` after adding `iris-svm` model*
+<span data-guild-class="caption">`guild.yml` after adding `iris-svm` model</span>
 
 The file defines two models: `sample` and `iris-svm`. The `sample` model provides the `train` operation from the [previous step](/start/guildfile). The `iris-svm` is a new model, which you add in this section.
 
@@ -205,7 +205,7 @@ matplotlib
 scikit-learn
 ```
 
-&nbsp; *`requirements.txt` --- specifies Python packages required by the project*
+<span data-guild-class="caption">`requirements.txt` --- specifies Python packages required by the project</span>
 
 Your project directory should look like this:
 
@@ -331,7 +331,7 @@ Guild opens the plot generate by `iris-svm:train`, which shows how test samples 
 
 ![classifier-plot|509x500, 85%](upload://n65oI1JVSbVMmtjxsZjCZP0PpH2.png)
 
-&nbsp; *Viewing `plot.png` on Linux using Xviewer*
+<span data-guild-class="caption">Viewing `plot.png` on Linux using Xviewer</span>
 
 Use an alternative program to open a file by specifying the `--cmd` option. For example, to open `plot.png` in [GIMP](https://www.gimp.org/), use:
 
@@ -339,7 +339,7 @@ Use an alternative program to open a file by specifying the `--cmd` option. For 
 guild open -p plot.png --cmd gimp
 ```
 
-&nbsp; *Specify the program used to open a file with `--cmd` (this example requires that GIMP be installed)*
+<span data-guild-class="caption">Specify the program used to open a file with `--cmd` (this example requires that GIMP be installed)</span>
 
 > <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>Guild integrates with your favorite tools, rather than attempt to replace them.
 
@@ -387,7 +387,7 @@ Guild starts TensorBoard and opens the **IMAGES** tab. TensorBoard shows each of
 
 ![classifier-tb|690x167](upload://v8pq0rnXPJP4vfrt6NPQUPhqxIY.png)
 
-&nbsp; *Compare run-generated images using TensorBoard*
+<span data-guild-class="caption">Compare run-generated images using TensorBoard</span>
 
 > <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>Guild automatically shows run-generated images in TensorBoard so you don't need to log them as summaries. This is a useful way to compare run plots and other images side-by-side.
 

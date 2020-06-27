@@ -1,7 +1,7 @@
 <!-- -*- eval:(visual-line-mode 1) -*- -->
 
-<div data-guild-docs="true"></div>
 <div data-theme-toc="true"></div>
+<div data-guild-docs="true"></div>
 
 ## Install Guild AI
 
@@ -25,7 +25,7 @@ When Guild is installed, check the environment:
 guild check
 ```
 
-For help troubleshooting, [ask for help](/help) from the Guild AI Community.
+For help troubleshooting, see [*Get Help with Guid AI*](/help).
 
 ## Get Command Help
 
@@ -37,7 +37,7 @@ Show all Guild commands:
 guild --help
 ```
 
-See [*Guild Commands*](/commands) for online help.
+See [*Guild AI Commands*](/commands) for a complete reference.
 
 ## Create a Sample Training Script
 
@@ -71,16 +71,15 @@ loss = (np.sin(5 * x) * (1 - np.tanh(x ** 2)) + np.random.randn() * noise)
 
 print("loss: %f" % loss)
 ```
+
 <span data-guild-class="caption">Sample script `train.py` --- adapted from [Bayesian optimization with skopt](https://scikit-optimize.github.io/stable/auto_examples/bayesian-optimization.html)</span>
 
 This script simulates a loss function. It accepts hyperparameters `x` and `noise` and prints the resulting `loss`.
 
 The project directory should look like this:
 
-```
-guild-start/
-guild-start/train.py
-```
+> <span data-guild-icon="folder-open"></span> guild-start
+<span data-guild-icon="file" data-guild-class="dir-1"></span> train.py
 
 ## Run the Script
 
@@ -97,7 +96,7 @@ You are about to run train.py
 Continue? (Y/n)
 ```
 
-Press `Enter` to start the operation.
+Press **Enter** to start the operation.
 
 Guild runs `train.py`, which prints a simulated loss.
 
@@ -120,16 +119,16 @@ Guild starts the application, and opens a tab in your browser. Guild View runs i
 Use Guild View to browse runs, view run details including metadata, files, and log output. You can compare run results and run artifacts in TensorBoard.
 
 ![view-start|685x500](upload://1j2gFVZeJ89JGiqgCa6yviRlK9K.png)
+
 <span data-guild-class="caption">Guild View --- a web based application for viewing runs and comparing results</span>
 
-Return to the command terminal and type `Ctrl-C` to stop Guild View.
+Return to the command terminal and type **Ctrl-C** to stop Guild View.
 
 ### View Results from the Terminal
 
-When working in a command line environment, it's convient to use the
-terminal to view run results.
+When working in a command line environment, it's convenient to use the terminal to view run results.
 
-From your terminal, list the current runs:
+From your terminal, use [`guild runs`](/commands/runs) list the current runs:
 
 ``` command
 guild runs
@@ -149,6 +148,7 @@ View information for the latest run:
 guild runs info
 ```
 
+[details="Output"]
 ``` output
 id: 68f4da7428bd49b5a8946863909f84dc
 operation: train.py
@@ -170,16 +170,18 @@ flags:
 scalars:
   loss: 0.388010 (step 0)
 ```
+[/details]
+
 
 By default, Guild shows information for the latest run.
 
-> <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>Guild captures detailed information for each run so you have a complete record of each result. This information is essential for making informed decisions and tracking changes to your model.
+> <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>Guild captures detailed information for each run so you have a complete record of each result. This information is useful for making informed decisions and tracking changes to your model.
 
 ### Project Source Code
 
-Guild saves project source code for each run so you know exactly what is executed.
+Guild saves project source code for each run.
 
-List the run source code files with [`guild ls`](/commands/ls):
+To list source code, include the `--sourcecode` option with [`guild ls`](/commands/ls):
 
 ``` command
 guild ls --sourcecode
@@ -191,12 +193,15 @@ guild ls --sourcecode
   .guild/sourcecode/train.py
 ```
 
-Show source code for `train.py` with [`guild cat`](/commands/cat):
+> <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>Guild snapshots the source code at the time the operation is run so you have an accurate record of the program. You don't have to commit your code to a repository before starting a run. You can freely modify your project source while operations are running.
+
+You can show source code files using [`guild cat`](/commands/cat) with the `--sourcecode` option:
 
 ``` command
 guild cat --sourcecode --path train.py
 ```
 
+[details="Output"]
 ``` output
 import numpy as np
 
@@ -209,12 +214,9 @@ loss = (np.sin(5 * x) * (1 - np.tanh(x ** 2)) + np.random.randn() * noise)
 
 print("loss: %f" % loss)
 ```
+[/details]
 
-> <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>Guild copies source code files for each run so you have an exact record of the code that generated the result.
-
-You can open a run file using a system program.
-
-Open the `train.py` source code file for the latest run:
+You can also open source code files in your system editor with [`guild open`](/commands/open):
 
 ``` command
 guild open --sourcecode --path train.py
@@ -224,7 +226,7 @@ Guild opens the copy `train.py` used for the run with the default system program
 
 ![code-start|653x500](upload://rVsTFAobvJ6tXYbM9cHTbZcUADv.png)
 
-<span data-guild-class="caption">View a run file with [`guild open`](/commands/open)</span>
+<span data-guild-class="caption">View a run file with `guild open`</span>
 
 ## Summary
 
@@ -233,6 +235,8 @@ In this section, you use Guild AI to capture experiments for a sample training s
 > <span data-guild-icon="thumbs-up" data-guild-class="callout highlights"></span>
 > - Guild lets you track experiments without changing your code.
 > - Guild is easy to install and use. It doesn't require databases or external systems.
-> - Guild details about your run. Use this information to optimize your model, catch mistakes, and resolve issues.
+> - Guild captures details about your run. Use this information to optimize your model, catch mistakes, and resolve issues.
 
-In the [next section](/start/optimize), you use Guild's built-in hyperparamter tuning features to find values for `x` that minimize `loss` for the sample training script.
+In the next section, you use Guild's built-in hyperparamter tuning features to find values for `x` that minimize `loss` for the sample training script.
+
+<span data-guild-class="btn nav">[Next: Optimize a Model](/start/optimize)<span data-guild-icon="angle-right"></span></span>

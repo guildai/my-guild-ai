@@ -29,7 +29,7 @@ train:
   output-scalars: '(\key): (\value)'
 ```
 
-&nbsp; *Project Guild file `train.yml`*
+<span data-guild-class="caption">Project Guild file `train.yml`</span>
 
 The project directory should look like this:
 
@@ -111,7 +111,7 @@ BASE OPERATIONS
 
 ```
 
-Press `q` to exit help.
+Press **q** to exit help.
 
 > <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>Guild files define the user interface to your project. This encourages reproducibility as operations are easy to recall, run, and compare.
 
@@ -132,7 +132,7 @@ Continue? (Y/n)
 
 > <span data-guild-icon="info-circle" data-guild-class="callout note"></span>You use `train` rather than `train.py` above. `train` is the *operation* defined in the Guild file. `train.py` refers to the Python script directly. Guild supports both methods: running operations defined in Guild files and running scripts.
 
-Press `Enter` to start the operation.
+Press **Enter** to start the operation.
 
 Guild runs `train`, which is equivalent to the operations you've run
 to this point, but is explicitly defined in `guild.yml`.
