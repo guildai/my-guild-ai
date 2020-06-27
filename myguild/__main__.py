@@ -319,7 +319,7 @@ Fetch a topic.
 
 @myguild.command("fetch", help=fetch_help)
 @click.argument("topic", required=False, type=int, autocompletion=_autocomplete_topics)
-@click.option("--all-docs", is_flag=True, help="Fetch all docs.")
+@click.option("--docs", is_flag=True, help="Fetch all docs.")
 @click.option(
     "index_path",
     "-i",
@@ -341,17 +341,12 @@ Fetch a topic.
 @click.option(
     "--stop-on-error",
     is_flag=True,
-    help="Stop when an error occurs. Applies only to --fetch-docs.",
+    help="Stop when an error occurs. Applies only when --docs is used.",
 )
 def fetch(
-    topic,
-    all_docs=False,
-    index_path=None,
-    force=False,
-    save_dir=None,
-    stop_on_error=False,
+    topic, docs=False, index_path=None, force=False, save_dir=None, stop_on_error=False,
 ):
-    if all_docs:
+    if docs:
         editlib.fetch_docs(
             save_dir=save_dir,
             index_path=index_path,
@@ -390,7 +385,7 @@ To publish all modified topics, use --all.
 @click.option(
     "--stop-on-error",
     is_flag=True,
-    help="Stop when an error occurs. Applies only to --fetch-docs.",
+    help="Stop when an error occurs. Applies only when --all is used.",
 )
 @click.option("--diff-cmd", metavar="CMD", help="Command used to diff changes.")
 @click.option("--edit-cmd", metavar="CMD", help="Command used to specify comment.")
