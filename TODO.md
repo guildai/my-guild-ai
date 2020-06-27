@@ -14,10 +14,7 @@
   naming conventions used in command help
 - Find /terms/xxx and make sure we have permalinks to those
 - Replace any remaining images `![](...)`
-- `Enter` and other keys -> **Enter**
-- Leading &nbsp; -> xxx
 - `FLAG` to *`FLAG`*
-- Consistent use of press rather than type
 
 ### Avoid dead ends
 
@@ -173,12 +170,6 @@ https://meta.discourse.org/t/brand-header-theme-component/77977
 
 Nested unordered lists are rending meekly. How to show a formated tree
 structure?
-
-### Apply consistent formatting
-
-- Fig/table captions indented and italicized
-- Avoid italics for links - or come up with a consistent rule - it
-  seems inconsistent in the upstream docs
 
 ### Solution checkbox
 
