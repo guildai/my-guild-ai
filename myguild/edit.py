@@ -143,11 +143,11 @@ def _topic_id(topic):
 
 
 def _topic_base_path(topic, save_dir):
-    return os.path.join(save_dir, "%s.base" % _topic_id(topic))
+    return os.path.join(save_dir, ".%s.base" % _topic_id(topic))
 
 
 def _topic_latest_path(topic, save_dir):
-    return os.path.join(save_dir, "%s.latest" % _topic_id(topic))
+    return os.path.join(save_dir, ".%s.latest" % _topic_id(topic))
 
 
 ###################################################################
