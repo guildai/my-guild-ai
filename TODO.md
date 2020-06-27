@@ -14,6 +14,19 @@
   naming conventions used in command help
 - Find /terms/xxx and make sure we have permalinks to those
 - Replace any remaining images `![](...)`
+- `Enter` and other keys -> **Enter**
+- Leading &nbsp; -> xxx
+- `FLAG` to *`FLAG`*
+- Consistent use of press rather than type
+
+### Avoid dead ends
+
+This is a higher level idea, but we should avoid providing only info
+without a "what to do with this" next step. E.g. while it's great to
+talk about runs, let's also provide a link to get started with a
+simple operation. When talking about output scalars, provide a link to
+examples. These are all directing the user to apply the information
+and get value from it.
 
 ### Cleanup references and cheatsheets to make more usable
 

@@ -59,7 +59,7 @@ Guild loads the specified Python module when running the operation. By default, 
 To save time and simplify configuration, Guild can inspect the Python module and import detected flags. Setting `flags-import` to `all` tells Guild to use all of the flags it detects. For more information, see [*Flags*](/flags.md).
 
 - `output-scalars`
-Guild refers to numeric results like *loss* and *accuracy* as [scalars](term:scalar). Guild can detect scalars logged by script output (e.g. using `print` in Python). By default, Guild captures scalars written to output in the format ``KEY: VALUE``. The `output-scalars` operation attribute explicitly defines the patterns that Guild uses. For more information, see [*Output Scalars*](ref:output-scalars).
+Guild refers to numeric results like *loss* and *accuracy* as [scalars](term:scalar). Guild can detect scalars logged by script output (e.g. using `print` in Python). By default, Guild captures scalars written to output in the format `KEY: VALUE`. The `output-scalars` operation attribute explicitly defines the patterns that Guild uses. For more information, see [*Output Scalars*](ref:output-scalars).
 
 Refer to [*Guild File Reference*](/reference/guildfile) for details about the Guild file format and available configuration options.
 
@@ -130,7 +130,7 @@ You are about to run train
 Continue? (Y/n)
 ```
 
-<span data-guild-icon="info-circle" data-guild-class="callout note"></span>You use ``train`` rather than ``train.py`` above. `train` is the *operation* defined in the Guild file. `train.py` refers to the Python script directly. Guild supports both methods: running operations defined in Guild files and running scripts.
+<span data-guild-icon="info-circle" data-guild-class="callout note"></span>You use `train` rather than `train.py` above. `train` is the *operation* defined in the Guild file. `train.py` refers to the Python script directly. Guild supports both methods: running operations defined in Guild files and running scripts.
 
 Press `Enter` to start the operation.
 
