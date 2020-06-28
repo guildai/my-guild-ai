@@ -3,8 +3,8 @@
 <div data-theme-toc="true"></div>
 <div data-guild-docs="true"></div>
 
-Guild AI provides a Python interface via the module [`guild.ipy`](https://github.com/guildai/guildai/blob/master/guild/ipy.py). The module name stands for *interactive Python*.
+Guild AI provides a Python interface via the [`guild.ipy`](https://github.com/guildai/guildai/blob/master/guild/ipy.py) module. The module name stands for *interactive Python*.
 
-This interface intended for use within a [Notebook](https://jupyter.org/) or interactive shell. It can also be in Python scripts.
+Use this interface in a [Jupyter Notebook](https://jupyter.org/) or interactive shell. You can also use it in Python scripts.
 
-Refer to [***Guild AI Interactive Python Quick Start***](https://github.com/guildai/guildai/blob/master/examples/notebooks/get-started.ipynb) for step-by-step examples of using `guild.ipy`.
+Refer to [*Guild AI Interactive Python Quick Start*](https://github.com/guildai/guildai/blob/master/examples/notebooks/get-started.ipynb) for step-by-step examples of using `guild.ipy`.

@@ -51,7 +51,7 @@ You are about to run train
 Continue? (Y/n)
 ```
 
-Guild shows a preview of the flags used for the operation and asks you to confirm the operation by pressing `Enter`. When you confirm the operation, Guild executes the `train` module with the specified flag values. Guild generates a [*run*](/terms/run), which is a record of the operation inputs and outputs.
+Guild shows a preview of the flags used for the operation and asks you to confirm the operation by pressing `Enter`. When you confirm the operation, Guild executes the `train` module with the specified flag values. Guild generates a [*run*](/docs/run), which is a record of the operation inputs and outputs.
 
 Guild passes flag values to Python modules by setting global variables or by passing arguments on the command line. You can configure this interface or Guild can detect it. For more information, see [Flags Interface](#flags-interface) below.
 
@@ -95,7 +95,7 @@ train:
   main: train_classifier
 ```
 
-> <span data-guild-icon="info-circle" data-guild-class="callout note"></span>Do not include the file name extension when specifying a main module for an operation. The attribute value specifies a Python *module* and not a file name.
+> <span data-guild-class="callout note"></span>Do not include the file name extension when specifying a main module for an operation. The attribute value specifies a Python *module* and not a file name.
 
 ### Other Language Operations
 

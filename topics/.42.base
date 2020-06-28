@@ -78,7 +78,7 @@ train:
       arg-name: bs
 ```
 
-> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span>Use the `--print-cmd` option with [`guild run`](/commands/run) to print the full command Guild uses when running an operation. This command includes the flag related options as described above.
+> <span data-guild-class="callout tip"></span>Use the `--print-cmd` option with [`guild run`](/commands/run) to print the full command Guild uses when running an operation. This command includes the flag related options as described above.
 
 ### Environment Variables
 
@@ -97,7 +97,7 @@ op:
       env-name: X
 ```
 
-> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span>Use environment variables from non-Python scripts as a convenient way to read flag values without having to process command line arguments.
+> <span data-guild-class="callout tip"></span>Use environment variables from non-Python scripts as a convenient way to read flag values without having to process command line arguments.
 
 ### Python Global Variables
 
@@ -152,16 +152,19 @@ To avoid duplicating flag definitions in scripts and in Guild files, Guild lets 
 
 ### Flag Detection
 
-To import flags, Guild must inspect a script and look for possible flag definitions based on the [flags interface](#flags-interface). As described above, the flags interface may be explicitly configured. Otherwise Guild attempts to infer the interface.
+To import flags, Guild inspects a script and look for possible flag definitions based on the [flags interface](#flags-interface). As described above, the flags interface may be explicitly configured. Otherwise Guild attempts to infer the interface.
 
 Guild uses the rules below for inferring flags according to the specified interface.
 
-| | |
-|-|-|
+<div data-guild-class="terms">
+
 | *Interface* | *Flag Detection Method* |
+|-|-|
 | `args` | Guild runs the script with the `--help` option and inspects `argparse` generated option. From this Guild infers flag name, description, type, available choices, and default value. |
 | `globals` | Guild inspects the Python module and looks for global variables that are assigned numbers, strings, or boolean constants. Guild does not import variables that start with `_`. From this Guild infers flag name, type, and default value. |
 | `global:<name>` | Guild inspects the Python module and looks for the specified global variable. Guild infers flags if the variable references a dict. Guild infers flags from dict items that are number, string, or boolean constants. From these items, Guild infers flag name, type, and default value. |
+
+</div>
 
 Guild does not currently support flag imports for non-Python scripts. In such cases you must explicitly define each flag and use command line arguments or environment variables to access flags.
 
@@ -185,7 +188,7 @@ op:
 
 In this case, you must explicitly define each flag your script supports.
 
-> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span>When `flags-import` is `no`, Guild will not inspect your script for flags. Use this value to avoid processing your scripts when you don't need to.
+> <span data-guild-class="callout tip"></span>When `flags-import` is `no`, Guild will not inspect your script for flags. Use this value to avoid processing your scripts when you don't need to.
 
 To import all detected flags, use the value `all` or `yes` for `flags-import`.
 
@@ -271,11 +274,15 @@ guild run train lr=[0.001,0.01,0.1] batch-size=[100,500,1000]
 
 Sequence functions are specified in the format `NAME[ARGS]` where `NAME` is one of the functions below and `ARGS` is a list of values separated by a colon `:`.
 
+<div data-guild-class="terms">
+
 | | |
 |-|-|
 | [`range`](#range) | Specifies a range with *start*, *end*, and an optional step size. |
 | [`linspace`](#linspace) | Specifies an evenly spaced sequence along a linear scale with *start*, *end*, and an optional value count. |
 | [`logspace`](#logspace) | Specifies an evenly spaced sequence along a log-linear scale with *start*, *end*, an optional value count, and an optional logarithmic base. |
+
+</div>
 
 Refer to the sections below for details on each function.
 
@@ -289,7 +296,7 @@ range[START:END:STEP=1]
 
 Generates a list of values starting with `START` and ending with `END` in increments of `STEP`. `STEP` may be omitted, in which case the value `1` is used.
 
-| *Example* : *Sequence* |                        |
+| *Example* | *Sequence* |
 |------------------------|------------------------|
 | `range[1:4]`           | `[1, 2, 3, 4]`         |
 | `range[1:4:2]`         | `[1, 3]`               |
@@ -331,10 +338,14 @@ Generates `COUNT` values along a logarithmic scale between `BASE ^ LOW` and `BAS
 
 Search space functions are specified in the format `NAME[ARGS]` where `ARGS` is a list of values separated by a colon.
 
+<div data-guild-class="terms">
+
 |                             |                                                              |
 |-----------------------------|--------------------------------------------------------------|
 | [`uniform`](#uniform)       | Specifies a uniform distribution over a range of values      |
 | [`loguniform`](#loguniform) | Specifies a log-uniform distribution over a range of values. |
+
+</div>
 
 Refer to the sections below for details on each function.
 
@@ -372,7 +383,7 @@ Guild uses the [YAML spec](https://yaml.org/spec/) for decoding strings to value
 
 Below are examples of various conversions.
 
-| String Value | Decoded Type |
+| *String Value* | *Decoded Type* |
 |--------------|--------------|
 | `hello`      | string       |
 | `1`          | int          |
@@ -383,7 +394,7 @@ Below are examples of various conversions.
 
 Guild provides an exception in cases where a string that appears to be a run ID but would otherwise be treated by YAML as scientific notation.
 
-| String Value | Decoded Type |
+| *String Value* | *Decoded Type* |
 |--------------|--------------|
 | `1e10`       | string       |
 | `67217e15`   | string       |

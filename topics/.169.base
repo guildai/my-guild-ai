@@ -29,13 +29,17 @@ To compare a common path within each run, use `--path` or `-p`. For example, to 
 guild compare -p data.csv
 ```
 
-You can alternatively diff specific parts of two runs using other options.
+You can alternatively compare specific parts of two runs using other options.
+
+<div data-guild-class="terms">
 
 |            |                       |
 |------------|-----------------------|
-| `--output` | Diff run output.      |
-| `--source` | Diff run source code. |
-| `--flags`  | Diff run flags.       |
+| `--output` | *compre run output*      |
+| `--source` | *comprea run source code* |
+| `--flags`  | *compare run flags*       |
+
+</div>
 
 For a complete list of options, see [`guild diff`](/commands/diff).
 
@@ -47,11 +51,11 @@ Use the `--working` option to compare run source code to the working project cop
 guild diff --working
 ```
 
-> <span data-guild-icon="check-info" data-guild-class="callout note"></span>Guild does not apply `sourcecode` filter rules when diffing with `--working`. Guild runs the configured diff program on the specified run's source code directory (`.guild/sourcecode`) to the project source code root. Files that are excluded using filter rules appear in the diff comparison only in the project.
+> <span data-guild-class="callout note"></span>Guild does not apply `sourcecode` filter rules when diffing with `--working`. Guild runs the configured diff program on the specified run's source code directory (`.guild/sourcecode`) to the project source code root. Files that are excluded using filter rules appear in the diff comparison only in the project.
 
 ## Diff Programs
 
-When diffing runs or paths, Guild passes the two [run directories](/terms/run-dir) or applicable paths to a diff program. By default, Guild chooses a diff program available on your system based on its capabilities.
+When diffing runs or paths, Guild passes the two [*run directories*](/docs/runs#run-dir) (or applicable paths if certain options are included) to a diff program. By default, Guild chooses a diff program available on your system based on its capabilities.
 
 To specify the diff program used, use the `--cmd` or `-c` option. Guild passes the paths to compare as arguments at the end of the specified command. For example, to use [Meld](https://meldmerge.org/) to compare runs, use:
 
@@ -59,4 +63,4 @@ To specify the diff program used, use the `--cmd` or `-c` option. Guild passes t
 guild compare -c meld
 ```
 
-You can configure the diff program that Guild uses by default in *user configuration*. For more information, see [*Reference: User Config*](/t/reference-user-config/173#diff).
+You can configure the diff program that Guild uses by default in *user configuration*. For more information, see [*User Config Reference*](/reference/user-config#diff).

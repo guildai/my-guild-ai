@@ -11,7 +11,7 @@ This is a very light weight pass. Think about what's missing below.
 
 ## Overview
 
-Operations are used to start [*runs*](/terms/run). Operations are specified when calling [`guild run`](/commands/run) in the format:
+Operations are used to start [*runs*](/docs/runs). Operations are specified when calling [`guild run`](/commands/run) in the format:
 
 ``` command
 guild run OPERATION
@@ -54,7 +54,7 @@ List available operations using [`guild operations`](/commands/operations):
 guild operations
 ```
 
-> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span> The [`guild ops`](/commands/ops) command is a shortened alias for `operations`.</span>
+> <span data-guild-class="callout tip"></span> The [`guild ops`](/commands/ops) command is a shortened alias for `operations`.</span>
 
 ## Python Based Operations
 
@@ -67,7 +67,7 @@ train:
 
 <span data-guild-class="caption">Guild file (`guild.yml`) defining operation `train`, which is implemented in Python module `train_logreg`</span>
 
-> <span data-guild-icon="info-circle" data-guild-class="callout info"></span>Do not include the `.py` suffix when specifying `main`. The value refers to the module name, not the file name.
+> <span data-guild-class="callout info"></span>Do not include the `.py` suffix when specifying `main`. The value refers to the module name, not the file name.
 
 Guild loads such modules as `__main__` in the same way that Python itself loads them when run using `python -m <module name>` from the command line.
 
@@ -106,7 +106,7 @@ train:
   exec: Rscript .guild/sourcecode/train.r
 ```
 
-The script `train.r` is prefixed with `.guild/sourcecode/` because operations run in the context of a [*run directory*](/terms/run-dir), not the project directory. Guild copies source code files from the project to the run directory under `.guild/sourcecode` by default. See [Operation Source Code](#operation-source-code) for more information.
+The script `train.r` is prefixed with `.guild/sourcecode/` because operations run in the context of a [*run directory*](/docs/runs#run-dir), not the project directory. Guild copies source code files from the project to the run directory under `.guild/sourcecode` by default. See [Operation Source Code](#operation-source-code) for more information.
 
 ### Flags Interface
 
@@ -138,7 +138,7 @@ When run using default flag values, Guild will start this operation using the fo
 train.sh 0.1 100
 ```
 
-> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span> Use the `--print-cmd` option with [`guild run`](/commands/run) to show the command Guild uses to start an operation.
+> <span data-guild-class="callout tip"></span> Use the `--print-cmd` option with [`guild run`](/commands/run) to show the command Guild uses to start an operation.
 
 ### Environment Variables
 

@@ -49,7 +49,7 @@ Create a new project directory:
 mkdir guild-start
 ```
 
-> <span data-guild-icon="info-circle" data-guild-class="callout note"></span>You can name this directory anything you want. The examples that follow use `guild-start` to denote the project directory for this guide.
+> <span data-guild-class="callout note"></span>You can name this directory anything you want. The examples that follow use `guild-start` to denote the project directory for this guide.
 
 Change to the project directory:
 
@@ -78,8 +78,8 @@ This script simulates a loss function. It accepts hyperparameters `x` and `noise
 
 The project directory should look like this:
 
-> <span data-guild-icon="folder-open"></span> guild-start
-<span data-guild-icon="file" data-guild-class="dir-1"></span> train.py
+> <span data-guild-class="ls-dir-open">guild-start</span>
+<span data-guild-class="ls-file ls-1">train.py</span>
 
 ## Run the Script
 
@@ -102,7 +102,7 @@ Guild runs `train.py`, which prints a simulated loss.
 
 When Guild runs a script, it generates a new experiment, or [*run*](/docs/runs). Each run tracks experiment details including results.
 
-> <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>Guild lets you track experiments without changing your scripts. This saves time and keeps your source independent of the experiment management system.
+> <span data-guild-class="callout highlight"></span>Guild lets you track experiments without changing your scripts. This saves time and keeps your source independent of the experiment management system.
 
 Guild detects two hyperparameters from `train.py`: *noise* and *x*. Guild refers to these variables as [*flags*](/docs/flags). By default, Guild treats global constants in Python scripts as flags. This behavior can be controlled through explicit configuration, which you learn about later.
 
@@ -175,7 +175,7 @@ scalars:
 
 By default, Guild shows information for the latest run.
 
-> <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>Guild captures detailed information for each run so you have a complete record of each result. This information is useful for making informed decisions and tracking changes to your model.
+> <span data-guild-class="callout highlight"></span>Guild captures detailed information for each run so you have a complete record of each result. This information is useful for making informed decisions and tracking changes to your model.
 
 ### Project Source Code
 
@@ -193,7 +193,7 @@ guild ls --sourcecode
   .guild/sourcecode/train.py
 ```
 
-> <span data-guild-icon="thumbs-up" data-guild-class="callout highlight"></span>Guild snapshots the source code at the time the operation is run so you have an accurate record of the program. You don't have to commit your code to a repository before starting a run. You can freely modify your project source while operations are running.
+> <span data-guild-class="callout highlight"></span>Guild snapshots the source code at the time the operation is run so you have an accurate record of the program. You don't have to commit your code to a repository before starting a run. You can freely modify your project source while operations are running.
 
 You can show source code files using [`guild cat`](/commands/cat) with the `--sourcecode` option:
 
@@ -232,11 +232,11 @@ Guild opens the copy `train.py` used for the run with the default system program
 
 In this section, you use Guild AI to capture experiments for a sample training script.
 
-> <span data-guild-icon="thumbs-up" data-guild-class="callout highlights"></span>
+> <span data-guild-class="callout highlights"></span>
 > - Guild lets you track experiments without changing your code.
 > - Guild is easy to install and use. It doesn't require databases or external systems.
 > - Guild captures details about your run. Use this information to optimize your model, catch mistakes, and resolve issues.
 
 In the next section, you use Guild's built-in hyperparamter tuning features to find values for `x` that minimize `loss` for the sample training script.
 
-<span data-guild-class="btn nav">[Next: Optimize a Model](/start/optimize)<span data-guild-icon="angle-right"></span></span>
+<span data-guild-class="btn next">[Next: Optimize a Model](/start/optimize)</span>

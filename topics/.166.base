@@ -9,11 +9,11 @@ Guild Compare is a [curses based application](https://en.wikipedia.org/wiki/Curs
 
 Use Guild Compare to view runs in a spreadsheet format including flags and scalar values.
 
-![](/assets/img/compare-feature-2.png)
+![compare-feature-2|690x356](upload://uaVpyu94KyLuhcQmNSgrx1GkjHg.png)
 
 <span data-guild-class="caption">Guild Compare shows runs in a spreadsheet format</span>
 
-> <span data-guild-icon="check-circle" data-guild-class="callout tip"></span> Guild Compare runs in terminals across SSH connections. It's convenient for viewing results on remote servers without having to run servers or copy files.
+> <span data-guild-class="callout tip"></span> Guild Compare runs in terminals across SSH connections. It's convenient for viewing results on remote servers without having to run servers or copy files.
 
 ## Start Guild Compare
 
@@ -31,16 +31,16 @@ By default, Guild Compare runs in *interactive mode*. It runs as an application 
 
 For a list of supported key commands, press **?** when running in interactive mode.
 
-Below are some common actions you perform in interactive mode.
+Below are common actions you perform in interactive mode.
 
 | | |
 |-|-|
-| Navigate | Use the arrow keys to move the active cell to different rows and columns. |
-| Sort runs by a column | Use the arrow keys to navigate to the column you want to sort by. Press **1** to sort in ascending order or **2** for descending. |
-| Refresh the display with the latest information | Press **r** (for refresh) at any point to show the latest information. Guild does not automatically update the display. |
-| View run details | Press **Enter** to view details for a selected run. Press **q** to exit the detail window. |
-| List key bindings | Press **?** to show the list of key bindings. To exit the list, press **q**. |
-| Exit | Press **q** to exit Guild Compare. |
+| *Navigate* | Use the arrow keys to move the active cell to different rows and columns. |
+| *Sort runs by a column* | Use the arrow keys to navigate to the column you want to sort by. Press **1** to sort in ascending order or **2** for descending. |
+| *Refresh the display with the latest information* | Press **r** (for refresh) at any point to show the latest information. Guild does not automatically update the display. |
+| *View run details* | Press **Enter** to view details for a selected run. Press **q** to exit the detail window. |
+| *List key bindings* | Press **?** to show the list of key bindings. To exit the list, press **q**. |
+| *Exit* | Press **q** to exit Guild Compare. |
 
 ## Export Data
 
@@ -76,9 +76,13 @@ guild compare --tool hiplot
 
 Supported tools:
 
+<div data-guild-class="terms">
+
 |          |                                                                              |
 |----------|------------------------------------------------------------------------------|
-| `hiplot` | Use [HiPlot](https://facebookresearch.github.io/hiplot/) to compare runs. |
+| hiplot | Use [HiPlot](https://facebookresearch.github.io/hiplot/) to compare runs. |
+
+</div>
 
 Refer to the sections below for detail on each tool.
 
@@ -86,7 +90,7 @@ Refer to the sections below for detail on each tool.
 
 HiPlot is a visualization tool developed by Facebook used to discover correlations and patterns in high-dimensional data. It has a high performance parallel plots graphing engine that can be used as an alternative to TensorBoard's HParams plugin.
 
-![](/assets/img/hiplot.png)
+![hiplot|690x471](upload://755eSkRj9s0JafNgjOtEORtDd9o.jpeg)
 
 <span data-guild-class="caption">Compare runs using Facebook's HiPlot visualization tool</span>
 
