@@ -23,8 +23,6 @@ from . import util
 log = get_logger()
 
 
-DEFAULT_LINK_ICON = "far-file-alt"
-COMMAND_LINK_ICON = "angle-right"
 GUILD_DOCS_SECTION_CLASS = "guild-docs-section"
 GUILD_COMMANDS_SECTION_CLASS = "guild-docs-commands-section"
 
@@ -192,7 +190,7 @@ def _apply_section_description(section, lines):
 
 
 def _apply_section_links(section, force, lines):
-    lines.extend([_section_div_open(GUILD_DOCS_SECTION_CLASS, DEFAULT_LINK_ICON), ""])
+    lines.extend([_section_div_open(GUILD_DOCS_SECTION_CLASS), ""])
     lines.extend(
         [
             _format_section_link(link, force, section)
@@ -202,11 +200,8 @@ def _apply_section_links(section, force, lines):
     lines.extend(["", "</div>", ""])
 
 
-def _section_div_open(section_class, link_icon_class):
-    return "<div data-guild-class=\"%s\" data-guild-li-icon=\"%s\">" % (
-        section_class,
-        link_icon_class,
-    )
+def _section_div_open(section_class):
+    return "<div data-guild-class=\"%s\">" % section_class
 
 
 def _format_section_link(link, force, section):
@@ -313,7 +308,7 @@ def _command_section_title(command):
 def _apply_command_links(section, force, lines):
     section_class = "%s %s" % (GUILD_DOCS_SECTION_CLASS, GUILD_COMMANDS_SECTION_CLASS)
     lines.extend(
-        [_section_div_open(section_class, COMMAND_LINK_ICON), "",]
+        [_section_div_open(section_class), "",]
     )
     lines.extend(
         [
