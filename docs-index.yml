@@ -1,3 +1,10 @@
+# Doc status:
+#
+# - NEW: no checks
+# - PASS-1: formatting and links
+# - TODO: missing content
+# - READY: ready tfor 0.7
+
 - section: Get Started
   description:
     Start here to learn about Guild AI through easy-to-follow,
@@ -6,39 +13,39 @@
     - pattern: 'Get Started: '
       repl: ''
   links:
-    - start
-    - start/optimize
-    - start/runs
-    - start/guildfile
-    - start/classifier
+    - start                       # NEW
+    - start/optimize              # NEW
+    - start/runs                  # NEW
+    - start/guildfile             # NEW
+    - start/classifier            # NEW
+    - start/use-guild             # NEW
 
 - section: Concepts
   description:
-    Once you are familiar gotten a start with Guild, go deeper into
-    the core concepts behind the features.
+    Go deeper into the core concepts behind the features.
   links:
-    - docs/cli
-    - docs/python-api
-    - docs/runs
-    - docs/guildfiles
-    - docs/operations
-    - docs/flags
-    - docs/scalars
-    - docs/optimization
-    - docs/dependencies
-    - docs/pipelines
-    - docs/environments
-    - docs/remotes
-    - docs/queues
+    - docs/cli                    # NEW
+    - docs/python-api             # NEW
+    - docs/runs                   # NEW
+    - docs/guildfiles             # NEW
+    - docs/operations             # NEW
+    - docs/flags                  # NEW
+    - docs/scalars                # NEW
+    - docs/optimization           # NEW
+    - docs/dependencies           # NEW
+    - docs/pipelines              # NEW
+    - docs/environments           # NEW
+    - docs/remotes                # NEW
+    - docs/queues                 # NEW
 
 - section: Tools
   description:
     Guild provides a number of integrated tools.
   links:
-    - docs/compare
-    - docs/view
-    - docs/tensorboard
-    - docs/diff
+    - docs/compare                # NEW
+    - docs/view                   # NEW
+    - docs/tensorboard            # NEW
+    - docs/diff                   # NEW
 
 - section: Commands
   description:
@@ -141,11 +148,11 @@
     - pattern: ' Reference'
       repl: ''
   links:
-    - reference/guildfile
-    - reference/optimizers
-    - reference/remotes
-    - reference/user-config
-    - reference/plugins
+    - reference/guildfile         # NEW
+    - reference/optimizers        # NEW
+    - reference/remotes           # NEW
+    - reference/user-config       # NEW
+    - reference/plugins           # NEW
 
 - section: Cheatsheets
   description:
@@ -155,13 +162,13 @@
     - pattern: ' Cheatsheet'
       repl: ''
   links:
-    - cheatsheets/commands
-    - cheatsheets/guildfile
-    - cheatsheets/remotes
+    - cheatsheets/commands        # NEW
+    - cheatsheets/guildfile       # NEW
+    - cheatsheets/remotes         # NEW
 
 - section: Other Docs
   links:
-    - install
-    - system-requirements
-    - docs/windows
-    - help
+    - install                     # NEW
+    - system-requirements         # NEW
+    - docs/windows                # NEW
+    - help                        # NEW
