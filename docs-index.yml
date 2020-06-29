@@ -17,8 +17,8 @@
     - start                       # READY
     - start/optimize              # READY
     - start/runs                  # READY
-    - start/guildfile             # NEW
-    - start/classifier            # NEW
+    - start/guildfile             # READY
+    - start/classifier            # READY
     - start/use-guild             # NEW
 
 - section: Concepts
@@ -174,3 +174,10 @@
     - docs/defaults               # NEW
     - docs/windows                # NEW
     - help                        # NEW
+
+# Non-section links, used for fetch.
+
+- links:
+    - examples/hello
+    - examples/notebooks
+    - examples/languages
