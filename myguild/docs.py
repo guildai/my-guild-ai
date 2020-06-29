@@ -119,14 +119,14 @@ def iter_index_links(index_path):
     index = _load_index(index_path)
     seen = set()
     for item in index:
-        if "section" in item:
-            for link in _iter_section_links(item):
+        if "links" in item:
+            for link in _iter_item_links(item):
                 if link not in seen:
                     yield link
                 seen.add(link)
 
 
-def _iter_section_links(section):
+def _iter_item_links(section):
     for link in section.get("links") or []:
         yield link
     for command_section in section.get("commands") or []:
@@ -169,9 +169,6 @@ def _apply_index_header(lines):
 def _apply_index_item(item, force, lines):
     if "section" in item:
         _apply_section(item, force, lines)
-    else:
-        log.error("unexpected item in index: %s", pprint.pformat(item))
-        raise SystemExit(1)
 
 
 def _apply_section(section, force, lines):
