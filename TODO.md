@@ -4,16 +4,19 @@
 
 ### Things to Replace/Check
 
-
 - Any refs to *.md
 - [...](xxx:yyy)
-
-- URL fragments inside permalinks -> use topic URLs to avoid redirects
+- Restore use of permalinks for all references (suddently is working)
+- Fix other component specialized data attr support (e.g. docs overview)
 - Consistent used of italics when referencing docs or help topics
 - Refer use of lower case <var> and go back to VAR - this is consistent with
   naming conventions used in command help
 - Find /terms/xxx and make sure we have permalinks to those
-- Replace any remaining images `![](...)`
+- Format directory listing using new format (search to confirm all used)
+- Figure out attribute help formatting - not happy with it
+- Ext link icon can now be after psuedo - consider different icon now
+- Use terms table class for terms
+
 - `FLAG` to *`FLAG`*
 
 ### Avoid dead ends
