@@ -26,7 +26,7 @@ train:
 
 For more information, see [`plugins` operation attribute](/reference/guildfile.md#operation-plugins).
 
-> <span data-guild-class="callout important"></span> Summary plugins are not supported with Guild [output scalars](ref:output-scalar). You must explicitly log scalars as TensorBoard summaries from the operation script itself using one of the [supported methods](/scalars.md#tensorboard-summaries).
+> <span data-guild-class="callout important">Important</span> Summary plugins are not supported with Guild [output scalars](ref:output-scalar). You must explicitly log scalars as TensorBoard summaries from the operation script itself using one of the [supported methods](/scalars.md#tensorboard-summaries).
 
 ## Built-In Plugins
 

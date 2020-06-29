@@ -15,9 +15,11 @@ The `guild_home` attribute in `check` output indicates the location of the Guild
 
 By default, Guild environments correspond to activated virtual environments. Use virtual environments created using [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) or [`virtualenv`](https://virtualenv.pypa.io/en/latest/) to isolate your work, including Guild runs.
 
-Change this behavior by [setting Guild home](#set-guild-home).
+Virtual environment let you run Python operations using a specific Python runtime along with a controlled set of installed libraries. When you activate a virtual environment, Guild operations run within this isolated context.
 
-> <span data-guild-class="callout important"></span>When using a virtual environment, runs are saved *within the environment*. Take care when deleting virtual environments as they may contain Guild runs. Look for `.guild/runs` within the virtual environment directory to verify that you aren't deleting runs.
+By default, runs are stored within the virtual environment. This lets you isolate your project work per environment. You can change this behavior so that runs are stored in a different location by [changing the location of Guild home](#set-guild-home).
+
+> <span data-guild-class="callout important">Important</span> Take care when deleting virtual environments as they may contain Guild runs. Look for `.guild/runs` within the virtual environment directory to verify that you aren't accidentally deleting runs.
 
 ## Guild Home
 
@@ -30,11 +32,11 @@ Change this behavior by [setting Guild home](#set-guild-home).
 - Deleted runs
 - Interprocess locks
 
-Guild Home is layed out as follows:
+Guild Home is laid out as follows:
 
 |||
 |-|-|
-| <span data-guild-class="ls-dir-open">Guild Home Directory</span> | <span data-guild-class="dim">default is `~/.guild`</span> |
+| <span data-guild-class="ls-dir-open">Guild Home Directory</span> | <span data-guild-class="dim">default is `~/.guild` or `<venv>/.guild` within a virtual env </span> |
 | <span data-guild-class="ls-dir-open ls-1">cache</span> | <span data-guild-class="dim">Guild-maintained caches</span> |
 | <span data-guild-class="ls-dir ls-2">import-flags</span> | <span data-guild-class="dim">cached flags imported from scripts</span> |
 | <span data-guild-class="ls-dir ls-2">resources</span> | <span data-guild-class="dim">cached resources</span> |
@@ -44,6 +46,8 @@ Guild Home is layed out as follows:
 | <span data-guild-class="ls-dir ls-1">runs</span> | <span data-guild-class="dim">indexed run attributes and scalars</span> |
 | <span data-guild-class="ls-dir-open ls-1">trash</span> | <span data-guild-class="dim">deleted objects</span> |
 | <span data-guild-class="ls-dir ls-2">runs</span> | <span data-guild-class="dim">deleted runs</span> |
+
+> <span data-guild-class="callout tip">Tip</span> Use [`guild check`](/commands/check) to show the current Guild home. This is the value shown for `guild_home` in the output.
 
 ### Set Guild Home
 
@@ -72,7 +76,7 @@ or:
 guild -H <path> <command> ...
 ```
 
-> <span data-guild-class="callout note"></span>When using `-H`, the option must be specified *before* `<command>`.
+> <span data-guild-class="callout note">Note</span> When using `-H`, the option must be specified *before* `<command>`.
 
 For help setting environment variables on Windows, see [Help with Windows](/docs/windows).
 
@@ -103,7 +107,7 @@ source guild-env [<env path>]
 
 You may omit `<env path>` if the environment is defined in the current directory or in a `venv` subdirectory.
 
-> <span data-guild-class="callout note"></span>Virtual environments created using [`guild init`](/commands/init) are standard Python virtual environments and can be activated by sourcing the `bin/activate` environment. The `guild-env` command provides a convenient alternative.
+> <span data-guild-class="callout note">Note</span> Virtual environments created using [`guild init`](/commands/init) are standard Python virtual environments and can be activated by sourcing the `bin/activate` environment. The `guild-env` command provides a convenient alternative.
 
 To activate an environment created using `virtualenv` or `venv` use:
 

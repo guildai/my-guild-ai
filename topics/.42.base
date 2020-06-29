@@ -78,7 +78,7 @@ train:
       arg-name: bs
 ```
 
-> <span data-guild-class="callout tip"></span>Use the `--print-cmd` option with [`guild run`](/commands/run) to print the full command Guild uses when running an operation. This command includes the flag related options as described above.
+> <span data-guild-class="callout tip">Tip</span> Use the `--print-cmd` option with [`guild run`](/commands/run) to print the full command Guild uses when running an operation. This command includes the flag related options as described above.
 
 ### Environment Variables
 
@@ -97,7 +97,7 @@ op:
       env-name: X
 ```
 
-> <span data-guild-class="callout tip"></span>Use environment variables from non-Python scripts as a convenient way to read flag values without having to process command line arguments.
+> <span data-guild-class="callout tip">Tip</span> Use environment variables from non-Python scripts as a convenient way to read flag values without having to process command line arguments.
 
 ### Python Global Variables
 
@@ -218,7 +218,7 @@ op:
 
 In this case, you must explicitly define each flag your script supports.
 
-> <span data-guild-class="callout tip"></span>When `flags-import` is `no`, Guild will not inspect your script for flags. Use this value to avoid processing your scripts when you don't need to.
+> <span data-guild-class="callout tip">Tip</span> When `flags-import` is `no`, Guild will not inspect your script for flags. Use this value to avoid processing your scripts when you don't need to.
 
 ## Flag Definitions
 

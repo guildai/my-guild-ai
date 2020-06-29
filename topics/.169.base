@@ -51,7 +51,7 @@ Use the `--working` option to compare run source code to the working project cop
 guild diff --working
 ```
 
-> <span data-guild-class="callout note"></span>Guild does not apply `sourcecode` filter rules when diffing with `--working`. Guild runs the configured diff program on the specified run's source code directory (`.guild/sourcecode`) to the project source code root. Files that are excluded using filter rules appear in the diff comparison only in the project.
+> <span data-guild-class="callout note">Note</span> Guild does not apply `sourcecode` filter rules when diffing with `--working`. Guild runs the configured diff program on the specified run's source code directory (`.guild/sourcecode`) to the project source code root. Files that are excluded using filter rules appear in the diff comparison only in the project.
 
 ## Diff Programs
 

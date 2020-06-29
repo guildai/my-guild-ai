@@ -9,7 +9,7 @@
 
 The examples below apply to Guild [user configuration](ref:user-config). For a complete reference of remote configuration, see [Remotes Reference](/reference/remotes.md).
 
-> <span data-guild-class="callout note"></span>Each example includes the top-level `remotes` attribute. This attribute may only appear once in a configuration file. If your configuration file already has a `remotes` top-level attribute, ensure that you don't include it again when pasting content from the examples.
+> <span data-guild-class="callout note">Note</span> Each example includes the top-level `remotes` attribute. This attribute may only appear once in a configuration file. If your configuration file already has a `remotes` top-level attribute, ensure that you don't include it again when pasting content from the examples.
 
 ## s3 Examples
 

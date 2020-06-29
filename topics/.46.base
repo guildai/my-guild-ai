@@ -54,7 +54,7 @@ Below is a description of each setting.
 
 Refer to [*Guild File Reference*](/reference/guildfile) for details about the Guild file format and available configuration options.
 
-> <span data-guild-class="callout note"></span>The values for `flags-import` and `output-scalars` used in the Guild file above are equivalent to the defaults used by Guild. They can be omitted without changing the behavior of the operation. We define them here for illustration purposes.
+> <span data-guild-class="callout note">Note</span> The values for `flags-import` and `output-scalars` used in the Guild file above are equivalent to the defaults used by Guild. They can be omitted without changing the behavior of the operation. We define them here for illustration purposes.
 
 ## Get Project Info
 
@@ -106,7 +106,7 @@ BASE OPERATIONS
 
 Press **q** to exit help.
 
-> <span data-guild-class="callout highlight"></span>In addition to configuring operations, Guild files define the *user interface* for a project. The interface is discovered with Guild commands like [`operations`](/commands/operations) and [`help`](/commands/help). This supports project reuse and reproducibility. Operations are easy to recall, run, and compare.
+> <span data-guild-class="callout highlight">Highlight</span> In addition to configuring operations, Guild files define the *user interface* for a project. The interface is discovered with Guild commands like [`operations`](/commands/operations) and [`help`](/commands/help). This supports project reuse and reproducibility. Operations are easy to recall, run, and compare.
 
 ## Run the Operation
 
@@ -123,19 +123,19 @@ You are about to run train
 Continue? (Y/n)
 ```
 
-> <span data-guild-class="callout important"></span>Use `train` rather than `train.py` here. `train` (without the `.py` extension) is the operation defined in the Guild file. `train.py` (with the extension) refers to the Python script directly. Guild supports both methods: running operations defined in Guild files and running scripts directly.
+> <span data-guild-class="callout important">Important</span> Use `train` rather than `train.py` here. `train` (without the `.py` extension) is the operation defined in the Guild file. `train.py` (with the extension) refers to the Python script directly. Guild supports both methods: running operations defined in Guild files and running scripts directly.
 
 Press **Enter** to start the operation.
 
 Guild runs `train`, which is equivalent to the operations you've run to this point, but is explicitly defined in `guild.yml`.
 
-> <span data-guild-class="callout tip"></span>While it's convenient to run scripts directly in Guild, we recommend that you use a Guild file to explicitly define operations for your day-to-day workflow. Guild file operations are configured explicitly and discoverable as show above. They support a wide range of features that are not available when running scripts directly. For more information, see [*Guild File Reference*](/reference/guildfile).
+> <span data-guild-class="callout tip">Tip</span> While it's convenient to run scripts directly in Guild, we recommend that you use a Guild file to explicitly define operations for your day-to-day workflow. Guild file operations are configured explicitly and discoverable as show above. They support a wide range of features that are not available when running scripts directly. For more information, see [*Guild File Reference*](/reference/guildfile).
 
 ## Summary
 
 In this section, you create a Guild file to explicitly define a `train` operation.
 
-> <span data-guild-class="callout highlights"></span>
+> <span data-guild-class="callout highlight">Highlights</span>
 > - Guild files let you control and customize Guild support without modifying your code. This ensures that your code and your tools remain independent.
 >- Guild files let you and your colleagues more effectively use a project because operations are well-defined and discoverable.
 

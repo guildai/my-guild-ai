@@ -17,9 +17,13 @@ While Guild can run scripts directly without explicit configuration, in such cas
 
 More about Guild files:
 
-- [Get Started - Add a Guild File](/start/guildfile_xxx) --- step-by-step example creating a simple Guild file
-- [Guild File Reference](/reference/guildfile_xxx) --- complete list of configuration options
-- [Guild File Cheatsheet](/cheatsheets/guildfile_xxx) --- configuration examples
+- [*Get Started: Add a Guild File*](/start/guildfile) --- step-by-step example creating a simple Guild file
+- [*Guild File Reference*](/reference/guildfile) --- complete list of configuration options
+- [*Guild File Cheatsheet*](/cheatsheets/guildfile) --- configuration examples
+
+## Format
+
+TODO: plain text, YAML, location in "project" directory, operation only vs full format.
 
 ## Operations
 
@@ -95,7 +99,7 @@ train:
   main: train_classifier
 ```
 
-> <span data-guild-class="callout note"></span>Do not include the file name extension when specifying a main module for an operation. The attribute value specifies a Python *module* and not a file name.
+> <span data-guild-class="callout note">Note</span> Do not include the file name extension when specifying a main module for an operation. The attribute value specifies a Python *module* and not a file name.
 
 ### Other Language Operations
 

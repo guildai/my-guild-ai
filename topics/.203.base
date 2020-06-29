@@ -1,6 +1,76 @@
-TODO: links to other guides based on user interest
+<!-- -*- eval:(visual-line-mode 1) -*- -->
 
-- Modify an existing script-based project
-- Enhance a Notebook with automation
-- Use Guild to run experiments from a Notebook
-- Use Guild to share results
+<div data-theme-toc="true"></div>
+<div data-guild-docs="true"></div>
+
+## Overview
+
+In previous sections of [this guide](/start) you learn about Guild's core features. In this section, you learn how to apply Guild to your work.
+
+Previous sections guide you step-by-step. This section is conceptual. It provides a framework for making your own decisions.
+
+In the simplest case, you can run your training script with Guild like this:
+
+``` command
+guild run train.py
+```
+
+While this is a convenient starting point, it's limited because Guild makes assumptions about your script. Use a [Guild file](/docs/guildfiles) to explicitly define the operations for your project and take advantage of Guild's features.
+
+The simplest Guild file for `train.py` consists of two lines:
+
+``` yaml
+train:
+  flags-import: all
+```
+
+<span data-guild-class="caption">`guild.yml` --- defines a single `train` operation that runs the `train.py` script</span>
+
+Chances are your project a bit more configuration! In the sections that follow, you examine your training scripts and create a Guild file that's suitable for your project.
+
+> <span data-guild-class="callout note">Note</span> This guide applies to Python based projects. If your project uses a different language, refer to [*Languages Example*](/examples/languages).
+
+## Identify the Main Module
+
+Before you define an operation, identify the Python module to run. In some cases this is obvious. For more complex projects, it takes some investigating.
+
+If you don't know what module to run, study the project README or other documentation.
+
+Your project may support more than one command. For example, it may implement both *train* and *test* operations. In this case, select the primary operation, which is usually related to training a model. You add support for other operations in time.
+
+## Run Without Guild
+
+Before using Guild, run your operation directly with Python. This step establishes a baseline that you work from. If you can't run the operation without Guild, resolve any oustanding issues before proceeding.
+
+> <span data-guild-class="callout tip">Tip</span>
+
+When you run the operation, consider the *interface* that you use. The interface consists of *inputs* and *outputs*.
+
+Inputs are:
+
+- Settings related to model architecture and related algorithms --- these are referred to as *hyperparameters*
+- Other settings used by the script such as file locations, database credentials, etc.
+- Required files
+
+Outputs are:
+
+- Generated files
+- Logged metrics --- these are referred to as *scalars*
+
+The sections below guide you through identifying your operation interface. The answers to these questions are used later in [Define the Operation](#define-the-operation).
+
+### How do you specify script settings?
+
+
+
+### What files does the script use?
+
+### What files does the script generate?
+
+### What important metrics does the script log?
+
+
+
+## Define the Operation
+
+Define the

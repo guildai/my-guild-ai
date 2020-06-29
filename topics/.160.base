@@ -99,7 +99,7 @@ There are several methods for logging TensorBoard summaries. Refer to the links 
 | [MXBoard](https://github.com/awslabs/mxboard) | Operation uses MXNet |
 | [tensorBoardX](https://github.com/lanpa/tensorboardX) | Log TensorBoard summaries without incurring a large framework dependency |
 
-> <span data-guild-class="callout tip"></span>[tensorBoardX](https://github.com/lanpa/tensorboardX) is a light-weight library that is not tied to a large framework like TensorFlow or PyTorch. Consider it if you don't otherwise have access to a summary logging API.
+> <span data-guild-class="callout tip">Tip</span> [tensorBoardX](https://github.com/lanpa/tensorboardX) is a light-weight library that is not tied to a large framework like TensorFlow or PyTorch. Consider it if you don't otherwise have access to a summary logging API.
 
 ## Viewing Run Scalars
 
