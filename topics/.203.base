@@ -32,42 +32,69 @@ Chances are your project a bit more configuration! In the sections that follow, 
 
 ## Identify the Main Module
 
-Before you define an operation, identify the Python module to run. In some cases this is obvious. For more complex projects, it takes some investigating.
+To define a Guild operation, first identify the Python module to run. In some cases, the module is obvious. For more complex projects, it can take some investigating.
 
 If you don't know what module to run, study the project README or other documentation.
 
-Your project may support more than one command. For example, it may implement both *train* and *test* operations. In this case, select the primary operation, which is usually related to training a model. You add support for other operations in time.
+Your project may support more than one operation. For example, it may support both *training* and *testing* a model. In this case, select the primary operation, which is usually related to training a model. You can add support for other operations over time.
 
 ## Run Without Guild
 
-Before using Guild, run your operation directly with Python. This step establishes a baseline that you work from. If you can't run the operation without Guild, resolve any oustanding issues before proceeding.
+Before configuring a Guild operation, run your operation directly with Python. This step establishes baseline functionality. If you're unable to run the operation directly with Python, resolve outsanding issues before proceeding.
 
-> <span data-guild-class="callout tip">Tip</span>
+> <span data-guild-class="callout tip">Tip</span> If your baseline operation takes more than 10 seconds, consider ways to reduce its run time. In many cases, this is a matter of reducing the number of training epochs, steps, or data records that are processed. Your goal should be to run all of the setup and tear down steps and a minimal number of in-between iterations while keeping run time under 10 seconds.
 
-When you run the operation, consider the *interface* that you use. The interface consists of *inputs* and *outputs*.
+## Understand the Operation Interface
 
-Inputs are:
+When you run the operation, consider its *interface*. The interface consists of operations *inputs* and *outputs*.
+
+Operation inputs:
 
 - Settings related to model architecture and related algorithms --- these are referred to as *hyperparameters*
 - Other settings used by the script such as file locations, database credentials, etc.
 - Required files
 
-Outputs are:
+Operation outputs:
 
 - Generated files
 - Logged metrics --- these are referred to as *scalars*
 
-The sections below guide you through identifying your operation interface. The answers to these questions are used later in [Define the Operation](#define-the-operation).
+The sections below help you identify the operation interface. With this information you later [define the operation](#define-the-operation).
 
-### How do you specify script settings?
+### How are operation settings specified?
+
+Python based operations are configured in various ways:
+
+- Global variables
+- Environment variables
+- Command line arguments
+- Configuration files
+- In-place values
+
+Guild supports each of these methods except the last. In-place values are not easily or safely modified and should be avoided.
+
+#### Global variables
+
+The use of global variables is perhaps the most popular method for defining operation settings.
+
+Most Keras examples use this method. Consider [`mnist_mlp.py`](https://raw.githubusercontent.com/guildai/guildai/master/examples/use-guild/mnist_mlp.py). This module defines three global variables that can be modified by editing the source code. Two of these variables are *hyperparameters*: *`batch_size`* and *`epochs`*.
+
+https://github.com/guildai/guildai/blob/master/examples/use-guild/mnist_mlp.py#L16-L18
+
+#### Environment variables
+
+#### Command line arguments
+
+#### Configuration files
+
+#### In-place values
 
 
+### What input files does the operation require?
 
-### What files does the script use?
+### What output files does the operation generate?
 
-### What files does the script generate?
-
-### What important metrics does the script log?
+### What metrics does the operation log?
 
 
 
