@@ -370,7 +370,7 @@ To publish all modified topics, use --all.
 """
 
 
-@myguild.command("publish", help=edit_help)
+@myguild.command("publish", help=publish_help)
 @click.argument("topic", type=int, required=False, autocompletion=_autocomplete_topics)
 @click.option("-a", "--all", is_flag=True, help="Publish all locally modified topics.")
 @click.option("-m", "--comment", help="Comment used when publishing.")
@@ -397,6 +397,7 @@ To publish all modified topics, use --all.
         "'<id>.md' in this directory."
     ),
 )
+@click.option("--watch", is_flag=True, help="Watch a topic and publish when modified.")
 def publish(
     topic,
     all=False,
@@ -409,6 +410,7 @@ def publish(
     stop_on_error=False,
     diff_cmd=None,
     edit_cmd=None,
+    watch=False,
 ):
     if all:
         editlib.publish_all(
@@ -424,17 +426,23 @@ def publish(
         )
     else:
         _require_topic(topic)
-        editlib.publish(
-            topic,
-            comment=comment,
-            no_comment=no_comment,
-            skip_diff=skip_diff,
-            yes=yes,
-            force=force,
-            save_dir=save_dir,
-            edit_cmd=edit_cmd,
-            diff_cmd=diff_cmd,
-        )
+        if watch:
+            try:
+                editlib.watch(topic, save_dir=save_dir)
+            except KeyboardInterrupt:
+                sys.stdout.write("\n")
+        else:
+            editlib.publish(
+                topic,
+                comment=comment,
+                no_comment=no_comment,
+                skip_diff=skip_diff,
+                yes=yes,
+                force=force,
+                save_dir=save_dir,
+                edit_cmd=edit_cmd,
+                diff_cmd=diff_cmd,
+            )
 
 
 def _require_topic(topic):

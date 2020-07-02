@@ -89,3 +89,47 @@ def retry(desc, f, max_attempts=3, delay=3):
             log.error("Error running %s: %s", desc, e)
             log.info("Retrying %s after %0.1f seconds", desc, delay)
             time.sleep(delay)
+
+
+def mtime(path):
+    return os.stat(path).st_mtime
+
+
+class SafeLoop(object):
+    def __init__(self, limit_max=5, limit_interval=1.0, desc=None):
+        self.limit_max = limit_max
+        self.limit_interval = limit_interval
+        self.desc = desc
+        self._reset_count_time = None
+        self._count = 0
+
+    def check(self):
+        self._update_count()
+        if self._count > self.limit_max:
+            raise SystemExit(
+                "%s more than %i times within %0.1f seconds"
+                % (self.desc or "loop ran", self.limit_max, self.limit_interval)
+            )
+        return True
+
+    def __bool__(self):
+        return self.check()
+
+    def __nonzero__(self):
+        return self.check()
+
+    def incr(self):
+        self._count += 1
+
+    def _update_count(self):
+        now = time.time()
+        if self._reset_count_time is None or now > self._reset_count_time:
+            self._reset_count_time = now + self.limit_interval
+            self._count = 1
+
+
+def notify_send(msg, urgency=None):
+    cmd = ["notify-send", msg]
+    if urgency:
+        cmd.extend(["-u", urgency])
+    _ = subprocess.check_output(cmd)

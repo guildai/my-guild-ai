@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 
 from .api import DiscourseClientError
 from .api import init as init_api
@@ -218,7 +219,6 @@ def publish(
                     "Original post for topic %i not available for diff. Use "
                     "--skip-diff to bypass this check."
                 )
-            log.info("Diffing topic %i changed.", topic_id)
             util.diff_files(base_path, topic_path, diff_cmd)
         if not yes and not skip_diff and not _confirm_publish(topic_id):
             raise SystemExit(1)
@@ -233,7 +233,7 @@ def publish(
 
 
 def _check_local_changed(topic_id, save_dir):
-    if not _topic_base_changed(topic_id, save_dir):
+    if not _local_topic_changed(topic_id, save_dir):
         raise SystemExit(
             "Topic %i has not been modified. Use --force to override this check.",
             topic_id,
@@ -241,7 +241,7 @@ def _check_local_changed(topic_id, save_dir):
     return True
 
 
-def _topic_base_changed(topic_id, save_dir):
+def _local_topic_changed(topic_id, save_dir):
     topic_path = _topic_path(topic_id, save_dir)
     base_path = _topic_base_path(topic_id, save_dir)
     return _files_differ(base_path, topic_path)
@@ -287,6 +287,58 @@ def _assert_latest_unchanged(topic_id, save_dir, latest_raw):
             "override this safeguard.",
             topic_id,
         )
+
+
+###################################################################
+# Watch
+###################################################################
+
+
+def watch(topic_id, save_dir=None):
+    api = init_api()
+    save_dir = save_dir or default_save_dir()
+    topic_path = _topic_path(topic_id, save_dir)
+    if not os.path.exists(topic_path):
+        raise SystemExit("Topic %i not found in %s", topic_id, save_dir)
+    base_path = _topic_base_path(topic_id, save_dir)
+    if not os.path.exists(base_path):
+        raise SystemExit(
+            "Missing base version for topic %i - cannot run watch" % topic_id
+        )
+    topic = _topic_for_id(topic_id)
+    last_mtime = util.mtime(topic_path)
+    log.info("Watch topic %i (%s)", topic_id, os.path.relpath(topic_path))
+    loop = util.SafeLoop(
+        limit_max=5,
+        limit_interval=5.0,
+        desc="topic %i (%s) modified" % (topic_id, topic_path),
+    )
+    while loop:
+        cur_mtime = util.mtime(topic_path)
+        if cur_mtime > last_mtime:
+            loop.incr()
+            if _local_topic_changed(topic_id, save_dir):
+                latest_path = _fetch_topic_latest(topic_id, save_dir)
+                if _files_differ(base_path, latest_path):
+                    _latest_changed_on_watch(topic_id)
+                    assert False
+                log.action("Publishing %i", topic_id)
+                local_raw = open(topic_path).read()
+                api.update_post(topic.post_id, local_raw)
+                _save_topic_base(topic_id, save_dir, local_raw)
+            last_mtime = cur_mtime
+        time.sleep(0.1)
+
+
+
+def _latest_changed_on_watch(topic_id):
+    msg = (
+        "Topic %i has changed on the server since it was fetched. "
+        "Resolve this conflict using 'my-guild diff --latest %i and "
+        "publish the topic manually using --force."
+    ) % (topic_id, topic_id)
+    util.notify_send("ERROR during my-guild watch: %s" % msg, urgency="critical")
+    raise SystemExit(msg)
 
 
 ###################################################################
@@ -435,7 +487,7 @@ def publish_all(
     assert comment or no_comment
     warnings = False
     for topic_id in topic_ids:
-        if not force and not _topic_base_changed(topic_id, save_dir):
+        if not force and not _local_topic_changed(topic_id, save_dir):
             log.info("Topic %i has not been modified.", topic_id)
             continue
         try:
@@ -486,7 +538,7 @@ def diff_base_all(save_dir=None, diff_cmd=None):
     save_dir = save_dir or default_save_dir()
     diffed = []
     for topic_id in sorted(_iter_local_topic_ids(save_dir)):
-        if not _topic_base_changed(topic_id, save_dir):
+        if not _local_topic_changed(topic_id, save_dir):
             continue
         diff_base(topic_id, save_dir=save_dir, diff_cmd=diff_cmd)
         diffed.append(topic_id)

@@ -5,19 +5,22 @@
 
 <!-- TODO
 
-This is a very light weight pass. Think about what's missing below.
+This is a very light weight pass. Lots missing!
+
+- LOTS
+- Private ops
 
 -->
 
 ## Overview
 
-Operations are used to start [*runs*](/docs/runs). Operations are specified when calling [`guild run`](/commands/run) in the format:
+Guild uses operations to start [*runs*](/docs/runs). Specify an operation for [`guild run`](/commands/run) using the format:
 
 ``` command
 guild run OPERATION
 ```
 
-Operations are defined in [Guild files](term:guild-file).
+Operations are defined in [Guild files](/docs/guildfiles).
 
 Operations are defined using one of two formats:
 
@@ -36,7 +39,7 @@ validate:
 
 <span data-guild-class="caption">Two operations defined using *operation only* format</span>
 
-*Full format* defines operations under *models*. Models are defined in the Guild file as top-level list items.
+*Full format* defines operations under *models*. Models are defined in the Guild file as top-level list items, or *objects*.
 
 ``` yaml
 - model: mnist
@@ -48,13 +51,17 @@ validate:
       description: Validate model on MNIST
 ```
 
-List available operations using [`guild operations`](/commands/operations):
+Refer to [*Guild File Reference*](/reference/guildfile#guild-file-format) for more information on file format.
+
+List available operations for a project using [`guild operations`](/commands/operations):
 
 ``` command
 guild operations
 ```
 
 > <span data-guild-class="callout tip">Tip</span> The [`guild ops`](/commands/ops) command is a shortened alias for `operations`.</span>
+
+Guild shows the public operations defined in the project Guild file.
 
 ## Python Based Operations
 
