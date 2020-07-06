@@ -133,3 +133,12 @@ def notify_send(msg, urgency=None):
     if urgency:
         cmd.extend(["-u", urgency])
     _ = subprocess.check_output(cmd)
+
+
+def write_utf(filename, s):
+    with open(filename, "w") as f:
+        f.write(s.encode("utf-8"))
+
+
+def read_utf(filename):
+    return open(filename).read().decode("utf-8")

@@ -1,3 +1,4 @@
+import datetime
 import logging
 import os
 import time
@@ -111,7 +112,7 @@ def _check_save_conflict(topic, save_dir):
 
 
 def _files_differ(path1, path2):
-    return open(path1).read() != open(path2).read()
+    return util.read_utf(path1) != util.read_utf(path2)
 
 
 def _save_topic(topic, save_dir):
@@ -121,13 +122,11 @@ def _save_topic(topic, save_dir):
 
 
 def _save_topic_main(topic, save_dir, raw):
-    with open(_topic_path(topic, save_dir), "w") as f:
-        f.write(raw)
+    util.write_utf(_topic_path(topic, save_dir), raw)
 
 
 def _save_topic_base(topic, save_dir, raw):
-    with open(_topic_base_path(topic, save_dir), "w") as f:
-        f.write(raw)
+    util.write_utf(_topic_base_path(topic, save_dir), raw)
 
 
 def _topic_path(topic, save_dir):
@@ -182,8 +181,7 @@ def diff_latest(topic_id, save_dir=None, diff_cmd=None):
 def _fetch_topic_latest(topic_id, save_dir):
     topic = _topic_for_id(topic_id)
     latest_path = _topic_latest_path(topic_id, save_dir)
-    with open(latest_path, "w") as f:
-        f.write(topic.post_raw)
+    util.write_utf(latest_path, topic.post_raw)
     return latest_path
 
 
@@ -225,7 +223,7 @@ def publish(
         comment = comment or (not no_comment and _get_comment(edit_cmd)) or ""
         log.action("Publishing %i", topic_id)
         topic = _topic_for_id(topic_id)
-        local_raw = open(topic_path).read()
+        local_raw = util.read_utf(topic_path)
         if not force:
             _assert_latest_unchanged(topic_id, save_dir, topic.post_raw)
         api.update_post(topic.post_id, local_raw, comment)
@@ -281,7 +279,7 @@ def _get_comment(editor):
 
 def _assert_latest_unchanged(topic_id, save_dir, latest_raw):
     latest_path = _fetch_topic_latest(topic_id, save_dir)
-    if open(latest_path).read() != latest_raw:
+    if util.read_utf(latest_path) != latest_raw:
         raise SystemExit(
             "Topic %i changed on the server since last check. Use --force to"
             "override this safeguard.",
@@ -307,7 +305,7 @@ def watch(topic_id, save_dir=None):
         )
     topic = _topic_for_id(topic_id)
     last_mtime = util.mtime(topic_path)
-    log.info("Watch topic %i (%s)", topic_id, os.path.relpath(topic_path))
+    log.info("Watching topic %i (%s)", topic_id, os.path.relpath(topic_path))
     loop = util.SafeLoop(
         limit_max=5,
         limit_interval=5.0,
@@ -322,13 +320,16 @@ def watch(topic_id, save_dir=None):
                 if _files_differ(base_path, latest_path):
                     _latest_changed_on_watch(topic_id)
                     assert False
-                log.action("Publishing %i", topic_id)
-                local_raw = open(topic_path).read()
+                log.action(
+                    "[%s] Publishing topic %i",
+                    datetime.datetime.now().strftime("%D %T"),
+                    topic_id,
+                )
+                local_raw = util.read_utf(topic_path)
                 api.update_post(topic.post_id, local_raw)
                 _save_topic_base(topic_id, save_dir, local_raw)
             last_mtime = cur_mtime
         time.sleep(0.1)
-
 
 
 def _latest_changed_on_watch(topic_id):
@@ -474,7 +475,7 @@ def publish_all(
 ):
     init_api()  # Force early error if API creds not configured.
     save_dir = save_dir or default_save_dir()
-    if not skip_diff:
+    if not yes and not skip_diff:
         topic_ids = diff_base_all(save_dir, diff_cmd)
     else:
         topic_ids = sorted(_iter_local_topic_ids(save_dir))
@@ -488,7 +489,6 @@ def publish_all(
     warnings = False
     for topic_id in topic_ids:
         if not force and not _local_topic_changed(topic_id, save_dir):
-            log.info("Topic %i has not been modified.", topic_id)
             continue
         try:
             util.retry(
@@ -498,6 +498,7 @@ def publish_all(
                     topic_id,
                     save_dir=save_dir,
                     comment=comment,
+                    no_comment=True,
                     force=force,
                     skip_diff=True,
                     yes=True,
