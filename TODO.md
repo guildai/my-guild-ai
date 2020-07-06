@@ -18,6 +18,9 @@
 - Use terms table class for terms
 
 - `FLAG` to *`FLAG`*
+- Avoid inflected verb forms: Logging Scalars -> Log Scalars
+- Cheatsheets should consistently use level four headings to denote
+  each and every code example - these need to show up in the TOC
 
 ### Avoid dead ends
 
