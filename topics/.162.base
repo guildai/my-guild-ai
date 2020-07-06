@@ -104,6 +104,8 @@ Guild supports a number of dependency types, or *resource source* types, which a
 
 ### Files
 
+TODO: move URL and operations into sections below
+
 The most common required resource is a *file*. Guild supports different ways to reference files:
 
 - Path relative to the project directory
@@ -162,6 +164,18 @@ train:
 <span data-guild-class="caption">Sample operation that requires `data.csv` located in the project directory as `train-data.csv`</span>
 
 For more examples, see [Guildfile Cheatsheet - Resources](/cheatsheets/guildfile.md#resources).
+
+#### Copies vs Links
+
+TODO
+
+### URLs
+
+TODO
+
+### Operations
+
+TODO
 
 ### Modules
 

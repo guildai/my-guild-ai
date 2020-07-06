@@ -25,7 +25,7 @@ Runs serve as a unit of *reproducibility*. By automating and capturing experimen
 
 ## Run Artifacts
 
-Guild saves runs on standard file systems. Guild is different in this respect from experiment management systems that save experiment results in databases or exotic file systems. For background on why Guild takes this approach, see [Guild Design - Minimize Dependencies](/reference/design/#dependencies).
+Guild saves runs on standard file systems. Guild is different in this respect from experiment tracking systems that save experiment results in databases or exotic file systems. For background on why Guild takes this approach, see [Guild Design - Minimize Dependencies](/reference/design/#dependencies).
 
 Runs are stored under a `runs` directory located in [*Guild home*](/docs/environments#guild-home). To show where Guild saves runs, refer to the `guild_home` attribute shown by [`guild check`](/commands/check). Each run is saved in a unique subdirectory. For more information, see [Run Directory](#run-directory) below.
 

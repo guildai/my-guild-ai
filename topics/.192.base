@@ -389,7 +389,7 @@ The values `\key`, `\value`, and `\step` (used below) are Guild-specific macros 
 > - `\value` is equivalent to `[0-9\\.e\\-]+`
 > - `\step` is equivalent to `[0-9]+`
 
-### Disable output scalars
+### Disable Output Scalars
 
 Disable output scalars when you log scalars explicitly to summaries.
 

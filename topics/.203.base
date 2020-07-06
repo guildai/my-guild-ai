@@ -9,9 +9,9 @@ In previous sections of [this guide](/start) you learn about Guild's core featur
 
 This is a conceptual guide rather than a step-by-step tutorial.
 
-To add Guild support for your project, add a [Guild file](/docs/guildfile). In most cases, you don't need to change your code. Simply add a file to enable experiment tracking and other features.
+To add Guild support for your project, add a [Guild file](/docs/guildfile). In most cases, you don't need to change the code. Simply add a file to enable experiment tracking and other features.
 
-> <span data-guild-class="callout note">Note</span> This guide applies to Python based projects. If your project uses a different language, refer to [*Languages Example*](/examples/languages). If you don't see a suitable example for your language, [ask for help](/new-topic?category=general).
+> <span data-guild-class="callout note">Note</span> This guide applies to Python based projects. If your project uses a different language, refer to [*Languages Example*](/examples/languages). If you don't see a suitable example for the language, [ask for help](/new-topic?category=general).
 
 ## Identify the Main Module
 
@@ -41,7 +41,7 @@ You can alternatively use [`guild init`](/commands/init) to create a virtual env
 guild init --no-reqs
 ```
 
-Remember to activate your environment. When you open a new terminal, activate the environment in that terminal as well.
+Remember to activate the environment. When you open a new terminal, activate the environment in that terminal as well.
 
 For POSIX shells:
 
@@ -55,15 +55,15 @@ For Windows:
 venv\Scripts\activate.bat
 ```
 
-In the activated environment, ensure that your environment uses the latest version of `pip`:
+In the activated environment, ensure that the environment uses the latest version of `pip`:
 
 ``` command
 pip install --upgrade pip
 ```
 
-## Run Without Guild
+## Run without Guild
 
-Before using Guild, run your operation directly with Python. This step resolves project related issues before introducing Guild.
+Before using Guild, run the operation directly with Python. This step resolves project related issues before introducing Guild.
 
 Here's an example of running a module implemented in `mnist_mlp.py`:
 
@@ -107,12 +107,7 @@ When you run the main module in an activate empty virtual environment (recommend
 
 ``` output
 Traceback (most recent call last):
-  File "/usr/lib/python3.6/runpy.py", line 183, in _run_module_as_main
-    mod_name, mod_spec, code = _get_module_details(mod_name, _Error)
-  File "/usr/lib/python3.6/runpy.py", line 109, in _get_module_details
-    __import__(pkg_name)
-  File ".../mnist_mlp.py", line 10, in <module>
-    import keras
+  ...
 ModuleNotFoundError: No module named 'keras'
 ```
 
@@ -132,7 +127,7 @@ Continue running the main module, installing required packages and adding them t
 
 The work of automated, reproducible machine learning is iterative. You make a change, run something, and see how it works. Delays add up quickly and distract you from your work. To speed your progress and improve focus, we recommend following the *10 second rule*:
 
-> *Configure your operations to take less than 10 seconds.*
+> *Configure the operations to take less than 10 seconds.*
 
 This rule is an adaptation from [*How to do machine learning efficiently*](https://medium.com/hackernoon/doing-machine-learning-efficiently-8ba9d9bc679d) by Radek Osmulski.
 
@@ -158,9 +153,9 @@ We can go further and reduce the number of train and test examples when the flag
 https://github.com/guildai/guildai/blob/master/examples/get-started/mnist_mlp_10sec.py#L35
 </div>
 
-With this change, the operation just over a second --- about as long as it takes to read the MNIST examples.
+With this change, the operation runs within a few second --- about as long as it takes to load the program and read the MNIST examples.
 
-Why bother with a 10 second rule? If you're skeptical of this idea, skip it for now. But pay attention to the time you spend waiting for non-essential computation. Notice what happens to your attention after even 20 seconds of waiting. Many of us are tempted to use this downtime for productive work like checking news or browsing r/MachineLearning. If you feel these distractions slow your development, return to this section and try the suggestions.
+Why bother with a 10 second rule? If you're skeptical of this idea, skip it for now. But pay attention to the time you spend waiting for non-essential computation. Notice what happens to your attention after even 20 seconds of waiting. Many of us are tempted to use this downtime for productive work like checking news or browsing r/MachineLearning. If you feel these distractions slow your development, return to this step and try the suggestions.
 
 Use these guidelines when considering changes for the 10 second rule:
 
@@ -184,121 +179,456 @@ train:
   main: mnist_mlp
 ```
 
-If your main module is in a subdirectory, include that subdirectory as a path prefix in the format <code><em>PATH</em>/<em>MODULE</em></code>. For example, if your module is `mnist_mlp` and located in a `src` project subdirectory, use:
+If the main module is in a subdirectory, include that subdirectory as a path prefix in the format <code><em>PATH</em>/<em>MODULE</em></code>. For example, if the module is `mnist_mlp` and located in a `src` project subdirectory, use:
 
 ``` yaml
 train:
   main: src/mnist_mlp
 ```
 
-If your main module is in a Python package, include the package as you do when running with Python directly. For example, if your module is `mnist_mlp` and located in a `models` Python package (a project subdirectory containing `__init__.py`), use:
+If the main module is in a Python package, include the package as you do when running with Python directly. For example, if the module is `mnist_mlp` and located in a `models` Python package (a project subdirectory containing `__init__.py`), use:
 
 ``` yaml
 train:
   main: models.mnist_mlp
 ```
 
-
+For more information, see [`main` operation attribute](/reference/guildfile#operation-main).
 
 ## Test Operation Source Code
 
 Before running `train`, verify that Guild copies the correct operation source code.
 
-From the project directory, use [`guild run`] with the `--test-sourcecode` option:
+From the project directory, use [`guild run`](/commands/run) with the `--test-sourcecode` option:
 
 ``` command
 guild run --test-sourcecode
 ```
 
-> <span data-guild-class="callout note">Note</span> You don't need to specify an operation for [`guild run`](/commands/run) because your Guild file contains only one operation. With more than one operation, you need to specify the operation name or designate one of the operations as default using the `default` attribute.
+> <span data-guild-class="callout note">Note</span> If the Guild file only contains one operation, you don't need to specify the operation name when running [`guild run`](/commands/run). With more than one operation, you need to specify the operation name or designate one of the operations as default using the [`default`](/reference/guildfile#operation-default) attribute.
 
-Note the list of files under **Selected for copy** in the output. This list should include all of the source code files required for your operation.
+Note the list of files under **Selected for copy** in the output. This list should include all of the source code files required for the operation.
 
-> <span data-guild-class="callout note">Important</span> If there are missing source code files, your operation will not run correctly. Guild is careful to isolate runs from your project source code. This prevents changes to your project source code code from affecting the operation run. It also ensures that the run has a record of exactly what is run.
+If there are missing source code files, the operation won't run correctly. Guild isolates runs from project source code. This prevents changes to project source code from affecting the operation run.
 
-Guild applies default rules to detect likely source code files. Guild uses safeguards to avoid copying too many files or files that are too big. If Guild excludes files due to safe guards, it logs a warning message.
+Guild uses default rules to detect likely source code files. Guild uses safeguards to avoid copying too many files or files that are too big. If Guild excludes files due to safe guards, it logs a warning message.
 
-You can change Guild's default source code copy rules by defining the `sourcecode` operation attribute.
+If you need to, change Guild's default source code copy rules by defining the [`sourcecode`](/reference/guildfile#operation-sourcecode) operation attribute.
 
-There are four common reasons for defining operation `sourcecode`:
+Reasons for defining operation `sourcecode` include:
 
-- Guild generates warnings about large files or too many files
-- Guild is not copying some required files
-- Your project has a directory with thousands of files, which causes Guild to take too much time processing source code rules
-- You want to explicitly define `sourecode` rather than rely on Guild's implicit behavior
+- Include missing source files
+- Exclude non-source file
+- Silence warnings about large files or too many files
+- Skip non-source directories with large numbers of files to speed up source code copies
 
 For examples of `sourcecode` specs, see [*Guild File Cheatsheet*](/cheatsheets/guildfile#source-code).
 
-<!--
+## Run with Guild
 
-## Understand the Operation Interface
+Run the operation with Guild:
 
-When you run the operation, consider its *interface*. The interface consists of operations *inputs* and *outputs*.
+``` command
+guild run
+```
 
-Operation inputs:
+Guild prompts you to run the operation. Press **Enter** to confirm.
 
-- Settings related to model architecture and related algorithms --- these are referred to as *hyperparameters*
-- Other settings used by the script such as file locations, database credentials, etc.
-- Required files
+When Guild starts an operation, it executes these steps:
 
-Operation outputs:
+1. Create a new run directory in the `runs` subdirectory of [Guild home](/docs/environment#guild-home)
+2. Initialize the run directory with run metadata in <code><em>RUN_DIR</em>/.guild</code>
+3. Copy operation source code to <code><em>RUN_DIR</em>/.guild/sourcecode</code>
+4. Resolve dependencies (you don't have any yet --- you learn about this in [File Dependencies](#file-dependencies) below)
+5. Run the main module using *`RUN_DIR`* as the current directory
 
-- Generated files
-- Logged metrics --- these are referred to as *scalars*
+If the operation fails, don't panic!
 
-The sections below help you identify the operation interface. With this information you later [define the operation](#define-the-operation).
+First, confirm that you can run the operation using Python directly. See [Run Without Guild](#run-without-guild) above for help. Don't troubleshoot issues with Guild until you know the operation runs as expected without Guild.
 
-### How are operation settings specified?
+Second, read the error message.
 
-Python based operations are configured in various ways:
+The most common problems at this stage include:
 
-- Global variables
+- Missing required source code
+- Missing required input files
+- Missing output directories
+
+Refer to the steps below for help resolving these problems.
+
+## Resolve Missing Source Code
+
+If the operation is missing source code, the error message typically contains `ImportError: No module named ...` or `ModuleNotFoundError: No module named ...` depending on the Python version. Diagnose this problem by listing the source code files copied for the run with [`guild ls`](/commands/ls):
+
+``` command
+guild ls --sourcecode
+```
+
+The `--sourcecode` option tells Guild to list source code files.
+
+Confirm that the module from the error message is missing. Adjust the `sourcecode` operation attribute as described in [Test Operation Source Code](#test-operation-source-code).
+
+When you're ready, re-run the operation.
+
+## Resolve Missing Input Files
+
+If the operation is missing required input files, the error message often contains `IOError: [Errno 2] No such file or directory: ...` or `FileNotFoundError: [Errno 2] No such file or directory: ...` depending on the Python version. The message may differ but generally refers to a missing file.
+
+*This is the most common issue when running Guild operations and is easy solved.*
+
+By default, Guild runs operations in a newly created, empty directory called the [*run directory*](/docs/runs#run-directory). Unless otherwise configured in the Guild file, the operation does not have access to project files.
+
+> <span data-guild-class="callout important">Important - Read Twice</span>
+> - Operations are run in the context of the run directory, not the project directory
+> - Run directories are initially empty
+> - Required files must be defined as operation dependencies
+
+Consider this Python module:
+
+``` python
+import json
+
+config = json.load(open("config.json"))
+
+// Use config to train a model...
+```
+
+It reads a file named `config.json` located in the current directory. When you run it with Python from the directory containing `config.json`, it works file. When you run it with Guild, it fails with the message `FileNotFoundError: [Errno 2] No such file or directory: 'config.json'`.
+
+When the module is run with Guild, it runs in a newly created, empty directory. `config.json` isn't there!
+
+Check the files in a run directory using [`guild ls`](/docs/ls):
+
+``` command
+guild ls
+```
+
+Unless you tell Guild to put files there when it initializes the run, the list is empty.
+
+This is an important design feature: *Guild starts with empty directories to ensure that required files are explicitly defined in the Guild file.*
+
+In the case above, we make `config.json` available by modifying the Guild file:
+
+``` yaml
+train:
+  requires:
+    - file: config.json
+```
+
+When you run the operation, Guild creates a link to the project `config.json` file in the run directory. When the module reads it, it's available!
+
+By default, Guild creates [*symbolic links*](https://en.wikipedia.org/wiki/Symbolic_link) to resolved files rather than copies. In version 0.7 you have the option to create a file *copy*. This is an important consideration for auditing and reproducibility. Refer to [*File Dependencies*](/docs/dependencies#files) for more information.
+
+Guild supports a variety of dependency resolution features:
+
+- Resolve files from a project, a URL, or generated by other runs
+- Automatically unpack archives
+- Validate file integrity using SHA-256 digests
+- Rename resolved files to support existing code
+
+For for information, see [*Dependencies*](/docs/dependencies).
+
+With this information, see if you can satisfy the file dependencies for the operation.
+
+## Create Output Directories
+
+If the operation saves files to a project subdirectory, the operation must create the subdirectory for each Guild run. Remember, run directories are initially *empty*. An attempt to save a file to non-existing directory will fail with the message `FileNotFoundError: [Errno 2] No such file or directory ...`.
+
+Modify the project code to create missing output directories during operation initialization. For example:
+
+``` python
+import os
+
+if not os.path.exists("saved-models"):
+    os.mkdir("saved-models")
+
+// Train and save model...
+```
+
+## Guild File Checkpoint
+
+If you work through the issues above, you should be able to run the operation with Guild. If you still can't run the operation with Guild, [open a topic in #troubleshooting](/new-topic?category=troubleshooting) and someone will help.
+
+Otherwise, congratulations --- you have baseline support for Guild! This is a good time to add the Guild file to the project repository and commit your changes.
+
+## Delete Failed Runs
+
+List the runs:
+
+``` command
+guild runs
+```
+
+The most recent run (the run at the top of the list) should be `completed`.
+
+You may have a number of failed runs (runs with `error` status). That's okay! Experimentation begins with the first run and errors are normal.
+
+You can delete failed runs by specifying `--error` with [`guild runs rm`](/commands/runs-rm):
+
+``` command
+guild runs rm --error
+```
+
+As long as you don't use `--permanent` when you delete runs, you can restore them using [`guild runs restore`](/commands/runs-restore).
+
+> <span data-guild-class="callout tip">Tip</span> Avoid the temptation to use `--permanent` when you delete runs. You may be surprised what you learn from failed runs. Consider waiting before you purge deleted runs until you need to. Use `guild check --space` to see how much disk space deleted runs consume. When you purge runs, use the `--started` option to purge runs older than a certain number of days -- e.g. `guild purge --started "before 30 days ago"`.
+
+## Verify Output Files
+
+If the operation generates files --- for example, a saved model --- confirm the files are part of the run using [`guild ls`](/commands/ls):
+
+``` command
+guild ls
+```
+
+If a file is missing from the list, verify that the operation save each file as a *relative path*. If the operation saves a file to an absolute path, it will not appear in the run directory.
+
+It's not uncommon for scripts to write files to absolute paths.
+
+
+Consider this example:
+
+``` python
+saved_model_path = "/tmp/model.hdf5"
+
+// Train and save model...
+```
+
+The model is saved to absolute path and will not be part of a run.
+
+If a module writes files to a hard-coded path, change the code to use a relative path or to make the path configurable. If you prefer to leave the code unchanged, you can use Guild to modify it as a global variable. You learn about this later.
+
+To modify a hard-coded path, consider these options:
+
+- Change the path to a relative location
+- Use an environment variable to override the location
+- Use a command line argument to override the location
+
+Below are examples of each method applied to the example above.
+
+### Hard Code Relative Paths
+
+This simplest fix for hard-coded absolute paths is to simply hard-code relative paths. The above example becomes:
+
+``` python
+saved_model_path = "output/model.mdf5"
+
+// Train and save model...
+```
+
+Some developers frown on writing artifacts to a project directory like this. However, it's common practice to save compiled artifacts within a project structure. Examples include most programming languages.
+
+Remember to add the artifact paths to your revision control *ignores* file (e.g. `.gitignore`). Otherwise, generated artifacts may end up in your source code repository.
+
+This scheme works well for both direct execution with Python and for Guild runs.
+
+### Override with Environment Variables
+
+It may be disruptive to other project developers to change the default location of saved files. To preserve developer workflow, use an environment variable to override a hard-coded path. The above example becomes:
+
+``` python
+import os
+
+saved_model_path = os.getenv("SAVED_MODEL_PATH") or "/tmp/model.hdf5"
+
+// Train and save model...
+```
+
+This change is independent of Guild. It simply makes the otherwise hard-coded path configurable. To test this change with Python, run the script with the applicable environment variable.
+
+To support this change, modify the Guild file to define an [`env`](/reference/guildfile#operation-env) operation attribute:
+
+``` yaml
+train:
+  main: my_mod
+  env:
+    SAVED_MODEL_PATH: model.mdf5
+```
+
+Guild configures the run process environment to include `SAVED_MODEL_PATH`. When you run the operation, it uses the environment variable instead of the hard-coded path.
+
+### Override with Command Line Args
+
+Similar to [Override with Environment Variables](#override-with-environment-variables) above, you can override hard-coded paths using command line arguments. Using the [`argparse`](https://docs.python.org/library/argparse.html) Python module, the above example becomes:
+
+``` python
+import argparse
+
+p = argparse.ArgumentParser()
+p.add_argument("--saved-model")
+
+args = p.parse_args()
+
+saved_model_path = args.saved_model or "/tmp/model.hdf5"
+
+// Train and save model...
+```
+
+This change is also independent of Guild. It lets a caller change the model save location using the `--save-model` command line option.
+
+To support this change, add the command line option to the [`main`](/reference/guildfile#operation-main) spec:
+
+``` yaml
+train:
+  main: my_mod --saved-model model.mdf5
+```
+
+When Guild runs the operation, it includes the specified command line options to `my_mod`.
+
+> <span data-guild-class="callout note">Note</span> You can test the command by specifying `--print-cmd` with [`guild run`](/commands/run).
+
+## Capture Operation Metrics
+
+Up to this point you're concerned with a single boolean outcome: *does the operation succeed or fail?* In this step, you identify the key numeric values that determine *how well the operation performs*.
+
+This is arguably the most important step in this guide. It establishes the way you measure progress and regress.
+
+Guild records numeric values, or [*scalars*](/docs/scalars), generated by your operation. Common scalars include *loss*, *precision*, and *recall*. An operation can log any value of interest as a scalar. Scalars may be optionally associated with a *step* to record a value at a point of progress during the operation.
+
+A *metric* is a scalar that specifically describes operation performance.
+
+Aditya Mishra provides a helpful primer on this topic: [*Metrics to Evaluate your Machine Learning Algorithm*](https://towardsdatascience.com/metrics-to-evaluate-your-machine-learning-algorithm-f10ba6e38234).
+
+> <span data-guild-class="callout note">Note</span> Guild does not formally distinguish between metrics and scalars. All logged values are scalars. The term *metric* is used by convention when referring to scalars that measure operation performance.
+
+### View Run Scalars
+
+Before proceeding, view the scalars for the latest run to see if Guild already detects them:
+
+``` command
+guild runs info
+```
+
+Guild shows a number of run attributes. Refer to the `scalars` attribute to see what Guild detects by default. If you see the metrics you're interested in, feel free to skip to [Configure Operation Flags](#configure-operation-flags).
+
+### Configure Output Scalars
+
+Guild can detect scalar values printed to operation output. Guild refers to these as [*output scalars*](/docs/scalars#output-scalars). If your operation doesn't otherwise write [TensorBoard summaries](#log-tensorboard-summaries) (see below), the fastest way capture operation metrics is to configure the [`output-scalars`](/reference/guildfile#operation-output-scalars) operation attribute.
+
+Refer to [*Scalars*](/docs/scalars#output-scalars) for help configuring the operation to capture metrics.
+
+The [*Guild File Cheatsheet*](/cheatsheets/guildfile#output-scalars) provides a number of common examples.
+
+If the operation already logs TensorBoard summaries, we recommend that you [disable output scalars](/cheatsheets/guildfile#disable-output-scalars).
+
+### Log TensorBoard Summaries
+
+Guild uses the TensorBoard summary file format to store and load all run scalars. [Output scalars](#configure-output-scalars) (see above) are written to this file format.
+
+If the operation [writes TensorBoard summaries](/docs/scalars#tensorboard-summaries), logged scalars should be visible when you [view run scalars](#view-run-scalars) (see above).
+
+If you don't see the expected scalars, verify that the operation writes the summary logs to a relative path. Summary files written outside the run directory are not visible to Guild.
+
+## Compare Baselines
+
+As this point the operation should run to completion and log important metrics. Take a moment to generate additional runs to compare baseline performance.
+
+Run the operation two or three times. If you follow the [10 second rule](#10-second-rule) this doesn't take long!
+
+Compare operation performance with [`guild compare`](/commands/compare):
+
+``` command
+guild compare -C
+```
+
+The `-C` option tells Guild to only compare *completed* runs. Omit this option if you [delete failed runs](#delete-failed-runs) (see above).
+
+Note the operation metrics in Guild Compare. If you reduce training steps or data set size to stay within 10 seconds, performance may be terrible! That's okay. The purpose of this step is to compare your baseline performance. Even at this stage, the information can be useful. Do you see consistent results or wild swings in performance across runs with the same configuration? Is that what you expect?
+
+Consistent, accurate measurement across changes is the basis of effective experiment tracking.
+
+## Configure Operation Flags
+
+At this point you can run the operation and measure performance with metrics. In this step you configure operation [*flags*](/docs/flags). Use flags to configure an operation without changing code.
+
+Flags specify operation hyperparameters like *learning rate* and *batch size*. Use flags to configure any variety of operation settings.
+
+When you a script directly with Guild, Guild tries to detect operation flags. Consider the mock training script used in [*Get Started*](/start).
+
+https://github.com/guildai/guildai/blob/master/examples/get-started/train.py
+
+When you run this script with Guild, Guild examines the module and detects the global variables `x` and `noise` and treats them as flags. You can change values for `x` and `noise` without changing code:
+
+``` command
+guild run train.py x=0.2 noise=0.2
+```
+
+This sort of magic bothers some developers. However, this is an important feature that lets users start with Guild without making disruptive changes to their code. This lowers the barrier to experiment tracking.
+
+For those who prefer less magic, Guild lets you define an explicit flags interface for an operation.
+
+Flags can be configured any number of ways in Guild:
+
+- Global variables (Python modules only)
 - Environment variables
 - Command line arguments
 - Configuration files
-- In-place values
 
-Guild supports each of these methods except the last. In-place values are not easily or safely modified and should be avoided.
+You're free to use the method that best matches your project.
 
-#### Global variables
+### Hard-Coded Hyperparameters
 
-The use of global variables is perhaps the most popular method for defining operation settings.
+Before you configure the flags interface for the operation, take a moment to scan your Python code *hard-coded hyperparameters*. Hard-coded hyperparameters are important values that ought to be configurable but aren't. Here's an example from [`mnist_mlp.py`](https://github.com/guildai/guildai/blob/master/examples/get-started/mnist_mlp.py#L36-L41):
 
-Most Keras examples use this method. Consider [`mnist_mlp.py`](https://raw.githubusercontent.com/guildai/guildai/master/examples/use-guild/mnist_mlp.py). This module defines three global variables:
-
-https://github.com/guildai/guildai/blob/master/examples/use-guild/mnist_mlp.py#L16-L18
-
-Two of these variables are hyperparameters: *`batch_size`* and *`epochs`*. To change these, you edit the source code. It's time consuming to try different hyperparameters.
-
-Because this method is so popular, Guild lets you run this script with different values for these hyperparameters.
-
-``` command
-guild run mnist_mlp.py batch_size=512 epochs=10
+``` python
+model = Sequential()
+model.add(Dense(512, activation='relu', input_shape=(784,)))
+model.add(Dropout(0.2))
+model.add(Dense(512, activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(num_classes, activation='softmax'))
 ```
 
-If your script uses global variables, you can use Guild to configure
+Can you spot the hard-coded hyperparameter? There are four!
 
+- Activation function (hard-coded as `relu`)
+- Dropout rate (hard-coded as `0.2`)
+- Inner layer count (hard-coded as one)
+- Layer size (hard-coded as 512)
 
-#### Environment variables
+With minor changes, we can make the code more configurable and support more experimentation.
 
-#### Command line arguments
+Here's the code, modified to parameterize each of the four otherwise hard-coded hyperparameters.
 
-#### Configuration files
+``` python
+activation = "relu"
+dropout = 0.2
+inner_layers = 1
+layer_size = 512
 
-#### In-place values
+model = Sequential()
+model.add(Dense(layer_size, activation=activation, input_shape=(784,)))
+model.add(Dropout(dropout))
+for _ in range(inner_layers):
+    model.add(Dense(layer_size, activation=activation))
+    model.add(Dropout(dropout))
+model.add(Dense(num_classes, activation='softmax'))
+```
 
+The first and last layers are not parameterized. These correspond to the task, which is to classify examples of fixed input size as one of ten classes.
 
-### What input files does the operation require?
+Once again, these changes are not Guild-specific. They improve your code by making it easier to experiment with different settings.
 
-### What output files does the operation generate?
+### Implicit Hyperparameters
 
-### What metrics does the operation log?
+Your code may be using *implicit hyperparameters*. Implicit hyperparameters are values that are not specified in your code but are defined as defaults. Consider this example, once again from [`mnist_mlp.py`](https://github.com/guildai/guildai/blob/master/examples/get-started/mnist_mlp.py#L45-L47):
 
+``` python
+model.compile(loss='categorical_crossentropy',
+              optimizer=RMSprop(),
+              metrics=['accuracy'])
+```
 
+There are a number of implicit hyperparameters used in this code. You can read about them in the [RMSProp](https://keras.io/api/optimizers/rmsprop/) API documentation. The is itself an important hyperparameter.
 
-## Define the Operation
+We could expose each [available Keras optimizer](https://keras.io/api/optimizers/#available-optimizers) but this is a lot of change. In practice, we can support two or three of more popular algorithms (e.g. RMSprop and Adam) to compare performance.
 
-Define the
+Let's keep our change simple and expose *learning rate* as a hyperparameter, which is otherwise implicitly defined as `0.001`.
 
+```
+learning_rate = 0.001
 
--->
+model.compile(loss='categorical_crossentropy',
+              optimizer=RMSprop(learning_rate=learning_rate),
+              metrics=['accuracy'])
+```
