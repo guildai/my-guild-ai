@@ -318,26 +318,35 @@ def watch(topic_id, save_dir=None):
             if _local_topic_changed(topic_id, save_dir):
                 latest_path = _fetch_topic_latest(topic_id, save_dir)
                 if _files_differ(base_path, latest_path):
-                    _latest_changed_on_watch(topic_id)
-                    assert False
+                    _latest_changed_on_watch_error(topic_id)
                 log.action(
                     "[%s] Publishing topic %i",
                     datetime.datetime.now().strftime("%D %T"),
                     topic_id,
                 )
                 local_raw = util.read_utf(topic_path)
-                api.update_post(topic.post_id, local_raw)
-                _save_topic_base(topic_id, save_dir, local_raw)
+                try:
+                    api.update_post(topic.post_id, local_raw)
+                except Exception as e:
+                    _update_post_on_watch_error(topic_id, e)
+                else:
+                    _save_topic_base(topic_id, save_dir, local_raw)
             last_mtime = cur_mtime
         time.sleep(0.1)
 
 
-def _latest_changed_on_watch(topic_id):
+def _latest_changed_on_watch_error(topic_id):
     msg = (
         "Topic %i has changed on the server since it was fetched. "
         "Resolve this conflict using 'my-guild diff --latest %i and "
         "publish the topic manually using --force."
     ) % (topic_id, topic_id)
+    util.notify_send("ERROR during my-guild watch: %s" % msg, urgency="critical")
+    raise SystemExit(msg)
+
+
+def _update_post_on_watch_error(topic_id, e):
+    msg = "error publishing topic %i: %s" % (topic_id, e)
     util.notify_send("ERROR during my-guild watch: %s" % msg, urgency="critical")
     raise SystemExit(msg)
 
