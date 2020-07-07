@@ -537,38 +537,37 @@ Note the operation metrics in Guild Compare. If you reduce training steps or dat
 
 Consistent, accurate measurement across changes is the basis of effective experiment tracking.
 
-## Configure Operation Flags
+## Hyperparameters
 
-At this point you can run the operation and measure performance with metrics. In this step you configure operation [*flags*](/docs/flags). Use flags to configure an operation without changing code.
+Guild enabled quick and easy *experimentation*. Experiments test hypothesis. Each time you run an operation, you test a number of hypothesis:
 
-Flags specify operation hyperparameters like *learning rate* and *batch size*. Use flags to configure any variety of operation settings.
+- Source code loads and runs (e.g. is free of syntax errors and other bugs that cause crashes)
+- Model architecture and implementation support the task
+- Operation generates a useful model
+- Operation generates a state-of-the-art model
 
-When you a script directly with Guild, Guild tries to detect operation flags. Consider the mock training script used in [*Get Started*](/start).
+Up to this point you focus on running code from start to finish without crashing. This may seem like a trivial accomplishment. It's not. You're now in position to quickly iterate over code changes and, importantly, *hyperparameter tuning*.
 
-https://github.com/guildai/guildai/blob/master/examples/get-started/train.py
-
-When you run this script with Guild, Guild examines the module and detects the global variables `x` and `noise` and treats them as flags. You can change values for `x` and `noise` without changing code:
+In [Get Started](/start/optimize) you run a simple `train.py` script with Guild to find optimal values for hyperparameter *`x`*:
 
 ``` command
-guild run train.py x=0.2 noise=0.2
+guild run train.py x=[-2.0:2.0] --minimize loss --optimizer gp
 ```
 
-This sort of magic bothers some developers. However, this is an important feature that lets users start with Guild without making disruptive changes to their code. This lowers the barrier to experiment tracking.
+This command runs a number of trials using [Bayesian Optimization](https://en.wikipedia.org/wiki/Bayesian_optimization) to find the lowest values of *`loss`* by exploring values of *`x`* over the search space `-2.0` to `2.0`.
 
-For those who prefer less magic, Guild lets you define an explicit flags interface for an operation.
+This represents a critical step in model development. The difference in performance related to hyperparameters can make the difference between a useless model --- one that performs a task well below acceptable performance levels --- and a model you can deploy or publish.
 
-Flags can be configured any number of ways in Guild:
+In [Configure Operation Flags](#configure-operation-flags) below, you configure Guild to support hyperparameter tuning for your project. Before proceeding, take a moment to review the operation hyperparameters.
 
-- Global variables (Python modules only)
-- Environment variables
-- Command line arguments
-- Configuration files
+The code likely supports some hyperparameters. Even simple examples typically configure *epochs*, or *steps*. It may however have additional hyperparameters that are not explicitly defined. Take a moment to look for two classes of hidden hyperparameters:
 
-You're free to use the method that best matches your project.
+- Hard coded hyperparameters
+- Implicit hyperparameters
 
 ### Hard-Coded Hyperparameters
 
-Before you configure the flags interface for the operation, take a moment to scan your Python code *hard-coded hyperparameters*. Hard-coded hyperparameters are important values that ought to be configurable but aren't. Here's an example from [`mnist_mlp.py`](https://github.com/guildai/guildai/blob/master/examples/get-started/mnist_mlp.py#L36-L41):
+ Hard-coded hyperparameters are important values that ought to be configurable but aren't. Here's an example from [`mnist_mlp.py`](https://github.com/guildai/guildai/blob/master/examples/get-started/mnist_mlp.py#L36-L41):
 
 ``` python
 model = Sequential()
@@ -579,16 +578,14 @@ model.add(Dropout(0.2))
 model.add(Dense(num_classes, activation='softmax'))
 ```
 
-Can you spot the hard-coded hyperparameter? There are four!
+Can you spot the hard-coded hyperparameters? There are four.
 
 - Activation function (hard-coded as `relu`)
 - Dropout rate (hard-coded as `0.2`)
 - Inner layer count (hard-coded as one)
 - Layer size (hard-coded as 512)
 
-With minor changes, we can make the code more configurable and support more experimentation.
-
-Here's the code, modified to parameterize each of the four otherwise hard-coded hyperparameters.
+With minor changes, we can make these choices configurable:
 
 ``` python
 activation = "relu"
@@ -605,13 +602,11 @@ for _ in range(inner_layers):
 model.add(Dense(num_classes, activation='softmax'))
 ```
 
-The first and last layers are not parameterized. These correspond to the task, which is to classify examples of fixed input size as one of ten classes.
-
-Once again, these changes are not Guild-specific. They improve your code by making it easier to experiment with different settings.
+The first and last layers are not parameterized. These correspond to the task, which is to classify examples of fixed dimensions into a fixed number of classes.
 
 ### Implicit Hyperparameters
 
-Your code may be using *implicit hyperparameters*. Implicit hyperparameters are values that are not specified in your code but are defined as defaults. Consider this example, once again from [`mnist_mlp.py`](https://github.com/guildai/guildai/blob/master/examples/get-started/mnist_mlp.py#L45-L47):
+Implicit hyperparameters are values that are not specified in your code but are defined as defaults in libraries. Consider this example, once again from [`mnist_mlp.py`](https://github.com/guildai/guildai/blob/master/examples/get-started/mnist_mlp.py#L45-L47):
 
 ``` python
 model.compile(loss='categorical_crossentropy',
@@ -619,11 +614,9 @@ model.compile(loss='categorical_crossentropy',
               metrics=['accuracy'])
 ```
 
-There are a number of implicit hyperparameters used in this code. You can read about them in the [RMSProp](https://keras.io/api/optimizers/rmsprop/) API documentation. The is itself an important hyperparameter.
+There are a number of implicit hyperparameters used in this code. You can read about them in the [RMSProp documentation](https://keras.io/api/optimizers/rmsprop/). Even the choice to use RMSprop --- rather than [another optimizer](https://keras.io/api/optimizers/#available-optimizers) --- is itself an important hyperparameter.
 
-We could expose each [available Keras optimizer](https://keras.io/api/optimizers/#available-optimizers) but this is a lot of change. In practice, we can support two or three of more popular algorithms (e.g. RMSprop and Adam) to compare performance.
-
-Let's keep our change simple and expose *learning rate* as a hyperparameter, which is otherwise implicitly defined as `0.001`.
+Here's a simple change that exposes *learning rate* as a hyperparameter (which is otherwise implicitly defined as `0.001`):
 
 ```
 learning_rate = 0.001
@@ -632,3 +625,188 @@ model.compile(loss='categorical_crossentropy',
               optimizer=RMSprop(learning_rate=learning_rate),
               metrics=['accuracy'])
 ```
+
+## Configure Operation Flags
+
+In the previous step you review the operation hyperparameters. In this step, you configure operation [*flags*](/docs/flags). Flags let you set hyperparameter values without modifying code.
+
+When you run a script directly with Guild, Guild detects operation flags. Consider the mock training script used in [*Get Started*](/start):
+
+https://github.com/guildai/guildai/blob/master/examples/get-started/train.py
+
+When you run this script, Guild examines it and detects the global variables `x` and `noise` as flags. This lets you run the script with different values for `x` and `noise`:
+
+``` command
+guild run train.py x=0.2 noise=0.2
+```
+
+While this sort of magic bothers some developers, it lets users start tracking experiments with minimal-to-no code change. You can make this behavior explicit, or change it altogether.
+
+Flags can be configured in various ways with Guild:
+
+- Global variables (Python modules only)
+- Command line arguments
+- Configuration files
+- Environment variables
+
+The method that you use depends on the way the code is configured. We recommend that you initially adapt Guild to fit your project. You can change the project to support a different flags interface later.
+
+The table below considers the trade-offs between different flag interfaces.
+
+<div data-guild-class="table-1-2-2-2">
+
+| **Method** | **When to Use** | **Advantage** | **Disadvantage** |
+|-|-|-|-|
+| *Global variables* | Early script development; copying code from Notebooks. | Convenient starting point, especially when using Notebooks. | New values require changes to code or Guild magic. |
+| *Command line arguments* | Best-practice for defining flag interface. | Full user interface including help, type conversion, and value checks. | Additional code complexity. Unnecessary for experimental code and samples. |
+| *Configuration files* | Complex pipeline and model configuration. | Supports complex configuration. | Overkill when a CLI would work as well. |
+| *Environment variables* | Override default global variables without using Guild magic. | Minimal changes to code. | Awkward user interface. Lacks features of a command line interface. |
+
+<span data-guild-class="caption">Flag interface trade-offs</span>
+
+</div>
+
+The sections below describe how to use each interface in your project.
+
+### Global Variables
+
+If the main module defines flags using global variables, define set `flags-dest` to `globals`:
+
+``` yaml
+train:
+  module: mnist_mlp
+  flags-dest: globals
+  flags-import: all
+```
+
+Guild detects global variables as flags when you run a script directly. This is referred to as flag *importing*. When you define an operation, Guild disables flag importing by default. Set `flags-import` to `all` to tell Guild to import all detected flags.
+
+Use the `--test-flags` option with [`guild run`](/commands/run) to list the flags that Guild imports:
+
+``` command
+guild run --test-flags
+```
+
+You can also show imported flags by specifying `--help-op` with [`guild run`](/commands/run):
+
+``` command
+guild run --help-op
+```
+
+If Guild imports flags that you don't want, use `flags-import-skip` to tell Guild not to import them.
+
+If you prefer to import a specific list of flags, use `flags-import` and specify the list rather than `all`.
+
+For more information on configuring flags for global variables, see [*Flags*](/docs/flags/#python-global-variables).
+
+For more code samples, [*Guild File Cheatsheet*](/reference/guildfile#flags).
+
+### Command Line Arguments
+
+If the operation already supports a command line interface using [`argparse`](https://docs.python.org/library/argparse.html) or [Click](https://click.palletsprojects.com/), set `flags-dest` to `args`:
+
+``` yaml
+train:
+  module: mnist_mlp_args
+  flags-dest: args
+  flags-import: all
+```
+
+Guild detects command line arguments as flags if a module imports `argparse`. However, as with [globals](#global-variables) (above), Guild does not import flags by default when you define an operation in a Guild file. Set `flags-import` to `all` to import all detected flags.
+
+We modify `mnist_mlp.py` to use `argparse` to define the full set of hyperparameters (see [Hard-Coded Hyperparameters](#hard-coded-hyperparameters) and [Implicit Hyperparameters](#implicit-hyperparameters)).
+
+<div data-guild-github-select="18-26">
+
+https://github.com/guildai/guildai/blob/master/examples/get-started/mnist_mlp_args.py#L22
+</div>
+
+With these changes, you can see the list of imported flags by specifying `--help-op` with [`guild run`](/commands/run):
+
+``` command
+guild run --help-op
+```
+
+``` output
+Usage: guild run [OPTIONS] train [FLAG]...
+
+Use 'guild run --help' for a list of options.
+
+Flags:
+  10sec          (default is no)
+  activation     (default is relu)
+
+                 Choices:  relu, sigmoid, tanh
+
+  batch-size     (default is 128)
+  dropout        (default is 0.2)
+  epochs         (default is 20)
+  inner-layers   (default is 1)
+  layer-size     (default is 512)
+  learning-rate  (default is 0.001)
+```
+
+Note that we use a `--10sec` option, which is imported as the `10sec` flag. When this flag is set to `yes` the module applies the [10 second rule](#10-second-rule).
+
+If you configure the operation this way, verify that it runs quickly:
+
+``` command
+guild run 10sec=yes
+```
+
+A command line interface offers several advantages over global variables:
+
+- Explicit user interface --- user-configurable options are defined by the parser
+- Portable code --- options can be applied with or without Guild
+- Self documenting --- e.g. run <code>python -m <em>MODULE</em> --help</code>
+- Validated --- argument parsers check input and convert values to required types
+
+These benefits should be weighed against the cost of code change, associated risk, and perceived disruption by other developers. If you prefer less disruptive changes, use the techniques outlined above.
+
+### Configuration Files
+
+If the operation uses a configuration file to read flag values, Guild can generate a configuration file for each run.
+
+As of Guild AI version 0.7, this interface requires use of `config` dependency:
+
+``` yaml
+train:
+  main: mnist_mlp_config
+  flags-dest: off
+  flags-import: off
+  flags:
+    batch_size: 128
+    epochs: 20
+    learning_rate: 0.001
+    dropout: 0.2
+    10sec: no
+  requires:
+    - config: config.json
+```
+
+This operation does not import flags --- it defines flags explicitly. Guild does not support flags imports for config files at this time. Support for flag imports from config files will be added in a future version.
+
+The file `config.json` is project file. When the operation runs, Guild create a new `config.json` containing original values and current flag values. Flag values redefine values in `config.json`.
+
+We define a subset flags in the operation above to illustrate a common pattern: configuration files often contain dozens or hundreds of parameters, many of which are not hyperparameters. We expose the subset that the user can modify.
+
+### Environment Variables
+
+Flag values are always available as run environment variables in the format <code>FLAG_<em>NAME</em></code> where *`NAME`* is the flag name in upper case with non-alphanumeric characters replaced with underscores.
+
+The following sets `epochs` and `batch_size` using environment variables, when defined:
+
+``` python
+import os
+
+epochs = int(os.getenv("FLAG_EPOCHS") or 10)
+batch_size = int(os.getenv("FLAG_EPOCHS") or 100)
+```
+
+This is a minimal change to configure flags with environment variables. Use this pattern sparingly, if at all. There's small difference between this approach and using a full-featured [CLI](#command-line-arguments) (see above).
+
+A stronger case for environment variables is for configuring file locations. See [Override with Environment Variables](#override-with-environment-variables) above for an example.
+
+## Summary
+
+## Next Steps
