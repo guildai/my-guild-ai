@@ -90,13 +90,12 @@ attribute.
 
 Guild infers the list of flags based on the *flags interface*.
 
-If the interface is defined by `argparse
-
-
+TODO
 
 #### Output Scalars
 
-If
-
+TODO
 
 ## Keras Scripts
+
+TODO

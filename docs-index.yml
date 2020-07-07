@@ -38,6 +38,7 @@
     - docs/environments           # NEW
     - docs/remotes                # NEW
     - docs/queues                 # NEW
+    - docs/packages               # NEW
 
 - section: Tools
   description:
@@ -169,11 +170,11 @@
 
 - section: Other Docs
   links:
+    - help                        # NEW
     - install                     # NEW
     - system-requirements         # NEW
     - docs/defaults               # NEW
     - docs/windows                # NEW
-    - help                        # NEW
 
 # Non-section links, used for fetch.
 
@@ -181,3 +182,5 @@
     - examples/hello
     - examples/notebooks
     - examples/languages
+    - examples/package
+    - howto/train-remotely

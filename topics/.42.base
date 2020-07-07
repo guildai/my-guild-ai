@@ -101,7 +101,7 @@ op:
 
 ### Python Global Variables
 
-Guild sets flag values as global variables in a Python script when `flags-dest` is set to `globals` or when Guild otherwise [detects this interface through inspection](/reference/defaults.md#flags-interface).
+Guild sets flag values as global variables in a Python script when `flags-dest` is set to `globals` or when Guild otherwise [detects this interface through inspection](/docs/defaults.md#flags-interface). (TODO: this link is to the wrong topic)
 
 Guild only sets global variables when they are already defined in a script. Guild does not create new variables in a script.
 
@@ -328,10 +328,10 @@ Search space functions are specified in the format `NAME[ARGS]` where `ARGS` is 
 
 <div data-guild-class="terms">
 
-|                             |                                                              |
-|-----------------------------|--------------------------------------------------------------|
-| [`uniform`](#uniform)       | Specifies a uniform distribution over a range of values      |
-| [`loguniform`](#loguniform) | Specifies a log-uniform distribution over a range of values. |
+|                             |                                                 |
+|-----------------------------|-------------------------------------------------|
+| [`uniform`](#uniform)       | Uniform distribution over a range of values     |
+| [`loguniform`](#loguniform) | Log-uniform distribution over a range of values |
 
 </div>
 
