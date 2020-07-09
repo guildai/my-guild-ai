@@ -14,12 +14,12 @@
     - pattern: 'Get Started: '
       repl: ''
   links:
-    - start                       # READY
-    - start/optimize              # READY
-    - start/runs                  # READY
-    - start/guildfile             # READY
-    - start/classifier            # READY
-    - start/use-guild             # NEW
+    - start                       # 35 READY
+    - start/optimize              # 41 READY
+    - start/runs                  # 45 READY
+    - start/guildfile             # 46 READY
+    - start/classifier            # 47 READY
+    - start/use-guild             # 203 NEW
 
 - section: Concepts
   description:
@@ -150,7 +150,7 @@
     - pattern: ' Reference'
       repl: ''
   links:
-    - reference/guildfile         # NEW
+    - reference/guildfile         # 197 NEW
     - reference/optimizers        # NEW
     - reference/remotes           # NEW
     - reference/user-config       # NEW
@@ -165,7 +165,7 @@
       repl: ''
   links:
     - cheatsheets/commands        # NEW
-    - cheatsheets/guildfile       # NEW
+    - cheatsheets/guildfile       # 192 NEW
     - cheatsheets/remotes         # NEW
 
 - section: Other Docs
