@@ -183,4 +183,5 @@
     - examples/notebooks          # READY
     - examples/languages          # READY
     - examples/package            # READY
+    - examples/hyperopt           # READY
     - howto/train-remotely        # READY
