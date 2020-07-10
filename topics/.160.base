@@ -9,8 +9,6 @@ Scalars are numeric values that are logged during a run. Scalars are used to log
 
 A scalar value is associated with a *key* and a *step*. A scalar step denotes the training step or epoch associated with a value. In cases where a step does not apply, the step is `0`.
 
-## Log Scalars
-
 Scalars may be logged using one of two methods:
 
 - Writing values to script output
@@ -20,7 +18,7 @@ A scalar that is written to script output is known as an *output scalar*. For mo
 
 TensorBoard summaries are written to files supported by [TensorBoard](https://www.tensorflow.org/tensorboard) and other machine learning tools. For more information, see [TensorBoard Summaries](#tensorboard-summaries) below.
 
-### Output Scalars
+## Output Scalars
 
 By default, Guild logs for scalars in script output in the format `key: value` where each value is written on a single line without leading whitespace. Guild sets the current scalar step when the `step` key is used. Subsequently logged values are associated with the latest step.
 
@@ -39,11 +37,11 @@ loss: 0.01
 
 In this case, the logged scalar values are:
 
-| *key* | *value* | *step* |
-|------|-------|------|
-| loss | 0.1   | 1    |
-| loss | 0.05  | 2    |
-| loss | 0.01  | 3    |
+| **key** | **value** | **step** |
+|---------|-----------|----------|
+| loss    | 0.1       | 1        |
+| loss    | 0.05      | 2        |
+| loss    | 0.01      | 3        |
 
 You can modify the way Guild logs output scalars using the `output-scalars` operation attribute in a [Guild file](/term/guildfile).
 
@@ -58,9 +56,7 @@ Epoch 3/3
 - loss: 0.05 - accuracy: 0.95
 ```
 
-<span data-guild-class="caption">Alternative sample output --- requires custom configuration</span>
-
-The default format `key: value` will not work in this case. To capture scalars for this output, the operation needs a custom `output-scalars` attribute.
+The default pattern `key: value` does not work in this case. To capture scalars for this output, define `output-scalars` as follows:
 
 ``` yaml
 train:
@@ -69,15 +65,11 @@ train:
     - '- (\key): (\value)'
 ```
 
-<span data-guild-class="caption">Custom `output-scalars` attribute to support alternative output</span>
+Refer to [*Guild File Reference*](/reference/guildfile#output-scalars) for a specification of the `output-scalars` attribute.
 
-Output patterns are [Python regular expressions](https://docs.python.org/library/re.html#regular-expression-syntax). Guild supports a variety of pattern formats for logging output scalars.
+Refer to [*Guild File Cheatsheet*](/cheatsheets/#output-scalars) for examples of `output-scalars`.
 
-Refer to [*Guild File Reference*](/t/reference-guild-file/197#output-scalar-specs) for a complete specification of the `output-scalars` attribute.
-
-Refer to [*Guild File Cheatsheet*](/t/cheatsheet-guild-file/192#output-scalars) for examples of `output-scalars`.
-
-### TensorBoard Summaries
+## TensorBoard Summaries
 
 Guild detects scalars logged to TensorBoard summaries.
 
@@ -88,11 +80,9 @@ op:
   output-scalars: off
 ```
 
-<span data-guild-class="caption">Disable output scalar detection --- use when you log scalars yourself to TensorBoard summaries</span>
+You can log TensorBoard summaries using various Python APIs.
 
-There are several methods for logging TensorBoard summaries. Refer to the links below for more information including sample code.
-
-| Method | When to Use |
+| *Python API* | *When to Use* |
 |-|-|
 | [TensorFlow API](https://www.tensorflow.org/api_docs/python/tf/summary) | Operation uses TensorFlow or Keras |
 | [PyTorch API](https://pytorch.org/docs/stable/tensorboard.html) | Operation uses PyTorch |
@@ -105,13 +95,7 @@ There are several methods for logging TensorBoard summaries. Refer to the links 
 
 Show runs scalars using [`guild runs info`](/commands/runs-info).
 
-``` command
-guild runs info
-```
-
-By default, Guild omits scalars starting with `sys/` as these scalars are systems-related can overwhelm the list of scalars.
-
-To include system scalars, use the `--all-scalars` option:
+By default, Guild omits scalars starting with `sys/` as these scalars are systems-related can overwhelm the list of scalars. To include system scalars, use the `--all-scalars` option:
 
 ``` command
 guild runs info --all-scalars

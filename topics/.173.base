@@ -7,23 +7,25 @@
 
 Guild user configuration is defined in `~/.guild/config.yml`. User configuration applies across all projects and packages.
 
+> <span data-guild-class="callout note">Note</span> A future version of Guild will support project-level user configuration. This can be used to associate user config, including remotes, with a project.
+
 ## Check
 
 **Section heading:** `check`
 
 [`guild check`](/commands/check) can be configured by defining any of the attributes below under a top-level `check` mapping.
 
-### Attributes
+### Check Attributes
 
-#### `offline`
+<div data-toc-id="check-offline"><h4>offline</h4></div>
 
-Flag specifying default offline mode for checks (boolean)
+*Flag specifying default offline mode for checks (boolean)*
 
 When offline, Guild will not check for latest versions and will instead show `unchecked (offline)`.
 
 Default is `no`.
 
-### Examples
+### Check Examples
 
 Don't check for latest Guild AI version by default:
 
@@ -40,13 +42,15 @@ Note, you can use `--offline` or `--no-offline` when running [`guild check`](/co
 
 [`guild diff`](/commands/diff) can be configured by defining any of the attributes below under a top-level `diff` mapping.
 
-### Attributes
+### Diff Attributes
 
-#### `command`
+<div data-toc-id="diff-command"><h4>command</h4></div>
 
-The command used when diffing two paths. The two paths are appended to this command as separate arguments.
+*Command used when diffing two paths (string)*
 
-### Examples
+Two paths are appended to this command as separate arguments --- one for each applicable run path.
+
+### Diff Examples
 
 Use [Meld](ref:meld) to diff runs:
 
@@ -75,4 +79,4 @@ remotes:
     ...
 ```
 
-Refer to [Remotes Reference](remotes.md) for details on configuring remote types.
+Refer to [Remotes Reference](/reference/remotes) for details on configuring remote types.

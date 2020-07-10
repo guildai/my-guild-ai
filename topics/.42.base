@@ -222,7 +222,31 @@ In this case, you must explicitly define each flag your script supports.
 
 ## Flag Definitions
 
-TODO (see [flags reference](/reference/guildfile#flags))
+Define flags for an operation using the [`flags`](/reference/guildfile#operation-flags) operation attribute.
+
+``` yaml
+train:
+  flags:
+    learning-rate: 0.01
+    batch-size: 100
+```
+
+Each flag is defined by a key in the `flags` mapping. The key is the *flag name*.
+
+Flags may be defined using a value, as shown above, or with a mapping of attributes. If a value is specified, it's used as the default flag value. The default value can otherwise be defined using the [`default`](/reference/guildfile#flag-default) attribute. The following is equivalent to the configuration above:
+
+``` yaml
+train:
+  flags:
+    learning-rate:
+      default: 0.01
+    batch-size:
+      default: 100
+```
+
+Flags support a number of attributes for defining settings for help, value checks, type conversion, and interface details. Refer to [Flag Attributes](/reference/guildfile#flag-attributes) for a list of supported attributes.
+
+For more examples of flag definitions, see [*Guild File Cheatsheet*](/cheatsheets/guildfile#flag-definitions).
 
 ## Batch Files
 

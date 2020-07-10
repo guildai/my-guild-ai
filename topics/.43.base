@@ -5,7 +5,7 @@
 
 ## Overview
 
-An *optimizer* is a Guild [batch operation](ref:batch) that attempts to optimize an objective by adjusting flag values over a series of trials.
+An *optimizer* is a Guild operation that runs a [*batch*](/docs/runs#batches). A batch generates one or more *trial runs* or *trials*. Optimizers are able to suggest flag values to minimize or maximize an objective.
 
 Below is a list of supported optimizers.
 
@@ -16,47 +16,39 @@ Below is a list of supported optimizers.
 | [gbrt](#gbrt)     | Sequential optimizer using gradient boosted regression trees. |
 | [random](#random) | Batch processor using randomly selected values.               |
 
-Refer to [Optimizers](#optimizers) below for details on each optimizer.
-
-## Usage
-
-Use the default optimizer for an operation by specifying the `--optimize` option to [`guild run`](/commands/run). The default optimizer may be specified in the operation definition.
+Use the default optimizer for an operation by specifying the `--optimize` option with [`guild run`](/commands/run). The default optimizer can be defined for an operation using the [`optimizers`](/reference/guildfile#operation-optimizers) attribute. Guild uses the [`gp`](#gp) optimizer if one is not otherwise defined for an operation.
 
 Specify a named optimizer with the `--optimizer` option to [`guild run`](/commands/run). A name may be one of the optimizers below or may be the name of an optimizer defined for the operation.
 
-Refer to help on [`optimizers` operation attribute](/reference/guildfile.md#operation-optimizers) for details on defining optimizers for an operation.
+Optimizer flags are set using `--opt-flag` or `-Fo`. Optimizer flags are specified like other flags using the format `NAME=VALUE`.
 
-Optimizer flags may be set using `--opt-flag` or `-Fo`. Optimizer flags are specified like other flags using the format `NAME=VALUE`.
-
-For example, run the default optimizer for `train`:
+To run the default optimizer for `train`:
 
 ``` command
 guild run train --optimize
 ```
 
-Use the `forest` optimizer:
+To use the `forest` optimizer:
 
 ``` command
 guild run train --optimizer forest
 ```
 
-For more examples, see [Optimizers - Guild File Cheatsheet](/cheatsheets/guildfile.md#optimizers).
+For more examples, see [*Guild File Cheatsheet*](/cheatsheets/guildfile#optimizers).
 
-## Optimizers
-
-### gp
+## gp
 
 Bayesian optimizer using Gaussian processes.
 
-Refer to [skopt API documentation](https://scikit-optimize.github.io/#skopt.gp_minimize) for details on this algorithm and its flags.
+Refer to [skopt API documentation](https://scikit-optimize.github.io/stable/modules/generated/skopt.gp_minimize.html) for details on this algorithm and its flags.
 
 Aliases: `gaussian`, `bayesian`
 
-#### Flags
+### gp Flags
 
-##### `acq-func`
+<div data-toc-id="gp-acq-func"><h4>acq-func</h4></div>
 
-Function to minimize over the gaussian prior (default is `gp_hedge`)
+*Function to minimize over the gaussian prior (default is `gp_hedge`)*
 
 Choices:
 
@@ -69,63 +61,63 @@ Choices:
 | `EIps`     | Negative expected improvement per second                |
 | `PIps`     | Negative probability of improvement per second          |
 
-##### `kappa`
+<div data-toc-id="gp-kappa"><h4>kappa</h4></div>
 
-Degree to which variance in the predicted values is taken into account (default is `1.96`)
+*Degree to which variance in the predicted values is taken into account (default is `1.96`)*
 
-##### `noise`
+<div data-toc-id="gp-noise"><h4>noise</h4></div>
 
-Level of noise associated with the objective (default is `gaussian`)
+*Level of noise associated with the objective (default is `gaussian`)*
 
 Use `gaussian` if the objective returns noisy observations, otherwise specify the expected variance of the noise.
 
-##### `random-starts`
+<div data-toc-id="gp-random-starts"><h4>random-starts</h4></div>
 
-Number of trials using random values before optimizing (default is `3`)
+*Number of trials using random values before optimizing (default is `3`)*
 
-##### `xi`
+<div data-toc-id="gp-xi"><h4>xi</h4></div>
 
-Improvement to seek over the previous best values (default is `0.05`)
+*Improvement to seek over the previous best values (default is `0.05`)*
 
-### forest
+## forest
 
-Sequential optimization using decision trees. Refer to [skopt API documentation](https://scikit-optimize.github.io/#skopt.forest_minimize) for details on this algorithm and its flags.
+Sequential optimization using decision trees. Refer to [skopt API documentation](https://scikit-optimize.github.io/stable/modules/generated/skopt.forest_minimize.html) for details on this algorithm and its flags.
 
-#### Flags
+### forest Flags
 
-##### `kappa`
+<div data-toc-id="forest-kappa"><h4>kappa</h4></div>
 
-Degree to which variance in the predicted values is taken into account (default is `1.96`)
+*Degree to which variance in the predicted values is taken into account (default is `1.96`)*
 
-##### `random-starts`
+<div data-toc-id="forest-random-starts"><h4>random-starts</h4></div>
 
-Number of trials using random values before optimizing (default is `3`)
+*Number of trials using random values before optimizing (default is `3`)*
 
-##### `xi`
+<div data-toc-id="forest-xi"><h4>xi</h4></div>
 
-Improvement to seek over the previous best values (default is `0.05`)
+*Improvement to seek over the previous best values (default is `0.05`)*
 
-### gbrt
+## gbrt
 
 Sequential optimization using gradient boosted regression trees.
 
-Refer to [skopt API documentation](https://scikit-optimize.github.io/#skopt.gbrt_minimize) for details on this algorithm and its flags.
+Refer to [skopt API documentation](https://scikit-optimize.github.io/stable/modules/generated/skopt.gbrt_minimize.html) for details on this algorithm and its flags.
 
-#### Flags
+### gbrt Flags
 
-##### `kappa`
+<div data-toc-id="gbrt-kappa"><h4>kappa</h4></div>
 
-Degree to which variance in the predicted values is taken into account (default is `1.96`)
+*Degree to which variance in the predicted values is taken into account (default is `1.96`)*
 
-##### `random-starts`
+<div data-toc-id="gbrt-random-starts"><h4>random-starts</h4></div>
 
-Number of trials using random values before optimizing (default is `3`)
+*Number of trials using random values before optimizing (default is `3`)*
 
-##### `xi`
+<div data-toc-id="gbrt-xi"><h4>xi</h4></div>
 
-Improvement to seek over the previous best values (default is `0.05`)
+*Improvement to seek over the previous best values (default is `0.05`)*
 
-### random
+## random
 
 Batch processor supporting random flag value generation.
 
@@ -133,4 +125,4 @@ Values are selected from the search space distribution specified for each flag v
 
 This optimizer does not attempt to optimize an objective.
 
-It does not support any flags.
+The random optimizers does not support any flags.
