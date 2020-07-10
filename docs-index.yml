@@ -164,8 +164,8 @@
     - pattern: ' Cheatsheet'
       repl: ''
   links:
-    - cheatsheets/commands        # TODO
-    - cheatsheets/guildfile       # TODO
+    - cheatsheets/commands        # READY
+    - cheatsheets/guildfile       # READY
     - cheatsheets/remotes         # READY
 
 - section: Other Docs
