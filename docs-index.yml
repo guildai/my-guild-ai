@@ -14,40 +14,40 @@
     - pattern: 'Get Started: '
       repl: ''
   links:
-    - start                       # 35 READY
-    - start/optimize              # 41 READY
-    - start/runs                  # 45 READY
-    - start/guildfile             # 46 READY
-    - start/classifier            # 47 READY
-    - start/use-guild             # 203 NEW
+    - start                       # READY
+    - start/optimize              # READY
+    - start/runs                  # READY
+    - start/guildfile             # READY
+    - start/classifier            # READY
+    - start/use-guild             # READY
 
 - section: Concepts
   description:
     Go deeper into the core concepts behind the features.
   links:
-    - docs/cli                    # NEW
-    - docs/python-api             # NEW
-    - docs/runs                   # NEW
-    - docs/guildfiles             # NEW
-    - docs/operations             # NEW
-    - docs/flags                  # NEW
-    - docs/scalars                # NEW
-    - docs/optimization           # NEW
-    - docs/dependencies           # NEW
-    - docs/pipelines              # NEW
-    - docs/environments           # NEW
-    - docs/remotes                # NEW
-    - docs/queues                 # NEW
-    - docs/packages               # NEW
+    - docs/cli                    # READY
+    - docs/python-api             # READY
+    - docs/runs                   # TODO
+    - docs/guildfiles             # TODO
+    - docs/operations             # TODO
+    - docs/flags                  # TODO
+    - docs/scalars                # READY
+    - docs/optimization           # TODO
+    - docs/dependencies           # READY
+    - docs/pipelines              # READY
+    - docs/environments           # READY
+    - docs/remotes                # READY
+    - docs/queues                 # READY
+    - docs/packages               # READY
 
 - section: Tools
   description:
     Guild provides a number of integrated tools.
   links:
-    - docs/compare                # NEW
-    - docs/view                   # NEW
-    - docs/tensorboard            # NEW
-    - docs/diff                   # NEW
+    - docs/compare                # READY
+    - docs/view                   # READY
+    - docs/tensorboard            # READY
+    - docs/diff                   # READY
 
 - section: Commands
   description:
@@ -150,11 +150,11 @@
     - pattern: ' Reference'
       repl: ''
   links:
-    - reference/guildfile         # 197 NEW
-    - reference/optimizers        # NEW
-    - reference/remotes           # NEW
-    - reference/user-config       # NEW
-    - reference/plugins           # NEW
+    - reference/guildfile         # READY
+    - reference/optimizers        # READY
+    - reference/remotes           # READY
+    - reference/user-config       # READY
+    - reference/plugins           # READY
 
 - section: Cheatsheets
   description:
@@ -164,23 +164,23 @@
     - pattern: ' Cheatsheet'
       repl: ''
   links:
-    - cheatsheets/commands        # NEW
-    - cheatsheets/guildfile       # 192 NEW
-    - cheatsheets/remotes         # NEW
+    - cheatsheets/commands        # TODO
+    - cheatsheets/guildfile       # TODO
+    - cheatsheets/remotes         # READY
 
 - section: Other Docs
   links:
-    - help                        # NEW
-    - install                     # NEW
-    - system-requirements         # NEW
-    - docs/defaults               # NEW
-    - docs/windows                # NEW
+    - help                        # READY
+    - install                     # READY
+    - system-requirements         # READY
+    - docs/defaults               # READY
+    - docs/windows                # READY
 
 # Non-section links, used for fetch.
 
 - links:
-    - examples/hello
-    - examples/notebooks
-    - examples/languages
-    - examples/package
-    - howto/train-remotely
+    - examples/hello              # READY
+    - examples/notebooks          # READY
+    - examples/languages          # READY
+    - examples/package            # READY
+    - howto/train-remotely        # READY
