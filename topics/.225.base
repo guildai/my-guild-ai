@@ -68,7 +68,7 @@ The batch *proto* run defines the flag values used for trials. These may contain
 
 Read the proto flags and uses them to create a search space:
 
-<div data-guild-github-select="69-70">
+<div data-guild-github-select="68-70">
 
 https://github.com/guildai/guildai/blob/master/examples/hyperopt/tpe.py#L69
 </div>

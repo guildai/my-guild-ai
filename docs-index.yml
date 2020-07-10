@@ -30,9 +30,9 @@
     - docs/runs                   # TODO
     - docs/guildfiles             # TODO
     - docs/operations             # TODO
-    - docs/flags                  # TODO
+    - docs/flags                  # READY
     - docs/scalars                # READY
-    - docs/optimization           # TODO
+    - docs/optimization           # READY
     - docs/dependencies           # READY
     - docs/pipelines              # READY
     - docs/environments           # READY
