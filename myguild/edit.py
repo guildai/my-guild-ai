@@ -304,13 +304,13 @@ def watch(topic_id, save_dir=None):
             "Missing base version for topic %i - cannot run watch" % topic_id
         )
     topic = _topic_for_id(topic_id)
-    last_mtime = util.mtime(topic_path)
     log.info("Watching topic %i (%s)", topic_id, os.path.relpath(topic_path))
     loop = util.SafeLoop(
         limit_max=5,
         limit_interval=5.0,
         desc="topic %i (%s) modified" % (topic_id, topic_path),
     )
+    last_mtime = 0  # Try to publish once at start.
     while loop:
         cur_mtime = util.mtime(topic_path)
         if cur_mtime > last_mtime:
