@@ -23,7 +23,7 @@ More about Guild files:
 
 ## Format
 
-TODO: plain text, YAML, location in "project" directory, operation only vs full format.
+Guild files are plain text files in YAML format. See [*Guild File Reference*](/reference/guildfile) for details on file format.
 
 ## Operations
 
@@ -162,10 +162,6 @@ Specify the interface using the `flags-dest` operation attribute (short for *fla
 
 When `flags-dest` is set, Guild does not inspect the file to detect the flags interface.
 
-See also:
-
-- [`flags-dest` attribute reference](/reference/guildfile.md#operation-flags-dest)
-
 ##### Flags as Command Line Arguments
 
 To indicate that flags should be passed as command line arguments use `args`:
@@ -192,57 +188,22 @@ When `flags-dest` is `globals`, Guild sets flag values as script global variable
 
 Guild can import flags from Python scripts to avoid duplicating information in a Guild file. By default, Guild does not attempt to import flags from Python scripts.
 
-To import flags from a Python script, use the `flags-import` operation attribute.
+To import flags from a Python script, use the [`flags-import`](/reference/guildfile#operation-flags-import) operation attribute.
 
-#### Default Values
+#### Flag Definitions
 
-TODO
-
-#### Flag Data Type
-
-TODO
-
-#### Required Flags
-
-TODO
-
-#### Flag Value Choices
-
-TODO
-
-#### Flag Value Distribution
-
-TODO
-
-#### Flag Help
-
-TODO
-
-        self.default = _data.pop("default", None)
-        self.description = _data.pop("description", None) or ""
-        self.type = _data.pop("type", None)
-        self.required = bool(_data.pop("required", False))
-        self.arg_name = _data.pop("arg-name", None)
-        self.arg_skip = _data.pop("arg-skip", None)
-        self.arg_switch = _data.pop("arg-switch", None)
-        self.choices = _init_flag_choices(_data.pop("choices", None), self)
-        self.allow_other = _data.pop("allow-other", False)
-        self.env_name = _data.pop("env-name", None)
-        self.null_label = _data.pop("null-label", None)
-        self.min = _data.pop("min", None)
-        self.max = _data.pop("max", None)
-        self.distribution = data.pop("distribution", None)
-        self.extra = _data
-
-
-- Used as inputs to a run
-- Can be defined in both in the script and in the guild file
-- Definition in Guild file redefines any imported defs
-- Behavior can be disabled for explicit control and to avoid scanning scripts
+See [*Flags*](/docs/flags) for details on defining flags for an operation.
 
 ### Source Code
 
-TODO
+Guild copies operation source code to a run directory for each run. Guild uses the run copy of the source code rather than the project source code. This services two purposes:
+
+- The source code copy for a run is definitive --- it's the source code that is run
+- Changes to the project do not effect an in-progress run
+
+It's important to copy the required source code files. By default, Guild copies text files with safeguards to prevent copying too many files or files that are too big. Change this behavior by defining a `sourcecode` attribute for operation or the operation model.
+
+See [*Guild File Reference*](/reference/guildfile#source-code) for more information.
 
 ### Output Scalars
 
@@ -278,30 +239,32 @@ train:
   output-scalars: off
 ```
 
-TODO
-
 #### Keras Scalars
 
 By default, Guild applies the following patterns when running Keras operations:
 
-|                          |                                                                                                           |
-|--------------------------|-----------------------------------------------------------------------------------------------------------|
-| `Epoch (?P<step>[0-9]+)` | Sets the current `step` used for subsequently logged scalar values                                        |
+|||
+|-|-|
+| `Epoch (?P<step>[0-9]+)` | Sets the current `step` used for subsequently logged scalar values |
 | ` - ([a-z_]+): (\value)` | Captures scalar values staring with lower case (skips `ETA`, which would otherwise be logged as a scalar) |
 
 ### Dependencies
 
-TODO
+When an operation needs a file or other resource, it defines a *dependency* on a resource. Guild starts each run with an empty directory. If an operation needs a file, it must define it as a dependency.
+
+Refer to [*Dependencies*](/docs/dependencies) for details on defining and using dependencies in Guild.
 
 ### Pipelines
 
-TODO
+Pipelines are multi-step runs defined using the [`steps`](/reference/guildfile#operation-steps) attribute.
+
+Refer to [*Pipelines*](/docs/pipelines) for details on defining and using pipelines in Guild.
 
 ## Models
 
 A *model* defines a set of related operations. Generally models correspond to the structures that you train, evaluate, and deploy. However, Guild models may define any operations or even be used for non-modeling functions.
 
-Models must be defined using [full format](ref:full-format) Guild files. Models are top-level objects with a `model` attribute.
+Models must be defined using [full format](/reference/guildfile#full-format) Guild files. Models are top-level objects with a `model` attribute.
 
 ``` yaml
 - model: mnist
@@ -310,20 +273,23 @@ Models must be defined using [full format](ref:full-format) Guild files. Models 
     validate: mnist_val
 ```
 
-<span data-guild-class="caption">Sample `mnist` model definition with two operations: `train` and `validate`</span>
+Define a model when you want to:
 
-TODO
-
-- Other attributes - why use models and not just operations?
-- Inheritance using config
+- Provide namespaces for operations
+- Define [named resources](#resources)
+- Use model [inheritance](#inheritance) to reuse configuration
 
 ## Resources
 
-TODO
+A *resource* is a set of *sources* required by an operation. A source typically defines one or more source files. An operation indicates it requires a resource by defining it in the [`requires`](/reference/guildfile#operation-requires) attribute.
+
+Resources may be defined inline or as named resources. See [*Dependencies*](/docs/dependencies#inline-vs-named-resources) for more information.
+
+Refer to [*Guild File Reference*](/reference/guildfile#resources) for resource attributes.
 
 ## Packages
 
-TODO
+Guild supports installation and use of models and operations through packages. See [*Packages*](/docs/packages) for more information.
 
 ## Reusable Config
 
@@ -360,7 +326,7 @@ This configuration can be referenced using the `extends` attribute of another to
 
 <span data-guild-class="caption">Top-level `model` object that *extends* `base-model` --- it defines a `name` param, which resolves references in the inherited attributes</span>
 
-## Inheritance
+### Inheritance
 
 Guild files support *inheritance* where attributes of one object (parent) are applied by default to another object (child). A child may redefine attributes as needed.
 
@@ -371,9 +337,26 @@ Here's an example of a `model` object inheriting the attributes from a `config` 
   operations
 ```
 
-## Attribute Includes
+### Attribute Includes
 
-TODO
+You can reuse config settings through a special `$include` attribute. This attribute is used for flags and operations.
+
+Here's an example:
+
+``` yaml
+- config: train-flags
+  flags:
+    learning-rate: 0.1
+    batch-size: 100
+
+- operations:
+    train-cnn:
+      flags:
+        $include: train-flags
+    train-lr:
+      flags:
+        $include: train-flags
+```
 
 ## Including Files
 

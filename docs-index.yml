@@ -27,7 +27,7 @@
   links:
     - docs/cli                    # READY
     - docs/python-api             # READY
-    - docs/runs                   # TODO
+    - docs/runs                   # READY
     - docs/guildfiles             # TODO
     - docs/operations             # READY
     - docs/flags                  # READY
