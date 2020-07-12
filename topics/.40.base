@@ -25,7 +25,7 @@ Runs serve as a unit of *reproducibility*. By automating and capturing experimen
 
 ## Run Artifacts
 
-Guild saves runs on standard file systems. Guild is different in this respect from experiment tracking systems that save experiment results in databases or exotic file systems. For background on why Guild takes this approach, see [Guild Design - Minimize Dependencies](/reference/design/#dependencies).
+Guild saves runs on standard file systems. Guild is different in this respect from experiment tracking systems that save experiment results in databases or exotic file systems..
 
 Runs are stored under a `runs` directory located in [*Guild home*](/docs/environments#guild-home). To show where Guild saves runs, refer to the `guild_home` attribute shown by [`guild check`](/commands/check). Each run is saved in a unique subdirectory. For more information, see [Run Directory](#run-directory) below.
 
@@ -55,7 +55,7 @@ Resource links may include:
 
 When preparing a run directory, Guild resolves required resources by locating the appropriate files (downloading them if needed) and creating symbolic links to those files in the run directory. These links are part of the run artifact.
 
-For for more information on defining and using required resources, see [Dependencies](/docs/dependencies).
+For for more information on defining and using required resources, see [*Dependencies*](/docs/dependencies).
 
 ### Run Metadata
 
@@ -80,10 +80,10 @@ Start a run using [`guild run`](/commands/run). The `run` command is a multi-fea
 
 - Run a Python script
 - Run an operation defined in a [Guild file](/docs/guildfiles)
-- Generate a batch of runs
+- Start a batch of runs
 - Stage runs for deferred execution
 - Restart a stopped run
-- Start a run from a prototype run
+- Start a run from a prototype
 - Show help for an operation
 - Test an operation
 
@@ -159,85 +159,282 @@ This behavior can be modified by defining `output-scalars` for an operation in a
 
 ### Run an Operation
 
-TODO
+Run an operation by specifying the operation name. To show the list of available options for a project, use [`guild ops`](/commands/ops). To include installed operation --- i.e. operations defined in installed packaged -- use `-i` with the `ops` command.
+
+With the operation name, start it with [`guild run`](/commands/run). Refer to the command help for options.
 
 ### Run a Batch
 
-TODO
+To run a batch, specify a flag value that implicitly starts a [*batch run*](#batches). Start a batch explicitly by specifying `--optimize` or `--optimizer` with [`guild run`](/commands/run).
 
-### Stage Runs
+See [Batches](#batches) below for more information.
 
-TODO
+## Stage a Run
 
-### Restart a Run
+You can stage a run to start later. To stage a run, use `--stage` with [`guild run`](/commands/run).
 
-TODO
+Start a staged run using <code>\-\-start <em>RUN-ID</em></code> with `run`.
 
-### Run From a Prototype
+Staged runs are often used with *queues* to schedule runs. See [*Queues*](/docs/queues) for more information.
 
-TODO
+## Restart a Run
 
-### Run on a Remote System
+Restart a run using <code>\-\-restart <em>RUN-ID</em></code> with `run`.
 
-TODO
+Restart a run that terminates early and has a checkpoint to restart from.
+
+> <span data-guild-class="callout note">Note</span> Your operation code must support restarts from a checkpoint. This requires specific coding to handle restarts. You generally do this by looking for a checkpoint file and restarting from the checkpoint if it's present. When Guild restarts a run, the run has access to any checkpoints it writes previously.
+
+By default, Guild uses the source code associated with the run when restarting. To force Guild to use the current source code, specify the `--force-sourcecode` option along with `--restart`. Use this when you want to apply a fix to a terminated run.
+
+Guild uses the run flag values when restarting. You can redefine flag values as needed when restarting a run.
+
+## Run From a Prototype
+
+To start a new run using an existing run as a prototype, use <code>\-\-proto <em>RUN-ID</em></code> with `run`.
+
+By default, Guild uses the source code associated with the prototype run. To force Guild to use the current source code, specify the `--force-sourcecode` option along with `--proto`.
+
+## Show Operation Help
+
+Show help for an operation by specifying the `--help-op` option with `run`.
+
+Command help is generated from the Guild file.
+
+## Test an Operatiion
+
+There are various ways to test an operation. The first way is to simply run it. Consider implementing the [10 Second Rule](/start/use-guild#10-second-rule) for your operations so you can run the full code path in less than 10 seconds.
+
+### Test Source Code
+
+Show what Guild copies as source code for an operation by specifying the `--test-sourecode` option with `run`. Guild shows the rules used to include and exclude source code files. It shows the files that are selected and those that are skipped.
+
+### Test Output Scalars
+
+Use `--test-output-scalars` to test operation output scalar configuration. You can test a file or test standard input using the filename `-`.
+
+Test output scalars for a run by piping run output to the `run` command:
+
+``` command
+guild cat --output | guild run --test-output-scalars
+```
+
+You can type input per line for evaluation using this command:
+
+``` command
+guild run --test-output-scalars -
+```
+
+When you're done evaluating input, specify a blank line by pressing **Enter** or type **Ctrl-C**.
+
+### Stage a Run in a Directory
+
+Use `--stage` with `--run-dir` to stage a run in a directory. Guild initializes the run as it would normally. This lets you inspect the run directory and even run the operation directly with Python. This is often an effecitve way to troubleshoot issues. When you've resolved any issues, run the operation normally.
+
+## Run on a Remote System
+
+To run an operation on a [remote](/docs/remotes), use the `--remote` option with [`guild run`](/commands/run).
+
+You must define the specified remote in [user configuration](/reference/user-config).
+
+See [*Remotes*](/docs/remotes) for information on defining and using remotes.
 
 ## Manage Runs
 
+### Run Filters
+
+Run-related commands support a common set of *run filter* options. Use these options to limit the command to runs that match the specified filters.
+
+The table below lists the common run filter options.
+
+| *Option* | *Description* |
+|-|-|
+| `-l, --label VAL`      | Filter runs with labels matching VAL. |
+| `-U, --unlabeled`      | Filter only runs without labels. |
+| `-M, --marked`         | Filter only marked runs. |
+| `-N, --unmarked`       | Filter only unmarked runs. |
+| `-R, --running`        | Filter only runs that are still running. |
+| `-C, --completed`      | Filter only completed runs. |
+| `-E, --error`          | Filter only runs that exited with an error. |
+| `-T, --terminated`     | Filter only runs terminated by the user. |
+| `-P, --pending`        | Filter only pending runs. |
+| `-G, --staged`         | Filter only staged runs. |
+| `-S, --started RANGE`  | Filter only runs started within RANGE. See above for valid time ranges. |
+| `-D, --digest VAL`     | Filter only runs with a matching source code digest. |
+
+Commands that support these filters include [`cat`](/commands/cat), [`compare`](/commands/compare), [`export`](/commands/export), [`import`](/commands/import), [`label`](/commands/label), [`ls`](/commands/ls), [`mark`](/commands/mark), [`open`](/commands/open), [`publish`](/commands/publish), [`pull`](/commands/pull), [`push`](/commands/push), [`runs diff`](/commands/runs-diff), [`runs info`](/commands/runs-info), [`runs purge`](/commands/runs-purge), [`runs restore`](/commands/runs-restore), [`runs rm`](/commands/runs-rm), [`runs`](/commands/runs), [`select`](/commands/select), [`tensorboard`](/commands/tensorboard), and [`view`](/commands/view).
+
 ### List Runs
 
-TODO
+List runs using [`guild runs`](/commands/runs). This is an alias for the full command [`guild runs list`](/commands/runs-list).
+
+``` command
+guild runs
+```
+
+By default Guild shows the latest 20 runs. You can show more runs using one more occurrances of the `-m` option. Each time you specify `-m` Guild shows 20 more runs.
+
+Show all runs using the `-a` option.
+
+You can filter runs using various filter options. See [`runs list`](/commands/runs-list) for details.
+
+You can list runs in an export archive by specifying the directory with the `-A, --archive` option.
 
 ### Get Run Information
 
-TODO
+Use [`guild runs info`](/commands/runs-info) to show run information. This command outputs a number of run attributes.
+
+By default Guild shows information for the latest run. Specify a run index or run ID to show information for a different run.
+
+To export runs info as JSON, use the `--json` option.
+
+To list run files, use [`guild ls`](/commands/ls).
+
+To open a file from a local run using an associate program, use [`guild open`](/commands/open).
+
+To open a new command line shell for a run, use `--shell` with [`guild open`](/commands/open). The shell is configured with the run directory as the current directory.
+
+To show the contents of a run file, use [`guild cat`](/commands/cat).
 
 ### Compare Runs
 
-TODO
+Guild support various methods for comparing runs.
+
+The table below describes how various commands are used to compare.
+
+| *Guild&nbsp;Command* | *When to Use* |
+|-|-|
+| [`compare`](/commands/compare) | Compare run flags and scalars in a tabular view. Command is terminal based works the same when run remotely and locally. See [*Guild Compare*](/docs/compare) for details. |
+| [`view`](/commands/view) | Graphical application (web based) for exploring and comparing runs. See [*Guild View*](/docs/view) for details. |
+| [`tensorboard`](/docs/tensorboard) | Use TensorBoard to compare run scalars, images, hyperparameters, and other logged summaries. See [*TensorBoard*](/docs/tensorboard) for details.|
+| [`runs diff`](/commands/diff) | Use a diff program to compare runs. |
 
 ### Delete Runs
 
-TODO
+Use [`guild runs rm`](/commands/runs-rm) or [`guild runs delete`](/commands/runs-delete) to delete runs. These commands are identical. Use the form you prefer.
 
-#### Manually Deleting Run Directories
+By default, when you delete a run, Guild moves the run to a trash directory in case you want to restore it. Use [`guild runs restore`](/commands/runs-restore) to restore deleted runs. List deleted runs using [`guild runs -d`](/commands/runs).
 
-You may move or delete a run directory, however, keep in mind the following:
+You can permanently delete deleted runs using [`guild runs purge`](/commands/runs-purge). This operation cannot be undone. Purging runs frees disk space.
 
-- Avoid moving or deleting a run directory while the run is in a `running` status. Stop the run first using [`guild stop`](/commands/stop) or by terminating the run process (use [`guild runs info`](/commands/runs-info) to show the run `pid`).
-
-- You can relocate a run using [`guild export`](/commands/export) rather than moving the directory.
-
-- You can delete a run using [`guild runs delete`](/commands/runs-delete). This command provides a safeguard for deleting running runs. It also lets you restore deleted runs, provided you don't specify the `--permanent` option.
+> <span data-guild-class="callout tip">Tip</span> Avoid the temptation to permanently delete runs until you need to. Deleted runs are surprisingly useful sources of information. When they're permanently deleted, the information is gone.
+>
+> Use `guild check --space` to see space used by runs. When purging runs to free disk space, consider deleting old runs using the `-S` option (short form of `--started`). For example, purge runs older than 30 days with `guild runs purge -S "before 30 days ago"`.
 
 ### Export and Import Runs
 
-TODO
+Use [`guild export`](/commands/export) to move or copy runs to a local directory.
+
+Use `--move` with `export` to move runs out of the environment into a directory. This is a good method for organizing runs over time. Use different export directories to organize and archive runs. This keeps your environment free of older runs that you aren't working with. You can import these runs back into the environment as needed.
+
+Use [`guild import`](/commands/import) to move or copy runs from a directory to your environment.
 
 ### Copy Runs to and from a Remote System
 
-TODO
+Use [`guild push`](/commands/push) to copy runs from your local environment to a remote. This is useful for backing up runs to a server or to a cloud service like S3. You can also use this method to share runs with colleagues or deploy models.
+
+Use [`guild pull`](/commands/pull) to copy runs from a remote to your local environment. Use this method to restore archived runs or get runs from colleagues.
 
 ## Labels
 
-TODO
+A *label* is used to describe a run. Run labels are shown in various contexts including runs lists and run comparisons.
 
-- Default labels
-- Set a label when starting a run
-- Label templates
-- Change run labels
-- Tag run labels
-- Clear run labels
+To show the label for a specific run, use [`guild runs info`](/commands/runs-info) --- the label is designated by the `label` attribute.
+
+Use labels to filter runs. See [Run Filters](#run-filters) above for commands that support the label filter. For example, to show runs with labels containing "best", run:
+
+``` command
+guild runs -l best
+```
+
+### Set a Label for a New Run
+
+By default, Guild generates a label using the [`label`](/reference/guildfile#operation-label) template configured for an operation. If an operation doesn't specify a label template, Guild generates a default label with flag assignments.
+
+Set a different label using the `--label` option with [`guild run`](/commands/run).
+
+You can alternatively *tag* a run with a string that's prepended to the default label. Specify the tag with the `--tag` option.
+
+### Modify a Run Label
+
+Modify the label for one or more runs using [`guild label`](/commands/label). When modifying a label, you have several options.
+
+The table below lists ways of modifying labels.
+
+| *Action* | *Command* |
+|-|-|
+| Replace labels | `guild label --set LABEL` |
+| Prepend a value to labels | `guild label --tag VALUE` (alias for `guild label --prepend VALUE`) |
+| Append a value to labels | `guild label --append VALUE` |
+| Remove a value from labels | `guild label --untag VALUE` (alias for `guild label --remove VALUE`) |
+| Clear labels | `guild label --clear` |
+
+By default Guild applies the `label` command to the latest run. To apply it to different runs, use one or more *`RUN`* arguments. To label all runs matching a filter, use the `:` arugment.
 
 ## Batches
 
-TODO
+A *batch run* is a run that generates other runs. A run generated by a batch is referred to as a *trial*.
 
-### Default Batch Operation
+The following command starts a batch. It uses the default batch operation to generate two trials --- one for each flag value specified:
 
-### Optimizers
+``` command
+guild run train lr=[0.01,0.1]
+```
 
-### Optimizer Flags
+The following command also starts a batch. It generates 20 runs using randomly selected values from the log-uniform distribution over the specified range:
+
+``` command
+guild run train lr=loguniform[1e-5:1e-1]
+```
+
+Both examples start batches implicitly based on the specified flag values. Start a batch explicitly by specifying either `--optimize` or `--optimizer`. Optimizers are batch operations. They generate one or more trials.
+
+For more information, see [*Hyperparameter Optimization*](/docs/optimization).
 
 ### Batch Files
 
-### Trial Runs
+Trials are also generated when you specify a *batch file* for a run. Batch files are specified using <code>@<em>PATH</em></code> where *`PATH`* is the path to a file containing trial flags.
+
+Batch files must be defined using one of the following formats:
+
+- CSV
+- YAML
+- JSON
+
+Sample CSV formatted batch file:
+
+```
+lr,batch_size,dropout
+0.1,100,0.1
+0.1,100,0.2
+0.01,100,0.1
+0.01,100,0.2
+```
+
+Sample YAML formatted batch file:
+
+``` yaml
+- lr: 0.1
+  batch_size: 100
+  dropout: 0.1
+- lr: 0.1
+  batch_size: 100
+  dropout: 0.2
+- lr: 0.01
+  batch_size: 100
+  dropout: 0.1
+- lr: 0.01
+  batch_size: 100
+  dropout: 0.2
+```
+
+Sample JSON formatted batch file:
+
+``` json
+[{"lr": 0.1, "batch_size": 100, "dropout": 0.1},
+ {"lr": 0.01, "batch_size": 100, "dropout": 0.2},
+ {"lr": 0.1, "batch_size": 100, "dropout": 0.1},
+ {"lr": 0.01, "batch_size": 100, "dropout": 0.2}]
+```
+
+You can override flag values when using batch files.

@@ -29,7 +29,7 @@
     - docs/python-api             # READY
     - docs/runs                   # TODO
     - docs/guildfiles             # TODO
-    - docs/operations             # TODO
+    - docs/operations             # READY
     - docs/flags                  # READY
     - docs/scalars                # READY
     - docs/optimization           # READY
