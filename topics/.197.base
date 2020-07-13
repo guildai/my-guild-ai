@@ -945,7 +945,7 @@ The `output-scalars` attribute can be a mapping of scalar keys to capturing patt
 
 If the value of `output-scalars` is a list, each item can be a mapping of keys to capturing patterns, which is treated identically as the mapping described above, or as strings. If an item is a string, it must define two capture groups. By default, the first capture group is the scalar *key* and the second capture group is the scalar *value*. Named capture groups can be used to reverse this order using `_key` and `_value` group names for the captured key and value respectively.
 
-Patterns must be valid [regular expression](ref:regex).
+Patterns must be valid Python [regular expression](https://docs.python.org/library/re.html).
 
 The special templates `\key`, `\value`, and `\step` represent regular expressions for valid keys, numeric values, and step values respectively.
 
@@ -1081,7 +1081,7 @@ Guild assumes that the `compare-to` file is relative to the step run directory.
 
 *Checks the run file for matching text (string)*
 
-`contains` must be a valid [regular expression](ref:regex).
+`contains` must be a valid Python [regular expression](https://docs.python.org/library/re.html).
 
 If the run file output does not contain text that matches this attribute value, the check fails.
 

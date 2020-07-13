@@ -34,7 +34,7 @@ Guild works across platforms and languages using standard interfaces when possib
 
 When Guild does not have explicit configuration (e.g. when a script is run directly) it attempts to infer the flags interface by inspecting the script. See [*Default Behavior*](/docs/defaults#flags-interface) for more information.
 
-The flags interface is configured for an operation using the `flags-dest` attribute. See [`flags-dest` in *Guild File Reference*](/reference/guildfile.md#operation-flags-dest) for configuration details.
+The flags interface is configured for an operation using the `flags-dest` attribute. See [`flags-dest` in *Guild File Reference*](/reference/guildfile#operation-flags-dest) for configuration details.
 
 For example of different interfaces, see [*Guild File Cheatsheet*](/cheatsheets/guildfile#flags-interface-python-modules).
 

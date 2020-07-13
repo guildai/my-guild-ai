@@ -15,7 +15,7 @@ Guild plugins can be used for the following functions:
 
 ## Enable Plugins for an Operation
 
-By default, plugins are not enabled for operations. You can enable one or more plugins for an operation using the `plugins` operation attribute.
+By default, plugins are not enabled for operations. You can enable one or more plugins for an operation using the [`plugins`](/reference/guildfile#operation-plugins) operation attribute.
 
 For example, to enable all summary-related plugins for operation `train`, use:
 
@@ -24,9 +24,7 @@ train:
   plugins: summary
 ```
 
-For more information, see [`plugins` operation attribute](/reference/guildfile.md#operation-plugins).
-
-> <span data-guild-class="callout important">Important</span> Summary plugins are not supported with Guild [output scalars](ref:output-scalar). You must explicitly log scalars as TensorBoard summaries from the operation script itself using one of the [supported methods](/scalars.md#tensorboard-summaries).
+> <span data-guild-class="callout important">Important</span> Summary plugins are not supported with Guild [output scalars](/docs/scalars#output-scalar). You must explicitly log scalars as TensorBoard summaries from the operation script itself using one of the [supported methods](/docs/scalars#tensorboard-summaries).
 
 ## Built-In Plugins
 

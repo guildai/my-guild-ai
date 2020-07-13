@@ -15,7 +15,6 @@ and get value from it.
 
 This requires some code in Tweaks theme.
 
-### www-pre -> main site on launch
 ### Fill in Examples
 
 We lost the examples index. Need to fill out the content on my.guild.ai/examples.
@@ -45,3 +44,6 @@ designates a reply as a solution to a question. I think this would be
 useful on #general and #troubleshooting (possibly not others though).
 
 ### Bring over more examples
+### Move Clicky support into Guild AI Tweaks
+
+- Expose as setting

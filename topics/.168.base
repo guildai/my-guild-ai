@@ -13,7 +13,7 @@ Sections for:
 
 ## Overview
 
-Guild provides integrated support for [TensorBoard](ref:tensorboard).
+Guild provides integrated support for [TensorBoard](https://www.tensorflow.org/tensorboard).
 
 To use TensorBoard to view Guild runs, use [`guild tensorboard`](/commands/tensorboard):
 
@@ -33,10 +33,10 @@ A number of things are different when you run TensorBoard with Guild:
 
 - Guild dynamically adds images saved to the run directory as TensorBoard summaries. This lets you view run-generated images without having to write them as summaries.
 
-  ![plot-feature|539x400](upload://yayDFDa0SD6IBMBuoOi3DC7I6w6.png) 
+  ![plot-feature|539x400](upload://yayDFDa0SD6IBMBuoOi3DC7I6w6.png)
 
 - Guild dynamically adds summaries so that flags and scalars can be compared in the **HParams** tab. This lets you use TensorBoard to compare hyperparameter results without having to write summaries yourself.
 
-  ![tb-hparams2|552x354](upload://nHvQt4ObNpmO2GMOeHp3SKu8uf.png) 
+  ![tb-hparams2|552x354](upload://nHvQt4ObNpmO2GMOeHp3SKu8uf.png)
 
 - Guild filters runs shown in TensorBoard according to the run filter options used with [`guild tensorboard`](/commands/tensorboard). This lets you quickly compare runs matching various criteria without having to manually create a TensorBoard log directory.

@@ -174,7 +174,7 @@ Guild shows the list of runs in the directory.
 
 If you want to import any runs back into your list, use [`guild import`](/commands/import). For this guide, we keep the runs list empty for the next section.
 
-> <span data-guild-class="callout tip">Tip</span> Use [`guild export`](/commands/export) to keep your list clear of runs you're no longer working with. Use different export directories to categorize your runs as needed. If you want to move runs to a remote location, use [`guild push`](/commands/push) with a [remote configuration](ref:remote).
+> <span data-guild-class="callout tip">Tip</span> Use [`guild export`](/commands/export) to keep your list clear of runs you're no longer working with. Use different export directories to categorize your runs as needed. If you want to move runs to a remote location, use [`guild push`](/commands/push) with a [remote configuration](/reference/user-config#remotes).
 
 ## Next Steps
 

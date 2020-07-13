@@ -7,14 +7,14 @@
 
 Guild supports training on remote system by way of a *remote* facility.
 
-- Define a remote in [user configuration](ref:user-config)
+- Define a remote in [user configuration](/reference/user-config)
 - Specify the remote name using the `--remote` option when running an operation
 
 For a complete reference on remote configuration, see [*Remotes Reference*](/reference/remotes).
 
 ## Define a Remote
 
-Remotes are defined in [user configuration](ref:user-config). Below is an example of an SSH remote named `remote-gpu`:
+Remotes are defined in [user configuration](/reference/user-config). Below is an example of an SSH remote named `remote-gpu`:
 
 ``` yaml
 remotes:
@@ -36,7 +36,7 @@ Guild supports the following remote types:
 | [s3](/reference/remotes#s3) | Copy runs to and from S3. This remote type does not support runs but can be used for backup and  restore. |
 </div>
 
-For a complete list of remote types, including examples, see [Remotes](ref:remote).
+For a complete list of remote types, including examples, see [*Remotes Reference*](/reference/remotes).
 
 ## Manage Remotes
 
@@ -51,7 +51,7 @@ Remote management commands:
 | [`guild remote start`](/commands/remote-start)   | Start a remote. Not all remote types can be started. |
 | [`guild remote stop`](/commands/remote-start)    | Stop a remote. Not all remote types can be stopped.  |
 
-A remote must be available before it can be used in a remote command. Check a remote using [`guild remote status`](/commands/remote-status). If a remote is not available and can be started, use [`guild remote start`](/commands/remote-start) to start it first. Note that some remote types cannot be started or stopped. Refer to [Remotes](ref:remote) for detail on each remote type.
+A remote must be available before it can be used in a remote command. Check a remote using [`guild remote status`](/commands/remote-status). If a remote is not available and can be started, use [`guild remote start`](/commands/remote-start) to start it first. Note that some remote types cannot be started or stopped. Refer to [*Remotes Reference*](/reference/remotes) for detail on each remote type.
 
 ## Remote Commands
 
@@ -61,7 +61,7 @@ To run apply a command to a remote, use the `--remote` option. For example, to r
 guild --remote remote-gpu check
 ```
 
-Not all remote types support every command. For example, the `s3` remote type does not support the `run` command. Refer to [Remotes](ref:remote) for details on which remote commands are support for a particular remote type.
+Not all remote types support every command. For example, the `s3` remote type does not support the `run` command. Refer to [*Remotes Reference*](/reference/remotes) for details on which remote commands are support for a particular remote type.
 
 Guild commands that support remotes:
 
