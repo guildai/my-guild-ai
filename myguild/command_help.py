@@ -34,7 +34,7 @@ COMMAND_HELP_POST_TEMPLATE = """
 
 {formatted_options}{formatted_subcommands}
 
-*Guild AI version {version}*
+<span data-guild-class="guild-cmd-version">Guild AI version {version}</span>
 """
 
 COMMAND_INDEX_TEMPLATE = """
@@ -42,7 +42,7 @@ COMMAND_INDEX_TEMPLATE = """
 
 {formatted_commands}
 
-*Guild AI version {version}*
+<span data-guild-class="guild-cmd-version">Guild AI version {version}</span>
 """
 
 
