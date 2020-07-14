@@ -28,7 +28,7 @@
     - docs/cli                    # READY
     - docs/python-api             # READY
     - docs/runs                   # READY
-    - docs/guildfiles             # TODO
+    - docs/guildfiles             # READY
     - docs/operations             # READY
     - docs/flags                  # READY
     - docs/scalars                # READY

@@ -56,7 +56,7 @@ Use Guild packages to:
 
 ## Build a Package
 
-Build a package for your project by running [`guild package`](/commands/package). The project must contain a [Guild file](/docs/guildfile) to run this command.
+Build a package for your project by running [`guild package`](/commands/package). The project must contain a [Guild file](/docs/guildfiles) to run this command.
 
 ``` command
 guild package
