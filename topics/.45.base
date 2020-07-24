@@ -176,7 +176,7 @@ If you want to import any runs back into your list, use [`guild import`](/comman
 
 > <span data-guild-class="callout tip">Tip</span> Use [`guild export`](/commands/export) to keep your list clear of runs you're no longer working with. Use different export directories to categorize your runs as needed. If you want to move runs to a remote location, use [`guild push`](/commands/push) with a [remote configuration](/reference/user-config#remotes).
 
-## Next Steps
+## Summary
 
 In this section you use various commands to manage your runs:
 
@@ -188,7 +188,6 @@ In this section you use various commands to manage your runs:
 > <span data-guild-class="callout highlight">Highlights</span>
 > - Focus on the most promising results without losing information from other experiments.
 > - Generate experiments confidentaly knowing that you can archive and restore runs as needed.
-
 
 In the next section, you use a *Guild file* to explicitly define operations your project.
 

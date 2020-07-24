@@ -5,7 +5,7 @@
 
 ## Overview
 
-This [example](https://github.com/guildai/guildai/tree/master/examples/tensorflow2) illustrates how Guild works with TensorFlow and TensorBoard. It uses unmodified code from the official "beginner" example in [TensorFlow Overview](https://www.tensorflow.org/overview).
+This [example](https://github.com/guildai/guildai/tree/master/examples/tensorflow2) shows how to use Guild to track experiments and optimize a TensorFlow model. It highlights the use of TensorBoard and the [HParams plugin](https://www.tensorflow.org/tensorboard/hyperparameter_tuning_with_hparams#4_visualize_the_results_in_tensorboards_hparams_plugin) to evaluate hyperparameters and find optimal values. It uses unmodified code from the official example in [TensorFlow Overview](https://www.tensorflow.org/overview).
 
 Project files:
 
