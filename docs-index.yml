@@ -179,9 +179,11 @@
 # Non-section links, used for fetch.
 
 - links:
+    - examples                    # READY
     - examples/hello              # READY
     - examples/notebooks          # READY
     - examples/languages          # READY
     - examples/package            # READY
     - examples/hyperopt           # READY
+    - examples/tensorflow2        # TODO
     - howto/train-remotely        # READY

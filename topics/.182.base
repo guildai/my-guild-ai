@@ -1,0 +1,27 @@
+<div data-theme-toc="true"></div>
+<div data-guild-docs="true"></div>
+
+Examples are Guild AI projects that illustrate various features and capabilities. You can find more examples along with example source code in [Guild AI examples on GitHub](https://github.com/guildai/guildai/tree/master/examples).
+
+## Get Started
+
+<div data-guild-class="guild-docs-section-examples">
+
+|||
+|-|-|
+| [Hello](/examples/hello) | Basic use of flags and dependencies |
+| [Languages](/examples/languages) | How Guild works with various languages |
+| [Notebooks](/examples/notebooks) | Use Guild in a Jupyter Notebook |
+
+</div>
+
+## Advanced
+
+<div data-guild-class="guild-docs-section-examples">
+
+|||
+|-|-|
+| [Package](/examples/package) | Add package support to a Guild file |
+| [Hyperopt](/examples/hyperopt) | Hyperopt integration / shows custom optimizer |
+
+</div>
