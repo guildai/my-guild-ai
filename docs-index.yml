@@ -186,4 +186,5 @@
     - examples/package            # READY
     - examples/hyperopt           # READY
     - examples/tensorflow2        # TODO
-    - howto/train-remotely        # READY
+    - guides/train-remotely       # READY
+    - guides/project-template-for-python-data-science
