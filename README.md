@@ -8,6 +8,29 @@ Install this toolkit by running:
 python setup.py develop
 ```
 
+## Process
+
+### Refresh All Commands
+
+Do this on a new feature release or when the command template changes.
+
+IMPORTANT: The published commands will reflect the currently installed
+version of Guild. Be certain to check out the appropriate commit/tag
+when generating command help from a source code based version of
+Guild.
+
+    $ cd ~/SCM/guild
+    $ git checkout VERSION-TAG
+
+Clear the my-guild cache.
+
+    $ cd ~/SCM/my-guild-ai
+    $ my-guild clear-cache --all
+
+Publish the commands.
+
+    $ my-guild publish-docs
+
 ## CLI
 
 Run `my-guild --help` for help.
