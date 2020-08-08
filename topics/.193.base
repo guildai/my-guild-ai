@@ -170,7 +170,7 @@ guild compare --csv -
 View runs in TensorBoard:
 
 ``` command
-guild runs tensorboard
+guild tensorboard
 ```
 
 View runs in Guild View:

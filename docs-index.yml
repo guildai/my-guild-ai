@@ -1,11 +1,3 @@
-# Doc status:
-#
-# - NEW: no checks
-# - PASS-1: formatting and links
-# - TODO: missing content
-# - READY: ready for 0.7
-# - PROOFED: final proof reading
-
 - section: Get Started
   description:
     Start here to learn about Guild AI through easy-to-follow,
@@ -14,40 +6,40 @@
     - pattern: 'Get Started: '
       repl: ''
   links:
-    - start                       # READY
-    - start/optimize              # READY
-    - start/runs                  # READY
-    - start/guildfile             # READY
-    - start/classifier            # READY
-    - start/use-guild             # READY
+    - start
+    - start/optimize
+    - start/runs
+    - start/guildfile
+    - start/classifier
+    - start/use-guild
 
 - section: Concepts
   description:
     Go deeper into the core concepts behind the features.
   links:
-    - docs/cli                    # READY
-    - docs/python-api             # READY
-    - docs/runs                   # READY
-    - docs/guildfiles             # READY
-    - docs/operations             # READY
-    - docs/flags                  # READY
-    - docs/scalars                # READY
-    - docs/optimization           # READY
-    - docs/dependencies           # READY
-    - docs/pipelines              # READY
-    - docs/environments           # READY
-    - docs/remotes                # READY
-    - docs/queues                 # READY
-    - docs/packages               # READY
+    - docs/cli
+    - docs/python-api
+    - docs/runs
+    - docs/guildfiles
+    - docs/operations
+    - docs/flags
+    - docs/scalars
+    - docs/optimization
+    - docs/dependencies
+    - docs/pipelines
+    - docs/environments
+    - docs/remotes
+    - docs/queues
+    - docs/packages
 
 - section: Tools
   description:
     Guild provides a number of integrated tools.
   links:
-    - docs/compare                # READY
-    - docs/view                   # READY
-    - docs/tensorboard            # READY
-    - docs/diff                   # READY
+    - docs/compare
+    - docs/view
+    - docs/tensorboard
+    - docs/diff
 
 - section: Commands
   description:
@@ -150,11 +142,11 @@
     - pattern: ' Reference'
       repl: ''
   links:
-    - reference/guildfile         # READY
-    - reference/optimizers        # READY
-    - reference/remotes           # READY
-    - reference/user-config       # READY
-    - reference/plugins           # READY
+    - reference/guildfile
+    - reference/optimizers
+    - reference/remotes
+    - reference/user-config
+    - reference/plugins
 
 - section: Cheatsheets
   description:
@@ -164,27 +156,28 @@
     - pattern: ' Cheatsheet'
       repl: ''
   links:
-    - cheatsheets/commands        # READY
-    - cheatsheets/guildfile       # READY
-    - cheatsheets/remotes         # READY
+    - cheatsheets/commands
+    - cheatsheets/guildfile
+    - cheatsheets/remotes
 
 - section: Other Docs
   links:
-    - help                        # READY
-    - install                     # READY
-    - system-requirements         # READY
-    - docs/defaults               # READY
-    - docs/windows                # READY
+    - help
+    - install
+    - system-requirements
+    - docs/defaults
+    - docs/windows
+    - docs/macos
 
 # Non-section links, used for fetch.
 
 - links:
-    - examples                    # READY
-    - examples/hello              # READY
-    - examples/notebooks          # READY
-    - examples/languages          # READY
-    - examples/package            # READY
-    - examples/hyperopt           # READY
-    - examples/tensorflow2        # TODO
-    - guides/train-remotely       # READY
+    - examples
+    - examples/hello
+    - examples/notebooks
+    - examples/languages
+    - examples/package
+    - examples/hyperopt
+    - examples/tensorflow2
+    - guides/train-remotely
     - guides/project-template-for-python-data-science

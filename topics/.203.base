@@ -251,7 +251,7 @@ You re-enable flags import later as needed. Your goal in this step is to run the
 
 When Guild starts an operation, it executes these steps:
 
-1. Create a new run directory in the `runs` subdirectory of [Guild home](/docs/environment#guild-home)
+1. Create a new run directory in the `runs` subdirectory of [Guild home](/docs/environments#guild-home)
 2. Initialize the run directory with run metadata in <code><em>RUN_DIR</em>/.guild</code>
 3. Copy operation source code to <code><em>RUN_DIR</em>/.guild/sourcecode</code>
 4. Resolve dependencies (you don't have any yet --- you learn about this in [File Dependencies](#file-dependencies) below)
@@ -302,7 +302,7 @@ It reads a file named `config.json` from the current directory. When you run it 
 
 When the module is run with Guild, it runs in a newly created, empty directory. `config.json` isn't there!
 
-Check the files in a run directory using [`guild ls`](/docs/ls):
+Check the files in a run directory using [`guild ls`](/commands/ls):
 
 ``` command
 guild ls

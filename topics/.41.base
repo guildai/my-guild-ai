@@ -37,7 +37,7 @@ Guild lets you run multiple trials in a batch by specifying them as a list in th
 Run three trials of `train.py` using different values for *`x`*:
 
 ``` command
-guild run train.py x=[-1,0,1]
+guild run train.py x='[-1,0,1]'
 ```
 
 ``` output
@@ -46,6 +46,8 @@ You are about to run train.py as a batch (3 trials)
   x: [-1, 0, 1]
 Continue? (Y/n)
 ```
+
+> <span data-guild-class="callout note">Important</span> The single quotes used for the argument `[-1,0,1]` are required if you're using [Z shell (zsh)](https://en.wikipedia.org/wiki/Z_shell). This is the default shell used in macOS. If you're using Bash or Bourne shells, you can omit them provided the list argument does not contain spaces.
 
 Press **Enter** to start the batch.
 
@@ -136,7 +138,7 @@ Return to the command terminal and press **Ctrl-C** to stop TensorBoard.
 
 Grid search is a systematic search across a subset of hyperparameter space. Guild supports a special  [*sequence function*](/docs/flags#sequence-functions) syntax for specifying value ranges. Ranges are specified using the format <code><em>FUNCTION</em>[<em>START</em>:<em>END</em>:<em>STEP_OR_COUNT</em>]</code> where *`FUNCTION`* is the type of sequence and *`START`* and *`END`* mark the start and end of the sequence respectively. *`STEP_OR_COUNT`* is the range step or value count depending on the function used.
 
-Use the [`linspace`](/flags#linspace) flag function to run four trials where *`x`* is evenly spaced between `-0.6` and `0.6`:
+Use the [`linspace`](/docs/flags#linspace) flag function to run four trials where *`x`* is evenly spaced between `-0.6` and `0.6`:
 
 ``` command
 guild run train.py x=linspace[-0.6:0.6:4]
@@ -186,7 +188,7 @@ Guild runs `train.py` five times using randomly sampled values for *`x`* from `-
 
 Bayesian optimization uses light-weight probabilistic models to suggest hyperparameter values believed to improve a future result based on previous results.
 
-By default, Guild attempts to minimize *`loss`* as an objective. The `train.py` script logs *`loss`* as a [*scalar*](/docs/scalar). If the script uses a different objective, specify the scalar using `--minimize` or `--maximize` options with [`guild run`](/commands/run).
+By default, Guild attempts to minimize *`loss`* as an objective. The `train.py` script logs *`loss`* as a [*scalar*](/docs/scalars). If the script uses a different objective, specify the scalar using `--minimize` or `--maximize` options with [`guild run`](/commands/run).
 
 Run 10 trials using the [`gp`](/reference/optimizers#gp) optimizer, which uses Bayesian optimization with Gaussian processes, and search over values of *`x`* between `-2.0` and `2.0`:
 

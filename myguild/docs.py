@@ -320,11 +320,8 @@ def _docs_index_post(api):
     log.info("Fetching docs index topic")
     try:
         topic = api._get("/docs")
-    except DiscourseClientError:
-        log.error(
-            "Cannot find docs index topic for '/docs' permalink - "
-            "create a valid permalink and run this command again"
-        )
+    except DiscourseClientError as e:
+        log.error("Error getting docs index topic for '/docs' permalink (%s)" % e)
         raise SystemExit(1)
     else:
         if "post_stream" not in topic:

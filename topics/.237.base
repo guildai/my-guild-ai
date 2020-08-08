@@ -147,7 +147,7 @@ Experiments prompt questions, which prompt more experiments.
 
 ## Add a Guild File
 
-Up to this point you run scripts directly. In this step you run an [*operation*](/docs/operations) defined in a [Guild file](/docs/guildfile).
+Up to this point you run scripts directly. In this step you run an [*operation*](/docs/operations) defined in a [Guild file](/docs/guildfiles).
 
 https://github.com/guildai/guildai/blob/master/examples/tensorflow2/guild.yml
 

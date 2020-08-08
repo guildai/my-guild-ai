@@ -18,7 +18,7 @@ Guild provides integrated support for [TensorBoard](https://www.tensorflow.org/t
 To use TensorBoard to view Guild runs, use [`guild tensorboard`](/commands/tensorboard):
 
 ``` command
-guild run tensorboard
+guild tensorboard
 ```
 
 Guild manages the TensorBoard log directory by synchronizing with the current set of runs and their summaries. You can leave TensorBoard running while you generate more runs or while runs are logging summaries. TensorBoard will update automatically.

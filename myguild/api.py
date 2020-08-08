@@ -16,9 +16,22 @@ def init():
             "Try 'source <( gpg -d api-creds.gpg )' to set it."
         )
     else:
-        return pydiscourse.DiscourseClient(
+        client = pydiscourse.DiscourseClient(
             "https://my.guild.ai", api_username="guildai", api_key=api_key
         )
+        _patch_client(client)
+        return client
+
+
+def _patch_client(client):
+    # Weird 413 errors from server when `json` arg is `{}` (the
+    # default). Replace api._request to ensure it's None, which works
+    # fine.
+    request0 = client._request
+    def patched_request(*args, **kw):
+        json = kw.pop("json", None)
+        return request0(*args, json=json, **kw)
+    client._request = patched_request
 
 
 def public_get_data(url):

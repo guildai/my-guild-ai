@@ -51,7 +51,7 @@ guild runs
 
 Guild moves deleted runs to [*trash*](/docs/environments#guild-home) where they can be viewed, restored, or purged (permanently deleted).
 
-Show deleted runs by including the `--deleted` option with [`guild runs`](/commands.runs):
+Show deleted runs by including the `--deleted` option with [`guild runs`](/commands/runs):
 
 ``` command
 guild runs --deleted

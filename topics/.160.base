@@ -43,7 +43,7 @@ In this case, the logged scalar values are:
 | loss    | 0.05      | 2        |
 | loss    | 0.01      | 3        |
 
-You can modify the way Guild logs output scalars using the `output-scalars` operation attribute in a [Guild file](/term/guildfile).
+You can modify the way Guild logs output scalars using the `output-scalars` operation attribute in a [Guild file](/docs/guildfiles).
 
 Consider the following output:
 

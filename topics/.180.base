@@ -126,7 +126,7 @@ https://github.com/guildai/guildai/blob/master/examples/hello/guild.yml#L8-L16
 
 The operation is implemented in [`cat.py`](https://github.com/guildai/guildai/blob/master/examples/hello/cat.py).
 
-The `file` flag is used to specify the file used as input to the operation. The file is a [*dependency*](/term/dependency) and must be configured in the `requires` operation attribute.
+The `file` flag is used to specify the file used as input to the operation. The file is a [*dependency*](/docs/dependencies) and must be configured in the `requires` operation attribute.
 
 From the example directory, run:
 

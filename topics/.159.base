@@ -55,7 +55,7 @@ You are about to run train
 Continue? (Y/n)
 ```
 
-Guild shows a preview of the flags used for the operation and asks you to confirm the operation by pressing `Enter`. When you confirm the operation, Guild executes the `train` module with the specified flag values. Guild generates a [*run*](/docs/run), which is a record of the operation inputs and outputs.
+Guild shows a preview of the flags used for the operation and asks you to confirm the operation by pressing `Enter`. When you confirm the operation, Guild executes the `train` module with the specified flag values. Guild generates a [*run*](/docs/runs), which is a record of the operation inputs and outputs.
 
 Guild passes flag values to Python modules by setting global variables or by passing arguments on the command line. You can configure this interface or Guild can detect it. For more information, see [Flags Interface](#flags-interface) below.
 
@@ -71,7 +71,7 @@ For more information on running operations with difference languages, see [Other
 
 ### Python Operation
 
-Guild provides special support for Python-based operations. To define a Python based operation, use the [`main`](/reference/guildfile_xxx#operation-main) operation attribute to specify the Python main module. This is a Python module that runs a task when loaded by the Python interpreter as `__main__`.
+Guild provides special support for Python-based operations. To define a Python based operation, use the [`main`](/reference/guildfile#operation-main) operation attribute to specify the Python main module. This is a Python module that runs a task when loaded by the Python interpreter as `__main__`.
 
 Consider a script named `train_classifier.py`:
 
@@ -232,7 +232,7 @@ train:
 
 #### Disable Output Scalars
 
-If you want to log scalars explicitly (e.g. using a [TensorFlow summary writer](https://www.tensorflow.org/api_docs/python/tf/summary/FileWriter)) you can disable Guild's output summary support by setting `output-scalars` to `off`.
+If you want to log scalars explicitly (e.g. using a [TensorFlow summary writer](https://www.tensorflow.org/api_docs/python/tf/summary/SummaryWriter)) you can disable Guild's output summary support by setting `output-scalars` to `off`.
 
 ``` yaml
 train:
@@ -307,7 +307,7 @@ Guild supports two uses of `config` objects:
 Below is a sample `config` object.
 
 ``` yaml
-- config: base-model
+- config: model-base
   operations:
     train: '{{ name }}_train'
     validate: '{{ name }}_val'
@@ -319,7 +319,7 @@ This configuration can be referenced using the `extends` attribute of another to
 
 ``` yaml
 - model: mnist
-  extends: base-model
+  extends: model-base
   params:
     name: mnist
 ```
@@ -330,11 +330,38 @@ This configuration can be referenced using the `extends` attribute of another to
 
 Guild files support *inheritance* where attributes of one object (parent) are applied by default to another object (child). A child may redefine attributes as needed.
 
-Here's an example of a `model` object inheriting the attributes from a `config` object:
+Here's an example of using inheritance (copied from above):
 
 ``` yaml
-- config: base
-  operations
+- config: model-base
+  operations:
+    train: '{{ name }}_train'
+    validate: '{{ name }}_val'
+
+- model: mnist
+  extends: model-base
+  params:
+    name: mnist
+```
+
+A common use of inheritance is to reuse resource definitions.
+
+``` yaml
+- config: data-support
+  resources:
+    prepared-data:
+      - operation: prepare-data
+
+- operations:
+    prepare-data:
+      main: prepare_data
+
+- model: mlp
+  extends: data-support   # inherit the resources defined above
+  operations:
+    train:
+      main: train_mlp
+      requires: prepared-data
 ```
 
 ### Attribute Includes
