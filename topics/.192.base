@@ -608,7 +608,7 @@ train:
       - '*.yml'
 ```
 
-Disable source code:
+<div data-toc-id="sourcecode-disable"><p>Disable source code:</p></div>
 
 ``` yaml
 train:
