@@ -388,6 +388,12 @@ When this flag is set, Guild generates a `pip_freeze` run attribute containing t
 
 This flag is set by default for Python based operations. To disable it, set the value to `no`.
 
+<div data-toc-id="operation-default-arg-skip"><h4>default-flag-arg-skip</h4></div>
+
+*Default value for flag `arg-skip` attributes (boolean)*
+
+Set this value to `yes` to omit flags from command line arguments when `flags-dest` is `args`. You can re-enable specific flag arguments by setting their `arg-skip` attribute to `no`.
+
 ## Flags
 
 Flags are defined as mappings under the [`flags`](#operation-flags) operation attribute. The mapping key is the flag *name*.
@@ -861,7 +867,7 @@ If the value is a list, it's used for [`select`](#sourcecode-select) as if speci
 
 If the value is a mapping, it uses the attributes listed under [Source Code Attributes](#source-code-attributes) below.
 
-See also: [*Source Code Cheatsheet*](/cheatsheets/guildfile#source-code) 
+See also: [*Source Code Cheatsheet*](/cheatsheets/guildfile#source-code)
 
 ### Source Code Attributes
 

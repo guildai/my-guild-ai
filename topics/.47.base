@@ -9,7 +9,7 @@ In the [previous section](/start/guildfile) you use a Guild file to define a `tr
 
 You cover:
 
-- Multiple [models](/docs/models) in a single project
+- Multiple [models](/docs/guildfiles#models) in a single project
 - Guild [environments](/docs/environments) to isolate project work
 
 ## Download Classifier Script
