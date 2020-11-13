@@ -498,6 +498,26 @@ A boolean switch is specified as `True` when set as a global variable.
 
 For example, if `arg-switch` is `yes` for a flag named `test`, when the user specifies `test=yes`, the command line option `--test` is provided without a value to the script --- or the global variable `test` is set to `True` --- depending on the operation [`flags-dest`](#operation-flags-dest) setting.
 
+<div data-toc-id="flag-arg-split"><h4>arg-split</h4></div>
+
+*Idicate whether or not a flag value is split into a string (boolean or string)*
+
+If `arg-split` is `yes`, Guild will split flag values into parts using shell like syntax and convey the flag value to the script as a list. `arg-split` may alternatively be a string. The special string `shlex` is equivalent to the boolean value `yes`. Any other string is used as a delimiter to split the flag value. The most common delimiter is a comma.
+
+For example, it `yes` (or `shlex`) Guild splits the following flag `x`
+assignment into a list `[1, 2, 3]`:
+
+``` command
+guild run x="1 2 3"
+```
+
+If `arg-split` is a comma `,` Guild splits the following flag `x`
+assignment similarly:
+
+``` command
+guild run x=1,2,3
+```
+
 <div data-toc-id="flag-choices"><h4>choices</h4></div>
 
 *List of allowed flag values (list of values or mappings)*
