@@ -174,10 +174,11 @@
 - links:
     - examples
     - examples/hello
-    - examples/notebooks
-    - examples/languages
-    - examples/package
     - examples/hyperopt
+    - examples/languages
+    - examples/notebooks
+    - examples/package
+    - examples/pytest
     - examples/tensorflow2
-    - guides/train-remotely
     - guides/project-template-for-python-data-science
+    - guides/train-remotely
