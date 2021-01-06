@@ -79,7 +79,7 @@ guild runs
 
 A label is a short description associated with a run. Guild shows labels when listing and comparing runs.
 
-By default, Guild generates a default label for each run containing flag values. Specify a different label using the `--label` or `--tag` options with [`guild run`](/commands/run).
+By default, Guild generates a default label for each run containing flag values. Specify a different label using the `--label` options with [`guild run`](/commands/run).
 
 After a run is started, you can modify its label using [`guild label`](/commands/label).
 
@@ -97,10 +97,13 @@ guild compare -o train.py --min loss --top 1 --table
 
 Guild shows the `train.py` run with the lowest loss.
 
-Use the `--tag` option with [`guild label`](/commands/label) to prepend "best" to the run label:
+You can append or prepand text to existing labels using the `--append`
+or `--prepend` options respectively.
+
+For example, use the `--prepend` option with [`guild label`](/commands/label) to prepend "best" to the run label:
 
 ``` command
-guild label --tag best <run ID from previous command>
+guild label --prepend best <run ID from previous command>
 ```
 
 Guild prompts you with the proposed change. Press **Enter** to modify the run label.
@@ -119,6 +122,22 @@ guild runs -l best
 
 Due to random effects, the selected run in your case may have a different value for *`x`*. The optimal value of *`x`* is around `-0.3`.
 
+## Tag Runs
+
+Tags are short text values that describe a run. Tags are like labels in that they describe runs. Tags are similarly used to filter runs. Tags provide more provide more precise control over filtering because they must match completely, whereas labels match in part.
+
+You can specify tags when when starting an operation with [`guild run`](/commands/run) using one or more `--tag` option. Tags specified with the `run` command are automatically included in the run label.
+
+To tag an existing run, use [`guild tag`](/commands/tag) with the `--add` option. Here we use a tag to mark a "best" run:
+
+``` command
+guild tag --add best <run ID from above>
+```
+
+> <span data-guild-class="callout note">Note</span> Tags are not automatically applied to run labels. They are independent values. You can apply tag changes to a run label by specifying the `--sync-labels` option.
+
+View tags associated with a run using [`guild runs info`](/commands/runs-info).
+
 ## Filter Runs
 
 Run-related commands support a common interface for filtering runs affected by the command.
@@ -127,10 +146,17 @@ Runs can be filtered by:
 
 - Operation name
 - Label
+- Tags
 - Run status
 - Marked status
 - When the run was started
 - Source code digest
+
+To show "best" runs (via tags), run:
+
+``` command
+guild runs --tag best
+```
 
 To show runs that were started within the last 15 minutes, run:
 

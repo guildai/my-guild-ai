@@ -915,6 +915,12 @@ By default Guild generates digests of copied source code. The digest can be used
 
 In some cases, it can be too expensive to compute a digest and the source code version is available in a source code file. In such cases, you can disable the digest by setting this attribute to `no`.
 
+<div data-toc-id="sourcecode-dest"><h4>dest</h4></div>
+
+*Alternate destination directory for source code (string)*
+
+By default, Guild copies source code to `.guild/sourcecode` the run directory. Use `dest` to copy the source code to a different location. For example, to copy the source code to the run directory root, use the value `.` as the `dest` value.
+
 ### Source Code Select Rules
 
 Each select list, whether specified under `select` for a `sourcecode` mapping or as an item in a `sourcecode` list, is an *include* or *exclude* rule. Each rule is either a string or a mapping.
@@ -1175,6 +1181,12 @@ The `sourcecode` spec defined at the model level applies to all model operations
 This value must be a valid [pip install requirements spec](https://pip.pypa.io/en/stable/reference/pip_install/#requirement-specifiers).
 
 Operations can redefine this value as needed using [`python-requires`](#operation-python-requires).
+
+<div data-toc-id="operation-defaults"><h4>operation-defaults</h4></div>
+
+*Mapping of attribute names to values*
+
+Use `operation-detaults` to provide a list of default operation attribute values. Operations that don't otherwise define an attribute use the values specified here. This is useful, for example, for specifying a default `output-scalars` attribute for operations.
 
 <div data-toc-id="model-extends"><h4>extends</h4></div>
 
