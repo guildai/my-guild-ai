@@ -29,6 +29,7 @@ Guild makes flag values available to a script using a *flags interface*. Guild s
 - Command line arguments
 - Environment variables
 - Python global variables
+- Configuration file entries
 
 Guild works across platforms and languages using standard interfaces when possible. Guild does not require changes to script code to support Guild-specific configuration. Guild uses script inspection and explicit configuration in [Guild files](/docs/guildfiles) for flag information.
 
@@ -143,6 +144,61 @@ The following Python script shows how `train` might be implemented using `params
 params = {"x": 1, "y": 2}
 
 print("z: %i" % (params["x"] + params["y"]))
+```
+
+### Configuration Files
+
+As of Guild 0.7.2, you can use configuration files to define flags for an operation.
+
+Guild supports the following configuration file formats:
+
+- YAML
+- JSON
+- Python Configuration File / INI
+
+To configuration an operation to use a configuration file for flags, specify `config:<path to config file>` for the operation `flags-dest`.
+
+The following example uses the file `flags.yml` to define flags:
+
+``` yaml
+train:
+  flags-dest: config:flags.yml
+  flags-import: all
+```
+
+Sample `flags.yml`:
+
+``` yaml
+x: 1
+y: 2
+```
+
+Guild imports flag values from the configuration file as defaults.
+
+When you run the operation, Guild generates a copy of the specified configuration file in the run directory. The copy contains any modified flag values.
+
+For example, when you run for the example above:
+
+``` command
+guild run train x=3
+```
+
+Guild generates a file named `flags.yml` in the run directory containing these values:
+
+``` yaml
+x: 3
+y: 2
+```
+
+If you want to rename the generated file, use a `config` resource with the `rename` attribute.
+
+``` yaml
+train:
+  flags-dest: config:flags.in.yml
+  flags-import: all
+  requires:
+    - config: flags.yml
+      rename: flags.in.yml flags.yml
 ```
 
 ## Import Flags

@@ -1,0 +1,114 @@
+<!-- -*- eval:(visual-line-mode 1) -*- -->
+
+<div data-theme-toc="true"></div>
+<div data-guild-docs="true"></div>
+
+## Overview
+
+Gists are used to informally share work with others. You can use Guild AI to share runs in a similar way.
+
+Guild supports gists as [remote](/reference/remotes) types. As with other remotes, you can define the gist in [user config](/reference/user-config).
+
+``` yaml
+# Guild AI user config (e.g. ~/.guild/config.yml)
+remotes:
+  shared-runs:
+    type: gist
+    user: <your GitHub user name>
+    gist-name: <a name used to identify the gist>
+```
+
+Guild also supports inline remote specs for gists, letting you specify the gist details directly in a command without having to define anything in a config file.
+
+``` command
+guild push gist:<user>/<gist-name>
+```
+
+By default, you can read any public gist without credentials.
+
+To create or modify a gist, you must provide your GitHub credentials or use a [GitHub personal access token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) that has **gist** privileges. You specify the access token using the environment variable `GIST_ACCESS_TOKEN`. For more information, see [Security](#security) below.
+
+## Example
+
+Say you have some runs that you want feedback on. You can quickly publish them to a gist for others to access. The example below assumes the GitHub user `maria`.
+
+We use the Guild AI [Hello Example](/examples/hello) to demonstrate. The example source code is available in the Guild AI source code repository [on GitHub](https://github.com/guildai/guildai). First, change to the example directory.
+
+``` command
+cd guildai/examples/hello
+```
+
+Run a few operations.
+
+``` command
+guild run hello msg=[Hello,Hi,Yo] -y
+```
+
+Publish the runs to a gist:
+
+``` command
+guild push gist:maria/sample-runs
+```
+
+With the runs published to the gist, others can access them this way:
+
+``` command
+guild pull gist:maria/sample-runs
+```
+
+Gists are created with public visibility. If you want to secure the runs, you must [change the visibility](https://github.blog/2014-05-09-change-the-visibility-of-your-gists/) on the gist yourself after Guild creates it. Guild does not modify the visibility on subsequent operations.
+
+## Environment Variables
+
+Gist remote commands use the following environment variables when available:
+
+| | |
+|-|-|
+| `GIST_USER` | User associated with the gist. If defined, you may omit the `<user>` portion of the gist spec. For example, `guild push gist:my-shared-runs`. |
+| `GIST_ACCESS_TOKEN` | Personal access token used when creating or modifying gists. See [Security](#security) below for more information.|
+
+## Security
+
+To create a gist to manage runs, you need a personal access token that has the **gist** privileges checked. For steps to obtain an access token, see [*Creating a personal access token*](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+
+Once you have an access token, specify it using the environment variable `GIST_ACCESS_TOKEN`. For POSIX shells, you can specify the value directly in a Guild command like this:
+
+``` command
+GIST_ACCESS_TOKEN=<token> guild push gist:<user>/<gist-name>
+```
+
+### Keep an Access Token Secret
+
+To avoid showing the access token in the command, you can define the value in a text file that you source.
+
+``` bash
+# gist-credentials
+export GIST_USER=<user>
+export GIST_ACCESS_TOKEN=<token>
+```
+
+``` command
+source gist-credentials
+```
+
+To avoid saving the access token in plain text, you can encrypt the file. A popular program for encryption is [GnuPG](https://gnupg.org/). You can source an encrypted file in a POSIX shell using [process substitution](https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Process-Substitution).
+
+``` command
+source <( gpg -d gist-credentials.gpg )
+```
+
+You can specify local environment variables when defining a gist remote in user config. Specify the path to the file containing the exported environment variables using the `local-env` remote attribute.
+
+``` yaml
+# Guild AI user config (e.g. ~/.guild/config.yml)
+remotes:
+  shared-runs:
+    type: gist
+    local-env: gist-credentials.gpg  # or plain text, e.g. gist-credentials
+```
+
+Guild automatically decrypts files ending with `.gpg` for local environments.
+
+### Gist Visibility
+
+Gists created by Guild are public. To make the gist private, you must [modify the gist visibility settings](https://github.blog/2014-05-09-change-the-visibility-of-your-gists/) manually.

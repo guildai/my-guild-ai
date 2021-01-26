@@ -165,7 +165,7 @@ Save flags to `params` global dict:
 
 ``` yaml
 train:
-  flags-dest: global:param
+  flags-dest: global:params
   flags-import: all
 ```
 

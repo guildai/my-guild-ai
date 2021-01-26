@@ -34,6 +34,8 @@ Guild supports the following remote types:
 | [ssh](/reference/remotes#ssh) | Connect to a remote server over [SSH](https://en.wikipedia.org/wiki/Secure_Shell). Use this type to train on remote servers on-premises or on any cloud vendor. Guild does not support support starting of `ssh` remote types. |
 | [ec2](/reference/remotes#ec2) | Connect to a remote EC2 host over [SSH](https://en.wikipedia.org/wiki/Secure_Shell). This remote type supports [`start`](/commands/remote-start) and [`stop`](/commands/remote-stop) remote commands given EC2 specific configuration for the remote. |
 | [s3](/reference/remotes#s3) | Copy runs to and from S3. This remote type does not support runs but can be used for backup and  restore. |
+| [azure-blob](/reference/remotes#azure-blob) | Copy runs to and from Azure blob storage. This remote type does not support runs but can be used for backup and restore. |
+| [gist](/reference/remotes#gist) | Copy runs to and from GitHub gists. This remote type does not support runs but can be used for backup and restore. |
 </div>
 
 For a complete list of remote types, including examples, see [*Remotes Reference*](/reference/remotes).

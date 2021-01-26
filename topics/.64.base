@@ -1,0 +1,235 @@
+<div data-theme-toc="true"></div>
+
+## Get Started
+
+Start here to learn about Guild AI through easy-to-follow, step-by-step guides.
+
+<div data-guild-class="guild-docs-section">
+
+- [Get Started with Guild AI](/start)
+- [Optimize a Model](/start/optimize)
+- [Manage Runs](/start/runs)
+- [Create a Guild File](/start/guildfile)
+- [Add a Classifier](/start/classifier)
+- [Use Guild in a Project](/start/use-guild)
+
+</div>
+
+## Concepts
+
+Go deeper into the core concepts behind the features.
+
+<div data-guild-class="guild-docs-section">
+
+- [Command Line Interface](/docs/cli)
+- [Python API](/docs/python-api)
+- [Runs](/docs/runs)
+- [Guild Files](/docs/guildfiles)
+- [Operations](/docs/operations)
+- [Flags](/docs/flags)
+- [Scalars](/docs/scalars)
+- [Hyperparameter Optimization](/docs/optimization)
+- [Dependencies](/docs/dependencies)
+- [Pipelines](/docs/pipelines)
+- [Environments](/docs/environments)
+- [Remotes](/docs/remotes)
+- [Queues](/docs/queues)
+- [Packages](/docs/packages)
+
+</div>
+
+## Tools
+
+Guild provides a number of integrated tools.
+
+<div data-guild-class="guild-docs-section">
+
+- [Guild Compare](/docs/compare)
+- [Guild View](/docs/view)
+- [TensorBoard](/docs/tensorboard)
+- [Guild Diff](/docs/diff)
+
+</div>
+
+## Commands
+
+Refer to [Guild Commands Index](/commands) for an alphabetized list.
+
+### Frequently Used Commands
+
+<div data-guild-class="guild-docs-section guild-docs-commands-section">
+
+- [check](/commands/check)
+- [compare](/commands/compare)
+- [init](/commands/init)
+- [ls](/commands/ls)
+- [operations](/commands/operations)
+- [run](/commands/run)
+- [runs](/commands/runs)
+- [runs info](/commands/runs-info)
+- [runs rm](/commands/runs-rm)
+
+</div>
+
+### Manage Runs
+
+<div data-guild-class="guild-docs-section guild-docs-commands-section">
+
+- [label](/commands/label)
+- [run](/commands/run)
+- [runs](/commands/runs)
+- [runs delete](/commands/runs-delete)
+- [runs list](/commands/runs-list)
+- [runs purge](/commands/runs-purge)
+- [runs restore](/commands/runs-restore)
+- [stop](/commands/stop)
+- [watch](/commands/watch)
+
+</div>
+
+### Get Run Info
+
+<div data-guild-class="guild-docs-section guild-docs-commands-section">
+
+- [cat](/commands/cat)
+- [diff](/commands/diff)
+- [ls](/commands/ls)
+- [open](/commands/open)
+- [runs info](/commands/runs-info)
+- [view](/commands/view)
+
+</div>
+
+### Compare and Diff Runs
+
+<div data-guild-class="guild-docs-section guild-docs-commands-section">
+
+- [compare](/commands/compare)
+- [diff](/commands/diff)
+- [tensorboard](/commands/tensorboard)
+- [view](/commands/view)
+
+</div>
+
+### Get Model and Operation Info
+
+<div data-guild-class="guild-docs-section guild-docs-commands-section">
+
+- [help](/commands/help)
+- [models](/commands/models)
+- [operations](/commands/operations)
+
+</div>
+
+### Tools
+
+<div data-guild-class="guild-docs-section guild-docs-commands-section">
+
+- [compare](/commands/compare)
+- [diff](/commands/diff)
+- [tensorboard](/commands/tensorboard)
+- [view](/commands/view)
+
+</div>
+
+### Visualization
+
+<div data-guild-class="guild-docs-section guild-docs-commands-section">
+
+- [open](/commands/open)
+- [tensorboard](/commands/tensorboard)
+- [view](/commands/view)
+
+</div>
+
+### Input/Output
+
+<div data-guild-class="guild-docs-section guild-docs-commands-section">
+
+- [cat](/commands/cat)
+- [export](/commands/export)
+- [import](/commands/import)
+- [pull](/commands/pull)
+- [push](/commands/push)
+- [sync](/commands/sync)
+
+</div>
+
+### Packaging
+
+<div data-guild-class="guild-docs-section guild-docs-commands-section">
+
+- [install](/commands/install)
+- [package](/commands/package)
+- [packages](/commands/packages)
+- [packages delete](/commands/packages-delete)
+- [packages info](/commands/packages-info)
+- [search](/commands/search)
+- [uninstall](/commands/uninstall)
+
+</div>
+
+### Remotes
+
+<div data-guild-class="guild-docs-section guild-docs-commands-section">
+
+- [pull](/commands/pull)
+- [push](/commands/push)
+- [remote start](/commands/remote-start)
+- [remote status](/commands/remote-status)
+- [remote stop](/commands/remote-stop)
+- [remotes](/commands/remotes)
+- [sync](/commands/sync)
+
+</div>
+
+### Utilities
+
+<div data-guild-class="guild-docs-section guild-docs-commands-section">
+
+- [check](/commands/check)
+- [download](/commands/download)
+- [shell](/commands/shell)
+- [tensorflow inspect](/commands/tensorflow-inspect)
+
+</div>
+
+## Reference
+
+The documents below cover a variety of reference material.
+
+<div data-guild-class="guild-docs-section">
+
+- [Guild File](/reference/guildfile)
+- [Optimizers](/reference/optimizers)
+- [Remotes](/reference/remotes)
+- [User Config](/reference/user-config)
+- [Plugins](/reference/plugins)
+
+</div>
+
+## Cheatsheets
+
+Cheatsheets contain short, easy-to-copy snippets of configuration you can use in your work.
+
+<div data-guild-class="guild-docs-section">
+
+- [Commands](/cheatsheets/commands)
+- [Guild File](/cheatsheets/guildfile)
+- [Remotes](/cheatsheets/remotes)
+
+</div>
+
+## Other Docs
+
+<div data-guild-class="guild-docs-section">
+
+- [Help with Guild AI](/help)
+- [Install Guild AI](/install)
+- [System Requirements](/system-requirements)
+- [Default Behavior](/docs/defaults)
+- [Help with Windows](/docs/windows)
+- [Help wth macOS](/docs/macos)
+- [Jupyter Notebook Experiments](/docs/jupyter-notebook-experiments)
+
+</div>

@@ -14,8 +14,16 @@ A remote type is defined using the `type` attribute. The types below are support
 | [ssh](#ssh) |
 | [ec2](#ec2) |
 | [s3](#s3) |
+| [azure-blob](#azure-blob) |
+| [gist](#gist) |
 
 ## SSH
+
+### SSH Requirements
+
+The following external software is required to use SSH remotes:
+
+- `ssh` command
 
 ### SSH Attributes
 
@@ -147,6 +155,12 @@ Refer to [*Remotes Cheatsheet*](/cheatsheets/remotes#ssh) for SSH configuration 
 
 EC2 provide the same features as SSH remotes. In addition, EC2 remotes can be started and stopped on EC2 by configuring EC2 instance attributes. Refer to [Attributes](#ec2-attributes) below for details.
 
+### EC2 Requirements
+
+The following external software is required to use SSH remotes:
+
+- [AWS Command Line Interface](https://aws.amazon.com/cli/)
+
 ### EC2 Attributes
 
 Any [SSH Attribute](#ssh-attributes) may be used to configure an EC2 remote. Refer to that section for details.
@@ -230,6 +244,12 @@ Refer to [*Remotes Cheatsheet*](/cheatsheets/remotes#ec2) for EC2 configuration 
 
 Use S3 remotes to store runs remotely. S3 buckets support the full set of remote management commands. See [Remote Commands](#s3-remote-commands) below for details.
 
+### S3 Requirements
+
+The following external software is required to use SSH remotes:
+
+- [AWS Command Line Interface](https://aws.amazon.com/cli/)
+
 ### S3 Attributes
 
 <div data-toc-id="s3-description"><h4>description</h4></div>
@@ -242,7 +262,7 @@ Use S3 remotes to store runs remotely. S3 buckets support the full set of remote
 
 <div data-toc-id="s3-root"><h4>root</h4></div>
 
-Path in the S3 bucket to store runs in (string)
+*Path in the S3 bucket to store runs in (string)*
 
 <div data-toc-id="s3-region"><h4>region</h4></div>
 
@@ -295,3 +315,157 @@ The following environment variables may be optionally defined:
 ### S3 Examples
 
 Refer to [*Remotes Cheatsheet*](/cheatsheets/remotes#s3) for S3 configuration examples.
+
+## Azure Blob
+
+Use Azure Blob remotes to store runs remotely in [Microsoft Azure blob storage](https://azure.microsoft.com/en-us/services/storage/blobs/). The Azure Blob remote supports a subset of remote management commands. See [Remote Commands](#azure-blob-remote-commands) below for details.
+
+### Azure Blob Requirements
+
+The following external software is required to use Azure Blob remotes:
+
+- [AzCopy](https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10)
+
+### Azure Blob Attributes
+
+<div data-toc-id="azure-blob-description"><h4>description</h4></div>
+
+*Remote description (string)*
+
+<div data-toc-id="azure-blob-bucket"><h4>container</h4></div>
+
+*Azure blob container URI to store runs in (required string)*
+
+Refer to [*Resource URI Syntax*](https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata#resource-uri-syntax) for Azure resources for information on the URI format.
+
+<div data-toc-id="azure-blob-root"><h4>root</h4></div>
+
+*Path in the Azure container to store runs in (string)*
+
+### Azure Blob Status
+
+When you run  [`guild remote status`](/commands/remote-status), Guild checks that the container exists and that Guild can read from it. This check does not perform a write test.
+
+### Azure Blob Start and Stop
+
+Azure Blob remotes do not currently support [`guild remote start`](/commands/remote-start) and [`guild remote stop`](/commands/remote-stop). You must create and delete the applicable containers outside of Guild. Refer to [*Quickstart: Upload, download, and list blobs with the Azure portal*](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-portal) for more information.
+
+### Azure Blob Remote Commands
+
+The Azure Blob remote does not support all remote management commands. In particular, Azure Blob remotes do not support non-permanent deletes. Therefore, [`runs restore`](/commands/runs-restore) and [`runs purge`](/commands/runs-purge) are not supported. Additionally, [`runs delete`](/commands/runs-delete) requires the `--permanent` option.
+
+The following commands can be used with Azure Blob remotes:
+
+<!-- master list copied from 171.md -->
+
+|||
+|-|-|
+| [`runs`](/commands/runs-list)| *List runs on a remote* |
+| [`runs info`](/commands/runs-info) | *Show information about a remote run* |
+| [`runs delete`](/commands/runs-delete) | *Delete remote runs* |
+| [`pull`](/commands/pull) | *Copy remote runs to the local environment* |
+| [`push`](/commands/push) | *Copy local runs to the remote* |
+
+The following commads are not currently supported for Azure Blob remotes:
+
+|||
+|-|-|
+| [`runs restore`](/commands/runs-restore) | *Restore deleted remote runs on a remote --- not supported* |
+| [`runs purge`](/commands/runs-purge) | *Purge deleted remote runs on a remote --- not supported* |
+
+### Azure Blob Security
+
+Security is handled via [AzCopy](https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10) authorization using Azure Active Directory. You must log in using `azcopy login` before running Guild commands that access the applicable remote container. For more information, see [*Authorize access to blobs with AzCopy and Azure Active Directory (Azure AD)*](https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-authorize-azure-active-directory).
+
+Guild does not support Azure SAS access tokens at this time.
+
+### Azure Blob Examples
+
+Refer to [*Remotes Cheatsheet*](/cheatsheets/remotes#azure-blob) for Azure Blob configuration examples.
+
+## Gist
+
+The Gist remote type is used to store Guild runs in a [GitHub gist](https://docs.github.com/en/free-pro-team@latest/github/writing-on-github/creating-gists). This is most convenient with Guild's inline remote support. Provided you have the required
+
+Guild create gists with public access rights. To make a gist private, you must [change the gist visibility](https://github.blog/2014-05-09-change-the-visibility-of-your-gists/).
+
+### Gist Requirements
+
+The following external software is required to use Gist remotes:
+
+- [git](https://git-scm.com/)
+
+### Gist Attributes Attributes
+
+<div data-toc-id="gist-description"><h4>description</h4></div>
+
+*Remote description (string)*
+
+<div data-toc-id="gist-user"><h4>user</h4></div>
+
+*Gist owner GitHub user name (required string)*
+
+<div data-toc-id="gist-gist-name"><h4>gist-name</h4></div>
+
+*Name to use for the gist (required string)*
+
+This value must be unique for `user`. Guild uses this attribute to generate a README file in the gist to identify it.
+
+### Gist Status
+
+When you run  [`guild remote status`](/commands/remote-status), Guild checks that gist exists and that Guild can read from it. This check does not perform a write test.
+
+### Gist Start and Stop
+
+Guild implicitly creates the applicable gist in GitHub whenever runs are pushed to it. You may explicitly create a gist using using [`guild remote start`](/commands/remote-start). Delete a gist using [`guild remote stop`](/commands/remote-stop). Note that when a gist is deleted, any associated runs cannot be recovered.
+
+### Gist Remote Commands
+
+The Gist remote does not support all remote management commands. In particular, Gist remotes do not support non-permanent deletes. Therefore, [`runs restore`](/commands/runs-restore) and [`runs purge`](/commands/runs-purge) are not supported. Additionally, [`runs delete`](/commands/runs-delete) requires the `--permanent` option.
+
+The following commands can be used with Gist remotes:
+
+<!-- master list copied from 171.md -->
+
+|||
+|-|-|
+| [`runs`](/commands/runs-list)| *List runs on a remote* |
+| [`runs info`](/commands/runs-info) | *Show information about a remote run* |
+| [`runs delete`](/commands/runs-delete) | *Delete remote runs* |
+| [`pull`](/commands/pull) | *Copy remote runs to the local environment* |
+| [`push`](/commands/push) | *Copy local runs to the remote* |
+
+The following commads are not currently supported for Gist remotes:
+
+|||
+|-|-|
+| [`runs restore`](/commands/runs-restore) | *Restore deleted remote runs on a remote --- not supported* |
+| [`runs purge`](/commands/runs-purge) | *Purge deleted remote runs on a remote --- not supported* |
+
+### Gist Security
+
+Guild creates publicly visible gists. Therefore anyone can read published runs without authorization. You may [make a gist private](https://github.blog/2014-05-09-change-the-visibility-of-your-gists/) after it's created to limit access.
+
+To create or write to a gist, you must provide a gist-authorized [personal access token](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token) using the environment variable `GIST_ACCESS_TOKEN`.
+
+By default, Guild uses the `https` URL type to access gists. If you prefer to to use `ssh` URL types, define the environment variable `GIST_URLTYPE` to be `ssh`.
+
+### Gist Blob Examples
+
+Refer to [*Remotes Cheatsheet*](/cheatsheets/remotes#gist) for Gist configuration examples.
+
+### Gist Inline Specs
+
+A Gist remote may be specified using an inline specification. The format is:
+
+    gist:USER/GIST_NAME
+
+For example, to push runs to a gist named `shared-runs` for the GitHub user `jack`, run:
+
+``` command
+guild push gist:jack/shared-runs
+```
+
+To write to a gist, you must have write access provided by a personal access token specified by the environment variable `GIST_ACCESS_TOKEN`.
+
+You may omit the user from a gist spec by defining the `GIST_USER` environment variable.

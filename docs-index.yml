@@ -168,6 +168,8 @@
     - docs/defaults
     - docs/windows
     - docs/macos
+    - docs/jupyter-notebook-experiments
+    - guides/share-runs-with-gists
 
 # Non-section links, used for fetch.
 
