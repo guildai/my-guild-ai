@@ -78,7 +78,7 @@ If you specify a list value, `random` selects values from the list at random fro
 Explicitly use `random` by specifying `--optimizer` (or the short form `-o`) with [`guild run`](/commands/run):
 
 ``` command
-guild run train lr=logspace[-4:-1:4] dropout=range[0.1:0.4:0.1] -o random -m 10
+guild run train lr=logspace[-4:-1:4] dropout=range[0.1:0.4:0.1] -Fo random -m 10
 ```
 
 In this case, the random optimizer runs 10 trials, selecting values at random from the choices.
@@ -92,7 +92,7 @@ Flag values do not implicitly select sequential optimizers. You must explicitly 
 Use `-Fo` options to set optimizer flags for a batch. The following command sets *`xi`* and *`random-starts`* for the `gp` optimizer:
 
 ``` command
-guild run train -o gp -Fo xi=0.1 -Fo random-starts=5
+guild run train -Fo gp -Fo xi=0.1 -Fo random-starts=5
 ```
 
 ## Custom Optimizers

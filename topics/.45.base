@@ -86,13 +86,13 @@ After a run is started, you can modify its label using [`guild label`](/commands
 To see how labels are used, let's tag the "best" run. First, find the run with the lowest *`loss`* using [`guild select`](/commands/select):
 
 ``` command
-guild select -o train.py --min loss
+guild select -Fo train.py --min loss
 ```
 
 Guild shows the run ID with the lowest loss. Confirm this by running:
 
 ``` command
-guild compare -o train.py --min loss --top 1 --table
+guild compare -Fo train.py --min loss --top 1 --table
 ```
 
 Guild shows the `train.py` run with the lowest loss.
@@ -108,7 +108,7 @@ guild label --prepend best <run ID from previous command>
 
 Guild prompts you with the proposed change. Press **Enter** to modify the run label.
 
-> <span data-guild-class="callout tip">Tip</span> If you're running Linux, macOS, or another POSIX environment, you can use [command substitution](https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html) and [`guild select`](/commands/select) to specify a run ID argument. For example, `guild run --tag best $(guild select -o train.py --min loss)` tags the run with the lowest *`loss`* as "best".
+> <span data-guild-class="callout tip">Tip</span> If you're running Linux, macOS, or another POSIX environment, you can use [command substitution](https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html) and [`guild select`](/commands/select) to specify a run ID argument. For example, `guild run --tag best $(guild select -Fo train.py --min loss)` tags the run with the lowest *`loss`* as "best".
 
 Show runs with "best" in their label:
 

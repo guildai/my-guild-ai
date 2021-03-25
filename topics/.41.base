@@ -224,7 +224,7 @@ To restart a run, specify `--restart` with [`guild run`](/commands/run).
 To get the run ID of the `gp` batch, run:
 
 ``` command
-guild select -o train.py+gp
+guild select -Fo train.py+gp
 ```
 
 Guild prints the ID of the last `gp` batch run. Copy this value for the next command.
@@ -250,7 +250,7 @@ Continue? (Y/n)
 
 > <span data-guild-class="callout tip">Tip</span> You can type the first few characters of the batch run ID rather than use the full ID if those characters uniquely identify the run.
 
-> <span data-guild-class="callout tip">Tip</span> If you're running Linux, macOS, or another POSIX environment, you can use [command substitution](https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html) and [`guild select`](/commands/select) to specify a run ID argument. For example, `guild run --restart $(guild select -o train.py+gp)` restarts the latest `train.py+gp`.
+> <span data-guild-class="callout tip">Tip</span> If you're running Linux, macOS, or another POSIX environment, you can use [command substitution](https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html) and [`guild select`](/commands/select) to specify a run ID argument. For example, `guild run --restart $(guild select -Fo train.py+gp)` restarts the latest `train.py+gp`.
 
 Press **Enter** to restart the batch.
 

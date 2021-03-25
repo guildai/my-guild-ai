@@ -345,7 +345,7 @@ guild run train lr=[0.001,0.01,0.1] batch-size=[100,500,1000]
 This command is a sequential optimization using [`gp`](/reference/optimizers#gp) to minimize *`loss`*. It uses the same flag values. Based on the optimizer, it generates 5 trials using value lists as *choices* to sample from:
 
 ``` command
-guild run train lr=[0.001,0.01,0.1] batch-size=[100,500,1000] -o gp -m 5
+guild run train lr=[0.001,0.01,0.1] batch-size=[100,500,1000] -Fo gp -m 5
 ```
 
 ### Sequence Functions
