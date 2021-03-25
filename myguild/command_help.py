@@ -221,10 +221,10 @@ def _commands_category(api):
 
 def _guild_commands_topic_category(api):
     try:
-        topic = api.topic("guild-commands")
-    except api.DiscourseClientError:
+        topic = api.topic("guild-ai-commands")
+    except DiscourseClientError:
         raise SystemExit(
-            "cannot find 'guild-commands' topic, which is required to "
+            "cannot find 'guild-ai-commands' topic, which is required to "
             "denote the Commands category - create this topic and run "
             "this command again"
         )
