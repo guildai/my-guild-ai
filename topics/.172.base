@@ -23,7 +23,10 @@ A remote type is defined using the `type` attribute. The types below are support
 
 The following external software is required to use SSH remotes:
 
-- `ssh` command
+- SSH service (remote system)
+- `realpath` command (remote system)
+- `ssh` command (local system)
+- `rsync` command (local system)
 
 ### SSH Attributes
 
