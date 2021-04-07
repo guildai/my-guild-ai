@@ -24,3 +24,7 @@ If you're not familiar with running commands from a terminal, we suggest reading
 | Linux | [*The Linux command line for beginner*](https://tutorials.ubuntu.com/tutorial/command-line-for-beginners) -- Ubuntu Tutorials |
 | macOS | [*Command Line Primer* ](https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/CommandLInePrimer/CommandLine.html) -- Apple Developer |
 | Windows | [*How to use the Windows command line*](https://www.computerhope.com/issues/chusedos.htm) <br> [*Coding in Windows -- Setting Up Git and Cmder*](https://www.awmoore.com/2015/01/14/setting-up-git-and-cmder/) <br> [*Git + MinGW Command Line*](https://learn.adafruit.com/windows-tools-for-the-electrical-engineer/git-plus-command-line-tools) |
+
+## Command Completion
+
+Guild AI supports command completion for bash, zsh, and fish shells. For details on configuring command completion, see [Install Guild AI](/install#command-completion).
