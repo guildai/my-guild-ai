@@ -23,7 +23,7 @@ The `guild-start` directory should look like this:
 > <span data-guild-class="ls-dir-open">guild-start</span>
 <span data-guild-class="ls-dir ls-1">archived-runs</span>
 <span data-guild-class="ls-file ls-1">guild.yml</span>
-<span data-guild-class="ls-file ls-1">plot_exercise_example.py</span>
+<span data-guild-class="ls-file ls-1">plot_iris_exercise.py</span>
 <span data-guild-class="ls-file ls-1">train.py</span>
 
 ## Add `iris-svm` Model to guild.yml
@@ -204,7 +204,7 @@ Your project directory should look like this:
 > <span data-guild-class="ls-dir-open">guild-start</span>
 <span data-guild-class="ls-dir ls-1">archived-runs</span>
 <span data-guild-class="ls-file ls-1">guild.yml</span>
-<span data-guild-class="ls-file ls-1">plot_exercise_example.py</span>
+<span data-guild-class="ls-file ls-1">plot_iris_exercise.py</span>
 <span data-guild-class="ls-file ls-1">requirements.txt</span>
 <span data-guild-class="ls-file ls-1">train.py</span>
 
@@ -225,7 +225,7 @@ Your project directory should look like this:
 > <span data-guild-class="ls-dir-open">guild-start</span>
 <span data-guild-class="ls-dir ls-1">archived-runs</span>
 <span data-guild-class="ls-file ls-1">guild.yml</span>
-<span data-guild-class="ls-file ls-1">plot_exercise_example.py</span>
+<span data-guild-class="ls-file ls-1">plot_iris_exercise.py</span>
 <span data-guild-class="ls-file ls-1">requirements.txt</span>
 <span data-guild-class="ls-file ls-1">train.py</span>
 <span data-guild-class="ls-dir ls-1">venv</span>
