@@ -38,7 +38,8 @@ def read(key):
 
 
 def _key_path(key):
-    digest = hashlib.sha1(key).hexdigest()
+    encoded_key = key.encode("utf-8")
+    digest = hashlib.sha1(encoded_key).hexdigest()
     return os.path.join(cache_dir, digest)
 
 

@@ -93,6 +93,26 @@ if __name__ == "__main__":
 
 <span data-guild-class="caption">Sample Python module --- execute task only when module is loaded as `__main__`</span>
 
+### Additional arguments to `main`
+
+By default, Guild passes additional arguments to the `main` module that correspond to operation [flag values](/docs/flags). You can, however, specify arguments in the `main` attribute. These additional arguments are provided regardless of the flag-specific arguments.
+
+For example, the following `main` spec runs the Python module `logreg` with the additional argument `--train`.
+
+``` yaml
+train:
+  main: logreg --train
+```
+
+### Using additional arguments for sub-commands
+
+Python CLIs that use *sub-commands* for operations are supported using additional arguments in the `main` spec. For example, consider a script that supports `train` and `test` subcommands. You can define a `train` operation that runs the `train` command this way:
+
+``` yaml
+train:
+  main: logreg train
+```
+
 ## Other Language Operations
 
 Guild supports non-Python based operations with the `exec` operation attribute. Use `exec` to specify a command that Guild runs, which can use any executable program.

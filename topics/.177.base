@@ -82,6 +82,22 @@ remotes:
     root: production
 ```
 
+## Azure VM
+
+The following is a minimal example of an Azure VM remote:
+
+``` yaml
+remotes:
+  azure-debian:
+    type: azure-vm
+    description: Debian VM
+    image: Debian:debian-10:10:latest
+    instance-type: Standard_DS1_v2
+    disk-type: Premium_LRS
+    public-key: ~/.ssh/id_rsa.pub
+    user: azureuser
+```
+
 ## Azure Blob
 
 The following example stores in the `default` folder in the specified container. Note that `root` is optional.

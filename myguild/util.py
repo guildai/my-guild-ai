@@ -136,9 +136,9 @@ def notify_send(msg, urgency=None):
 
 
 def write_utf(filename, s):
-    with open(filename, "w") as f:
-        f.write(s.encode("utf-8"))
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(s)
 
 
 def read_utf(filename):
-    return open(filename).read().decode("utf-8")
+    return open(filename, encoding="utf-8").read()
