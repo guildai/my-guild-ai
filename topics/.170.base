@@ -133,7 +133,7 @@ When using non-Python languages to implement an operation, you can access flags 
 - Command line arguments
 - Environment variables
 
-#### Command Line Arguments
+#### Flag Value Command Line Arguments
 
 To use command line arguments, you must specify flag arguments in the `exec` specification. You can specify flag values in one of two ways:
 
@@ -158,9 +158,31 @@ train.sh 0.1 100
 
 > <span data-guild-class="callout tip">Tip</span> Use the `--print-cmd` option with [`guild run`](/commands/run) to show the command Guild uses to start an operation.
 
-### Environment Variables
+#### Flag  Environment Variables
 
 Guild always provides flag values as environment variables, regardless of language type. Environment variables provide a convenient way to access flags as they don't require command line processing.
+
+### Special Command Line Arguments
+
+Guild supports some built-in command line arguments that are replaced with special values creating the operation command.
+
+|||
+|-|-|
+| `${flag_args}` | Set of flag assignments in the format `<name>=<value>` |
+| `${project_dir}` | Project directory path (also available as the `PROJECT_DIR` environment variable for the operation --- see below) |
+
+### Special Environment Variables
+
+Guild sets a number of environment that are available for an operation.
+
+|               |                                                                                       |
+|---------------|---------------------------------------------------------------------------------------|
+| `RUN_DIR`     | Path of the active run directory                                                      |
+| `RUN_ID`      | ID of the active run                                                                  |
+| `PROJECT_DIR` | Path of the active run source project (e.g. where the defining Guild file is located) |
+| `GUILD_OP`    | Active run op spec                                                                    |
+| `GUILD_HOME`  | Path where Guild AI is installed                                                      |
+| `CMD_DIR`     | Path where the Guild command was run                                                  |
 
 ## Operation Source Code
 
