@@ -271,7 +271,7 @@ Refer to [*Remotes Cheatsheet*](/cheatsheets/remotes#ec2) for EC2 configuration 
 
 ## S3
 
-Use S3 remotes to store runs remotely. S3 buckets support the full set of remote management commands. See [Remote Commands](#s3-remote-commands) below for details.
+Use S3 remotes to store runs remotely. S3 buckets support the full set of remote management commands. See [Remote Commands](#s3-remote-commands-23) below for details.
 
 ### S3 Requirements
 
