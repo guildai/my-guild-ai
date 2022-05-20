@@ -200,7 +200,11 @@ command exits with an error.
     help="Show cache information and exit. Does not clear anything.",
 )
 def clear_cache(
-    all=False, link_topics=None, commands=None, topic_posts=None, cache_info=False,
+    all=False,
+    link_topics=None,
+    commands=None,
+    topic_posts=None,
+    cache_info=False,
 ):
     if cache_info:
         _print_cache_info()
@@ -263,7 +267,9 @@ Edit a topic.
 
 
 @myguild.command("edit", help=edit_help)
-@click.argument("topic", type=int, required=False, autocompletion=_autocomplete_topics)
+@click.argument(
+    "topic", type=int, required=False, shell_complete=_autocomplete_topics
+)
 @click.option("-m", "--comment", help="Comment used when publishing.")
 @click.option(
     "-n", "--no-comment", is_flag=True, help="Don't provide a comment when publishing."
@@ -318,7 +324,9 @@ Fetch a topic.
 
 
 @myguild.command("fetch", help=fetch_help)
-@click.argument("topic", required=False, type=int, autocompletion=_autocomplete_topics)
+@click.argument(
+    "topic", required=False, type=int, shell_complete=_autocomplete_topics
+)
 @click.option("--docs", is_flag=True, help="Fetch all docs.")
 @click.option(
     "index_path",
@@ -344,7 +352,12 @@ Fetch a topic.
     help="Stop when an error occurs. Applies only when --docs is used.",
 )
 def fetch(
-    topic, docs=False, index_path=None, force=False, save_dir=None, stop_on_error=False,
+    topic,
+    docs=False,
+    index_path=None,
+    force=False,
+    save_dir=None,
+    stop_on_error=False,
 ):
     if docs:
         editlib.fetch_docs(
@@ -371,7 +384,9 @@ To publish all modified topics, use --all.
 
 
 @myguild.command("publish", help=publish_help)
-@click.argument("topic", type=int, required=False, autocompletion=_autocomplete_topics)
+@click.argument(
+    "topic", type=int, required=False, shell_complete=_autocomplete_topics
+)
 @click.option("-a", "--all", is_flag=True, help="Publish all locally modified topics.")
 @click.option("-m", "--comment", help="Comment used when publishing.")
 @click.option(
@@ -463,7 +478,7 @@ Note this does not delete the server topic.
 
 
 @myguild.command("delete", help=delete_help)
-@click.argument("topic", type=int, autocompletion=_autocomplete_topics)
+@click.argument("topic", type=int, shell_complete=_autocomplete_topics)
 @click.option(
     "-y", "--yes", is_flag=True, help="Publish changes without asking for confirmation."
 )
@@ -491,7 +506,9 @@ Diff changes to topics.
 
 
 @myguild.command("diff", help=diff_help)
-@click.argument("topic", type=int, required=False, autocompletion=_autocomplete_topics)
+@click.argument(
+    "topic", type=int, required=False, shell_complete=_autocomplete_topics
+)
 @click.option(
     "-l", "--latest", is_flag=True, help="Compare local topic to latest on server."
 )
@@ -513,7 +530,11 @@ Diff changes to topics.
     help="Always use color when diffing. Ignored if --diff-cmd is used.",
 )
 def diff(
-    topic, latest=False, save_dir=None, diff_cmd=None, color=False,
+    topic,
+    latest=False,
+    save_dir=None,
+    diff_cmd=None,
+    color=False,
 ):
     if not diff_cmd and color:
         diff_cmd = "diff -u --color=always"
