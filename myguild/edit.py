@@ -50,8 +50,16 @@ def _handle_fetch_topic_error(e, topic_id):
 
 
 def default_save_dir():
-    project_dir = os.path.dirname(os.path.dirname(__file__))
-    return os.path.join(project_dir, "topics")
+    def try_path(path):
+        return path if os.path.exists(path) else None
+    try_paths = [
+        os.path.join(os.getcwd(), "topics"),
+        os.path.join(os.path.dirname(os.path.dirname(__file__)), "topics")
+    ]
+    try:
+        return next((path for path in try_paths if path is not None))
+    except StopIteration:
+        raise SystemExit("Cannot find 'topics' directory - specify with --save-path")
 
 
 def _topic_for_id(topic_id):
