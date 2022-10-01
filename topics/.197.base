@@ -28,7 +28,7 @@ Guild files support two different formats:
 - Full format
 - Operation-only format
 
-Use the format best suited to your requirements. See [What Format to Use](#which-format-to-use) below for suggestions.
+Use the format best suited to your requirements. See [What Format to Use](#which-format-to-use-4) below for suggestions.
 
 ### Full Format
 
@@ -178,7 +178,7 @@ train:
 
 ### Operation Attributes
 
-<div data-toc-id="operation-name"><h4>&lt;mapping key&gt;</h4></div>
+<h4 data-toc-id="operation-name">&lt;mapping key&gt;</h4>
 
 *Operation name (required string)*
 
@@ -186,19 +186,19 @@ An operation *name* is a mapping key. If the Guild file is written in operation-
 
 Use an operation name to run operation. If the operation is defined for a named model (full format only), you can refer to it as <code><em>MODEL_NAME</em>:<em>OPERATION_NAME</em></code>. Otherwise refer to it as *`OPERATION_NAME`*. The model name in this case is empty and can be omitted.
 
-<div data-toc-id="operation-description"><h4>description</h4></div>
+<h4 data-toc-id="operation-description">description</h4>
 
 *Operation description (string)*
 
 This value can span multiple lines. By convention, the first line is a short description that does not end in a period. Subsequent lines, separated by an empty line, should be written using full sentences.
 
-<div data-toc-id="operation-default"><h4>default</h4></div>
+<h4 data-toc-id="operation-default">default</h4>
 
 *Flag indicating that the operation is default (boolean)*
 
 Guild runs the default operation if an operation name is not specified. If there is only one operation, it is always considered as the default.
 
-<div data-toc-id="operation-main"><h4>main</h4></div>
+<h4 data-toc-id="operation-main">main</h4>
 
 *Operation main Python module (string)*
 
@@ -218,7 +218,7 @@ Do not include the `.py` extension in the value for `MODULE`.
 
 `main` is used for Python modules only. To run a program using a different language runtime or to otherwise control the command that Guild runs, use `exec`.
 
-<div data-toc-id="operation-exec"><h4>exec</h4></div>
+<h4 data-toc-id="operation-exec">exec</h4>
 
 *Operation command (string)*
 
@@ -226,19 +226,19 @@ Guild uses this value to execute a system command. Use `exec` to run non-Python 
 
 Use `exec` to run operations by executing a program. By default, flags are not included in the operation command. To include all flags in the format <code>\-\-<em>FLAG_NAME</em> <em>FLAG_VAL</em></code>, specify `${flag_args}` in the position you want the arguments included in the command. Otherwise specify flag values using the format using the format <code>${<em>FLAG_NAME</em>}</code>.
 
-<div data-toc-id="operation-steps"><h4>steps</h4></div>
+<h4 data-toc-id="operation-steps">steps</h4>
 
 *List of steps to run for workflow (list of strings or [steps](#steps))*
 
 Steps are used to implement sequential work flow in Guild. Refer to [Steps](#steps) below for details.
 
-<div data-toc-id="operation-flags"><h4>flags</h4></div>
+<h4 data-toc-id="operation-flags">flags</h4>
 
 *Operation flags (mapping of flag name to [flag](#flags))*
 
 Flags are user-definable values used for an operation. Mapping keys are flag names. See [Flags](#flags) for a list of flag attributes.
 
-<div data-toc-id="operation-flags-dest"><h4>flags-dest</h4></div>
+<h4 data-toc-id="operation-flags-dest">flags-dest</h4>
 
 *Destination for flag values (string)*
 
@@ -276,7 +276,7 @@ For a list of working examples, refer to the [`examples/flags`](https://github.c
 
 </div>
 
-<div data-toc-id="operation-flags-import"><h4>flags-import</h4></div>
+<h4 data-toc-id="operation-flags-import">flags-import</h4>
 
 *List of flags to import (string or list of strings)*
 
@@ -288,7 +288,7 @@ To import a list of flags, specify a list of flag names.
 
 When importing flags, Guild inspects the script specified in the `main` attribute to determine how flags are defined. If the Python module uses `argparse`, Guild inspects the parser arguments for flags, otherwise it inspects the module for global scalar or string assignments. This interface can be controlled explicitly using [`flags-dest`](#operation-flags-dest).
 
-<div data-toc-id="operation-flags-import-skip"><h4>flags-import-skip</h4></div>
+<h4 data-toc-id="operation-flags-import-skip">flags-import-skip</h4>
 
 *List of flags to skip when importing all flags (list of strings)*
 
@@ -296,7 +296,7 @@ This attribute applies only when `main` is used to run a Python module.
 
 Use when setting `flags-import` to `yes` or `all` when it's more convenient to exclude a list of flags than it is to list flags to import.
 
-<div data-toc-id="operation-requires"><h4>requires</h4></div>
+<h4 data-toc-id="operation-requires">requires</h4>
 
 *List of required resources (list of [resources](#resources))*
 
@@ -304,7 +304,7 @@ By default run directories are empty. Project files that a script needs are not 
 
 Resources can be *named* or *inline*. Named resources are defined by a model `resources` attribute and referenced using their name. Named resources can be shared across operations. Inline resources are defined as a `requires` attribute item. See [Resources](#resources) for details.
 
-<div data-toc-id="operation-sourcecode"><h4>sourcecode</h4></div>
+<h4 data-toc-id="operation-sourcecode">sourcecode</h4>
 
 *Specification used to copy source code files ([source code spec](#source-code))*
 
@@ -316,7 +316,7 @@ When the `sourcecode` attribute is defined, Guild does not apply these checks.
 
 See [Source Code](#source-code) for details.
 
-<div data-toc-id="operation-output-scalars"><h4>output-scalars</h4></div>
+<h4 data-toc-id="operation-output-scalars">output-scalars</h4>
 
 *List of output scalar patterns to apply to run standard output (list of [output scalar specs](#output-scalars) or `no`)*
 
@@ -326,31 +326,31 @@ Use the `output-scalars` attribute to customize the way Guild captures scalars f
 
 To disable capturing of output scalars altogether, specify `no`.
 
-<div data-toc-id="operation-env"><h4>env</h4></div>
+<h4 data-toc-id="operation-env">env</h4>
 
 *Additional environment variables available to the operation process (mapping of names to values)*
 
 Flag values are always available in the environment as <code>FLAG_<em>NAME</em></code> variables, where *`NAME`* is the upper case flag name with non-alphanumeric characters converted to underscores. A flag can specify a different environment variable name using the [`env-name`](#flag-env-name) flag attribute.
 
-<div data-toc-id="operation-env-secrets"><h4>env-secrets</h4></div>
+<h4 data-toc-id="operation-env-secrets">env-secrets</h4>
 
 *Like `env` but values are not saved as run metadata (mapping of names to values)*
 
 Use to specify environment variables in the same way that `env` is used. Values defined by this attribute are not stored in the `env` run attribute. Use this as a safeguard to ensure that secrets aren't stored with a run.
 
-<div data-toc-id="operation-python-path"><h4>python-path</h4></div>
+<h4 data-toc-id="operation-python-path">python-path</h4>
 
 *Path to use for `PYTHONPATH` when running the operation (string)*
 
 Use when you need to include additional system paths for a Python based operation.
 
-<div data-toc-id="operation-stoppable"><h4>stoppable</h4></div>
+<h4 data-toc-id="operation-stoppable">stoppable</h4>
 
 *Indicates whether user-termination of the operation should be treated as a success (boolean)*
 
 By default, Guild designated user-terminated operations as `terminated`. In some cases, you may want to designate such user-terminated operations as `completed`. In this case, set this attribute to `yes`.
 
-<div data-toc-id="operation-label"><h4>label</h4></div>
+<h4 data-toc-id="operation-label">label</h4>
 
 *Label template for the operation (string)*
 
@@ -358,25 +358,25 @@ By default, Guild creates a label that includes user-provided flag values. Use t
 
 Use <code>${<em>FLAG_NAME</em>}</code> in the label to include specific flag values.
 
-<div data-toc-id="operation-tags"><h4>tags</h4></div>
+<h4 data-toc-id="operation-tags">tags</h4>
 
 *Tags to use for the run (list of strings)*
 
 Tags specified when the operation is run are added to the list specified in the Guild file.
 
-<div data-toc-id="operation-compare"><h4>compare</h4></div>
+<h4 data-toc-id="operation-compare">compare</h4>
 
 *List of columns to include for operation runs in [Guild Compare](/docs/compare) (list of [column specs](#columns))*
 
 Use to define only the columns that are useful for comparison when an operation has a large number of flags or scalars.
 
-<div data-toc-id="operation-default-max-trials"><h4>default-max-trials</h4></div>
+<h4 data-toc-id="operation-default-max-trials">default-max-trials</h4>
 
 *Default number of max trials when running batches (integer)*
 
 By default, the max trials used when the user doesn't explicitly specify `--max-trials` is optimizer-specific. All of Guild's built-in optimizers have a default max trials of `20`. Use to define a different default.
 
-<div data-toc-id="operation-objective"><h4>objective</h4></div>
+<h4 data-toc-id="operation-objective">objective</h4>
 
 *Objective used by sequential optimizers (string or mapping)*
 
@@ -384,7 +384,7 @@ If `objective` is a string, optimizers attempt to minimize the specified scalar 
 
 To maximize a scalar, precede the attribute value with a negative sign `-`. This is equivalent to the mapping <code>maximize: <em>SCALAR</em></code>.
 
-<div data-toc-id="operation-optimizers"><h4>optimizers</h4></div>
+<h4 data-toc-id="operation-optimizers">optimizers</h4>
 
 *Mapping of named optimizers associated with the operation*
 
@@ -394,13 +394,13 @@ By default, the name is used as the optimizer operation. For example, a mapping 
 
 You can also define the special `default` attribute, which indicates if the optimizer is used when the operation is run with the `--optimize` option.
 
-<div data-toc-id="operation-plugins"><h4>plugins</h4></div>
+<h4 data-toc-id="operation-plugins">plugins</h4>
 
 *List of plugins to enable for the operation*
 
 Use the value `all` to enable all plugins. To enable all summary-related plugins (`cpu`, `gpu`, `disk`, `memory`, and `perf`) use the value `summary`. See [Plugins Reference](/reference/plugins) for more information.
 
-<div data-toc-id="operation-pip-freeze"><h4>pip-freeze</h4></div>
+<h4 data-toc-id="operation-pip-freeze">pip-freeze</h4>
 
 *Whether `pip freeze` is run for an operation (boolean)*
 
@@ -408,7 +408,7 @@ When this flag is set, Guild generates a `pip_freeze` run attribute containing t
 
 This flag is set by default for Python based operations. To disable it, set the value to `no`.
 
-<div data-toc-id="operation-default-arg-skip"><h4>default-flag-arg-skip</h4></div>
+<h4 data-toc-id="operation-default-arg-skip">default-flag-arg-skip</h4>
 
 *Default value for flag `arg-skip` attributes (boolean)*
 
@@ -424,19 +424,19 @@ Guild supports the special `$include` mapping key, which can be a string or list
 
 ### Flag Attributes
 
-<div data-toc-id="flag-name"><h4>&lt;mapping key&gt;</h4></div>
+<h4 data-toc-id="flag-name">&lt;mapping key&gt;</h4>
 
 *Flag name (required string)*
 
 The flag name is used when specifing a flag value. When specifying a value as an argument to the [`guild run`](/commands/run) command, the name is used as <code><em>FLAG_NAME</em>=<em>VALUE</em></code>.
 
-<div data-toc-id="flag-description"><h4>description</h4></div>
+<h4 data-toc-id="flag-description">description</h4>
 
 *Flag description (string)*
 
 The flag description is used in project and operation help. If the flag description contains more than one line, the first line is displayed for operation help (e.g. when <code>guild run <em>OPERATION</em> --help-op</code> is run). The full string is displayed for project help (e.g. when `guild help` is run for a project).
 
-<div data-toc-id="flag-type"><h4>type</h4></div>
+<h4 data-toc-id="flag-type">type</h4>
 
 *Flag value type (choice --- see options below)*
 
@@ -478,19 +478,19 @@ Supported types:
 
 </div>
 
-<div data-toc-id="flag-default"><h4>default</h4></div>
+<h4 data-toc-id="flag-default">default</h4>
 
 *Default flag value*
 
 By default, flag values are `null` and are not passed to the script. Users override a default value when running an operation using the form <code>guild run <em>OPERATION</em> <em>FLAG_NAME</em>=<em>VALUE</em></code>.
 
-<div data-toc-id="flag-required"><h4>required</h4></div>
+<h4 data-toc-id="flag-required">required</h4>
 
 *Whether a flag value is required (boolean)*
 
 By default, flag values are not required.
 
-<div data-toc-id="flag-arg-name"><h4>arg-name</h4></div>
+<h4 data-toc-id="flag-arg-name">arg-name</h4>
 
 *Argument name used when setting the flag value (string)*
 
@@ -500,7 +500,27 @@ If operation `flags-dest` is `globals`, this attribute specifies the global vari
 
 If operation `flags-dest` is <code>global:<em>PARAM</em></code>, this attribute specifies the key used when setting the flag in the *`PARAM`* global dict. In this case, dots (`.`) in the name denote nested entries in the global dict. For example, the value for a flag with arg name `train.lr` will be set in the dict *`PARAM`* so that it can be read as *`PARAM`*`["train"]["lr"]`. <!-- odd formatting is workaround for double-quote conversion that occurs inside <code> tag -->
 
-<div data-toc-id="flag-arg-skip"><h4>arg-skip</h4></div>
+<h4 data-toc-id="flag-arg-encoding">arg-encoding</h4>
+
+*Map flag values to command arguments (map of value to string)*
+
+Added in 0.8.2.
+
+Use `arg-encoding` to change the command argument value for a specified flag value. A common case is to map boolean values (i.e. `yes`/`no`, `true`/`false`, etc.) to different encodings. By default, Guild encodes true as `'1'` and false as the empty string `''` in support of Python's `bool()` function. To specify different argument values for true and false, `arg-encoding` may be used this way:
+
+``` yaml
+my_operation:
+  flags:
+    option_a:
+      type: boolean
+      arg-encoding:
+        yes: 'true'
+        no: 'false'
+```
+
+Any values used from this attribute for command arguments are also used for the corresponding environment variable. To change the environment variable encoding, use [`env-encoding`](#flag-env-encoding).
+
+<h4 data-toc-id="flag-arg-skip">arg-skip</h4>
 
 *Indicates whether the flag is skipped as an argument (boolean)*
 
@@ -508,7 +528,7 @@ By default, all flags are set according to the operations `args-dest` attribute.
 
 Use to skip flag arguments that are specified in [`main`](#operation-name) or [`exec`](#operation-exec) operation attributes to avoid duplicating them.
 
-<div data-toc-id="flag-arg-switch"><h4>arg-switch</h4></div>
+<h4 data-toc-id="flag-arg-switch">arg-switch</h4>
 
 *Flag value that, when specified, causes the flag to be set as a boolean switch*
 
@@ -518,9 +538,9 @@ A boolean switch is specified as `True` when set as a global variable.
 
 For example, if `arg-switch` is `yes` for a flag named `test`, when the user specifies `test=yes`, the command line option `--test` is provided without a value to the script --- or the global variable `test` is set to `True` --- depending on the operation [`flags-dest`](#operation-flags-dest) setting.
 
-<div data-toc-id="flag-arg-split"><h4>arg-split</h4></div>
+<h4 data-toc-id="flag-arg-split">arg-split</h4>
 
-*Idicate whether or not a flag value is split into a string (boolean or string)*
+*Indicate whether or not a flag value is split into a string (boolean or string)*
 
 If `arg-split` is `yes`, Guild will split flag values into parts using shell like syntax and convey the flag value to the script as a list. `arg-split` may alternatively be a string. The special string `shlex` is equivalent to the boolean value `yes`. Any other string is used as a delimiter to split the flag value. The most common delimiter is a comma.
 
@@ -538,7 +558,7 @@ assignment similarly:
 guild run x=1,2,3
 ```
 
-<div data-toc-id="flag-choices"><h4>choices</h4></div>
+<h4 data-toc-id="flag-choices">choices</h4>
 
 *List of allowed flag values (list of values or mappings)*
 
@@ -578,13 +598,13 @@ When specified as a mapping, valid attributes are:
 
 </div>
 
-<div data-toc-id="flag-allow-other"><h4>allow-other</h4></div>
+<h4 data-toc-id="flag-allow-other">allow-other</h4>
 
 *Indicates whether the user can enter a non-choice value when `choices` is specified (boolean)*
 
 By default, when `choices` is defined for an operation, Guild prevents the user from specifying values that are not in the list of choices. To allow non-choice values, set this attribute to `yes`.
 
-<div data-toc-id="flag-env-name"><h4>env-name</h4></div>
+<h4 data-toc-id="flag-env-name">env-name</h4>
 
 *The environment variable name used for the flag (string)*
 
@@ -592,13 +612,21 @@ Use to defined an alternative environment variable name.
 
 By default, Guild provides a flag value as the environment variable <code>FLAG_<em>UPPER_NAME</em></code> where *`UPPER_NAME`* is the flag name in upper case. All non-alpha-numeric characters are converted to underscore characters. So a flag named `learning-rate` is available by default as the environment variable `FLAG_LEARNING_RATE`.
 
-<div data-toc-id="flag-null-label"><h4>null-label</h4></div>
+<h4 data-toc-id="flag-env-encoding">env-encoding</h4>
+
+*Map flag values to environment variable values (map of value to string)*
+
+Added in 0.8.2.
+
+Use `env-encoding` to change the environment variable value for a particular flag value. This attribute serves the same function as [`arg-encoding`](#flag-arg-encoding) but is applied to environment variables rather than command arguments.
+
+<h4 data-toc-id="flag-null-label">null-label</h4>
 
 *Display label used in operation preview when flag value is `null` (string)*
 
 By default, Guild uses the string `default` when showing `null` values in the operation preview. Use in cases where another string would be clearer. For example, if the behavior of a script is to auto-detect a value when a `dataset` flag is `null`, `null-label` could be set to `'auto detected'` to convey this to the user.
 
-<div data-toc-id="flag-min"><h4>min</h4></div>
+<h4 data-toc-id="flag-min">min</h4>
 
 *Minimum allowed value (number)*
 
@@ -606,7 +634,7 @@ By default, Guild does not check number ranges.
 
 This value also serves as the default lower bound for values chosen by optimizers.
 
-<div data-toc-id="flag-max"><h4>max</h4></div>
+<h4 data-toc-id="flag-max">max</h4>
 
 *Maximum allowed value (number)*
 
@@ -614,7 +642,7 @@ By default, Guild does not check number ranges.
 
 This value also serves as the default upper bound for values chosen by optimizers.
 
-<div data-toc-id="flag-distribution"><h4>distribution</h4></div>
+<h4 data-toc-id="flag-distribution">distribution</h4>
 
 *Distribution used when sampling values for flag (string - see below for options)*
 
@@ -663,13 +691,13 @@ If a resource is a mapping, it specifies [resource attributes](#resource-attribu
 
 ### Resource Attributes
 
-<div data-toc-id="resource-key"><h4>&lt;mapping key&gt;</h4></div>
+<h4 data-toc-id="resource-key">&lt;mapping key&gt;</h4>
 
 *Resource name (string --- named resource only)*
 
 If a resource is defined by a `resources` model attribute, the object mapping key is the resource name. If a resource is defined inline, use [`name`](#resource-name) to optionally define its name.
 
-<div data-toc-id="resource-name"><h4>name</h4></div>
+<h4 data-toc-id="resource-name">name</h4>
 
 *Resource name (string --- inline resource only)*
 
@@ -677,13 +705,13 @@ If a resource is defined inline, the name can be defined using this attribute.
 
 Guild uses the resource name when referring to the resource. The name is also used to specify resource values using flag assignment syntax unless [`flag-name`](#resource-flag-name) is defined.
 
-<div data-toc-id="resource-sources"><h4>sources</h4></div>
+<h4 data-toc-id="resource-sources">sources</h4>
 
 *List of sources to resolve (list of [resource sources](#resource-source-attributes))*
 
 A resource conists of one or more *sources*, which are defined by this attribute. This attribute is implicitly defined when a resource is a list rather than a mapping.
 
-<div data-toc-id="resource-target-path"><h4>target-path</h4></div>
+<h4 data-toc-id="resource-target-path">target-path</h4>
 
 *Path under run directory in which resolved files are created (string)*
 
@@ -691,19 +719,19 @@ Use to save resolved resource sources under a run subdirectory.
 
 > <span data-guild-class="callout note">Backward Compatible Change</span> This attribute is named `path` in versions prior to 0.7. Use `target-path` as a clearer alternative.
 
-<div data-toc-id="resource-target-type"><h4>target-type</h4></div>
+<h4 data-toc-id="resource-target-type">target-type</h4>
 
 *Type of file created when resolving resource sources (choice --- see below for details)*
 
 Guild creates either file links or file copies when it resolves sources. This attribute is used to specify the default target type for sources. Each source can define this attribute to override the default. See resource source [`target-type`](#resource-source-target-type) for details.
 
-<div data-toc-id="resource-flag-name"><h4>flag-name</h4></div>
+<h4 data-toc-id="resource-flag-name">flag-name</h4>
 
 *Flag name used to specify resource values using flag assignment syntax (string)*
 
 Some resource sources support user-defined values using flag assignment syntax. For example, an operation source will use a run ID specified as <code><em>NAME</em>=<em>VALUE</em></code> where *`NAME`* is the resource name. You can use a different name for the flag assignment by defining `flag-name`.
 
-<div data-toc-id="resource-default-unpack"><h4>default-unpack</h4></div>
+<h4 data-toc-id="resource-default-unpack">default-unpack</h4>
 
 *Whether source archives are unpacked by default (boolean)*
 
@@ -711,13 +739,13 @@ By default, archive sources (i.e. sources with known archive extensions such as 
 
 Each source can define `unpack` as needed to override this setting.
 
-<div data-toc-id="resource-description"><h4>description</h4></div>
+<h4 data-toc-id="resource-description">description</h4>
 
 *Resource description (string)*
 
 Optional resource description. Use this to document the resource. To list attribution sources, use [`references`](#resource-references). This attribute is for annotation purposes and not otherwise used by Guild.
 
-<div data-toc-id="resource-references"><h4>references</h4></div>
+<h4 data-toc-id="resource-references">references</h4>
 
 *List of attributions or other references for the resource (list of strings)*
 
@@ -725,7 +753,7 @@ Use to denote resource origins (e.g. papers, etc.) This attribute is for annotat
 
 ### Resource Source Attributes
 
-<div data-toc-id="resource-source-type"><h4>&lt;type attribute&gt;</h4></div>
+<h4 data-toc-id="resource-source-type">&lt;type attribute&gt;</h4>
 
 Use one and only one type attribute when defining a resource source.
 
@@ -768,7 +796,7 @@ Guild resolves config sources by re-writing the files with any flag values that 
 
 Guild resolves module types by verifying that a Python module is available for a run. Use this source type with a `help` message that provides instructions for installing the missing library.
 
-<div data-toc-id="resource-source-name"><h4>name</h4></div>
+<h4 data-toc-id="resource-source-name">name</h4>
 
 *Name used to reference the source (string)*
 
@@ -776,7 +804,7 @@ By default, Guild uses the type attribute value to generate a name for the sourc
 
 If this attribute is not defined, the resource name can be used to to specify a source value. However, this only applies to the first source defined in for `sources`. Subsequent sources must define `name` to support user-defined values.
 
-<div data-toc-id="resource-source-target-path"><h4>target-path</h4></div>
+<h4 data-toc-id="resource-source-target-path">target-path</h4>
 
 *Path under which resolved source files are created (string)*
 
@@ -784,7 +812,7 @@ By default, Guild creates links in the run directory. Use `target-path` to speci
 
 > <span data-guild-class="callout note">Backward Compatible Change</span> This attribute is named `path` in versions prior to 0.7. Use `target-path` as a clearer alternative.
 
-<div data-toc-id="resource-source-target-type"><h4>target-type</h4></div>
+<h4 data-toc-id="resource-source-target-type">target-type</h4>
 
 *Type of file created when resolving resource sources (choice --- see below for options)*
 
@@ -810,7 +838,7 @@ Target type can be one of:
 >
 > To avoid expensive copy operations for large resources that do not change, it is safe to use `link`.
 
-<div data-toc-id="resource-source-sha256"><h4>sha256</h4></div>
+<h4 data-toc-id="resource-source-sha256">sha256</h4>
 
 *SHA-256 digest used to validate a source file (string)*
 
@@ -824,7 +852,7 @@ If the source is a directory, Guild ignores this value and prints a warning mess
 >
 > To calculate SHA-256 digests for a project file, use `sha256sum` or a similar program.
 
-<div data-toc-id="resource-source-unpack"><h4>unpack</h4></div>
+<h4 data-toc-id="resource-source-unpack">unpack</h4>
 
 *Whether Guild unpacks resolved archives (boolean)*
 
@@ -832,7 +860,7 @@ By default, Guild unpacks resolved archives. Set this value to `no` disable unpa
 
 If this attribute is not specified, Guild uses the resource [`default-unpack`](#resource-default-unpack) attribute, if defined.
 
-<div data-toc-id="resource-source-select"><h4>select</h4></div>
+<h4 data-toc-id="resource-source-select">select</h4>
 
 *List of patterns used to select files from an archive or directory (string or list of strings)*
 
@@ -842,7 +870,7 @@ Archives must be unpacked to select files.
 
 This setting is ignored for single file sources.
 
-<div data-toc-id="resource-source-select-min-max"><h4>select-min, select-max</h4></div>
+<h4 data-toc-id="resource-source-select-min-max">select-min, select-max</h4>
 
 *Patterns used to select a file matching minimum or maximum captured value (string)*
 
@@ -850,7 +878,7 @@ Use to select one file from a list of archive or directory files using a capture
 
 > <span data-guild-class="callout tip">Tip</span> Use with `operation` source types to select saved models using minimum or maximum values from their file names. For example, if a model is saved with *`loss`* values in its file name, use `select-min` to select the file with the lowest loss using the applicable file name pattern.
 
-<div data-toc-id="resource-source-name"><h4>rename</h4></div>
+<h4 data-toc-id="resource-source-name">rename</h4>
 
 *Specification for renaming resolved files (string or mapping)*
 
@@ -871,7 +899,7 @@ If the value is a mapping, it must define the following attributes:
 
 Use in conjucntion with [`target-path`](#resource-source-target-path) to accommodate code that relies on a hard-coded path or otherwise control the run directory layout.
 
-<div data-toc-id="resource-source-post-process"><h4>post-process</h4></div>
+<h4 data-toc-id="resource-source-post-process">post-process</h4>
 
 *Command to run once to process a resource (string)*
 
@@ -879,19 +907,19 @@ When Guild first resolves a resource, it runs `post-process` if specified. This 
 
 Use to perform tasks on a resolved resource. For example, to apply patches, compile source, etc.
 
-<div data-toc-id="resource-source-warn-if-empty"><h4>warn-if-empty</h4></div>
+<h4 data-toc-id="resource-source-warn-if-empty">warn-if-empty</h4>
 
 *Whether to log a warning when source doesn't resolve any files (boolean)*
 
 If true (default), Guild logs a warning message if the source does not resolve files. Set this to `no` to disable this warning.
 
-<div data-toc-id="resource-source-fail-if-empty"><h4>fail-if-empty</h4></div>
+<h4 data-toc-id="resource-source-fail-if-empty">fail-if-empty</h4>
 
 *Whether a runs stops with an error when source doesn't resolve any files (boolean)*
 
 If true, Guild exits with an error message when a source does not resolve files. By default, Guild logs a warning message (see [`warn-if-empty`](#resource-source-warn-if-empty)). Set this attribute to `yes` to prevent a run from continuing in such cases.
 
-<div data-toc-id="resource-source-help"><h4>help</h4></div>
+<h4 data-toc-id="resource-source-help">help</h4>
 
 *Message to show the user if the resouce cannot be resolved (string)*
 
@@ -911,7 +939,7 @@ See also: [*Source Code Cheatsheet*](/cheatsheets/guildfile#source-code)
 
 ### Source Code Attributes
 
-<div data-toc-id="sourcecode-root"><h4>root</h4></div>
+<h4 data-toc-id="sourcecode-root">root</h4>
 
 *Alternative root from which to copy source code (string)*
 
@@ -921,13 +949,13 @@ This value can use `../` to reference source code outside the Guild file directo
 
 > <span data-guild-class="callout important">Important</span> Paths that refer to locations outside the Guild file directory can break if the project is copied to another system.
 
-<div data-toc-id="sourcecode-select"><h4>select</h4></div>
+<h4 data-toc-id="sourcecode-select">select</h4>
 
 *List of select rules*
 
 See [Source Code Select Rules](#source-code-select-rules) for a description of select rules.
 
-<div data-toc-id="sourcecode-digest"><h4>digest</h4></div>
+<h4 data-toc-id="sourcecode-digest">digest</h4>
 
 *Whether Guild generates a digest for copied source code (boolean)*
 
@@ -935,7 +963,7 @@ By default Guild generates digests of copied source code. The digest can be used
 
 In some cases, it can be too expensive to compute a digest and the source code version is available in a source code file. In such cases, you can disable the digest by setting this attribute to `no`.
 
-<div data-toc-id="sourcecode-dest"><h4>dest</h4></div>
+<h4 data-toc-id="sourcecode-dest">dest</h4>
 
 *Alternate destination directory for source code (string)*
 
@@ -1005,6 +1033,8 @@ The special templates `\key`, `\value`, and `\step` represent regular expression
 
 > <span data-guild-class="callout tip">Tip</span> Use the `--test-output-scalars` option to [`guild run`](/commands/run) to test strings from generated output. You can test a file or interatively test strings that you type into the console (use `-` as the file name to read from standard intput).
 
+Refer to [Guild File Cheatsheet](/t/guild-file-cheatsheet/192#output-scalars-15) for output scalar configuration examples.
+
 ## Columns
 
 By default Guild shows all flags and root output scalars for an operation run in [Guild Compare](/docs/compare). Use the `columns` operation attribute to define an alternative set of columns.
@@ -1037,13 +1067,13 @@ A step is a string or a mapping. If a step item is a string, the value is used a
 
 ### Step Attributes
 
-<div data-toc-id="step-run"><h4>run</h4></div>
+<h4 data-toc-id="step-run">run</h4>
 
 *In operation to run for the step (string)*
 
 You can include flag values as arguments to the operation. Alternatively, use the [`flags`](#step-flags) attribute to list flag assignments.
 
-<div data-toc-id="step-name"><h4>name</h4></div>
+<h4 data-toc-id="step-name">name</h4>
 
 *An alternative name used for the step (string)*
 
@@ -1051,7 +1081,7 @@ By default, the operation name specified for `run` (or as the step value if it i
 
 Names are used as links within the stepped run.
 
-<div data-toc-id="step-flags"><h4>flags</h4></div>
+<h4 data-toc-id="step-flags">flags</h4>
 
 *Flag values used for the step operation (mapping of flag names to values)*
 
@@ -1059,13 +1089,13 @@ Use `flags` to specify flag values used for a step run. You can include referenc
 
 > <span data-guild-class="callout important">Important</span> This attribute defines flag values only. It does not define the flags themselves. Flags are defined by the operation being run.
 
-<div data-toc-id="step-checks"><h4>checks</h4></div>
+<h4 data-toc-id="step-checks">checks</h4>
 
 *List of checks to perform on the step (list of [step checks](#step-check))*
 
 Use checks to validate a step. Checks are used to implement tests in Guild.
 
-<div data-toc-id="step-run-options"><h4>isolate-runs</h4></div>
+<h4 data-toc-id="step-run-options">isolate-runs</h4>
 
 *Whether to limit visible runs to those generated by the step parent run (boolean)*
 
@@ -1117,13 +1147,13 @@ Checks are identified by a type attribute, which can be one of:
 
 ### File Check Attributes
 
-<div data-toc-id="step-check-file"><h4>file</h4></div>
+<h4 data-toc-id="step-check-file">file</h4>
 
 *File path to check (required string)*
 
 Paths are considered relative to the step run directory.
 
-<div data-toc-id="step-check-file-compare-to"><h4>compare-to</h4></div>
+<h4 data-toc-id="step-check-file-compare-to">compare-to</h4>
 
 *Compares the run file to another file (string)*
 
@@ -1131,7 +1161,7 @@ If the run file is different from the file specified by `compare-to`, the check 
 
 Guild assumes that the `compare-to` file is relative to the step run directory.
 
-<div data-toc-id="step-check-file-contains"><h4>contains</h4></div>
+<h4 data-toc-id="step-check-file-contains">contains</h4>
 
 *Checks the run file for matching text (string)*
 
@@ -1141,7 +1171,7 @@ If the run file output does not contain text that matches this attribute value, 
 
 ### Output Check Attributes
 
-<div data-toc-id="step-check-output"><h4>output</h4></div>
+<h4 data-toc-id="step-check-output">output</h4>
 
 *Pattern to search for in run output (required string)*
 
@@ -1162,19 +1192,19 @@ Models are defined in [full format](#full-format) Guild files using the `model` 
 
 ### Model Attributes
 
-<div data-toc-id="model-name"><h4>model</h4></div>
+<h4 data-toc-id="model-name">model</h4>
 
 *Model name (string --- required for model object type)*
 
 The `model` type attribute specifies the model name.
 
-<div data-toc-id="model-description"><h4>description</h4></div>
+<h4 data-toc-id="model-description">description</h4>
 
 *Description of the model (multiline string)*
 
 Use to provide a single line description as well as multiline descriptions. The first line of a model description is used in [`guild models`](/commands/models) output. Additional lines are used to show model help.
 
-<div data-toc-id="model-operations"><h4>operations</h4></div>
+<h4 data-toc-id="model-operations">operations</h4>
 
 *Model operations (mapping of [operations](#operations)*
 
@@ -1182,19 +1212,19 @@ Use to define supported model operations. Mapping keys are operation names. See 
 
 Model operations are run using <code>guild run <em>MODEL</em>:<em>OPERATION</em></code> where *`MODEL`* is the model name and *`OPERATION`* is the operation name.
 
-<div data-toc-id="model-resources"><h4>resources</h4></div>
+<h4 data-toc-id="model-resources">resources</h4>
 
 *Resources defined for the model (mapping of [resources](#resources))*
 
 Use to define named resources, which can be referenced by operations as dependencies using the resource name (mapping key). See [Resources](#resources) for resource attributes.
 
-<div data-toc-id="model-sourcecode"><h4>sourcecode</h4></div>
+<h4 data-toc-id="model-sourcecode">sourcecode</h4>
 
 *Source code specification used for model operations ([source code spec](#source-code-spec))*
 
 The `sourcecode` spec defined at the model level applies to all model operations. Operation level `sourcecode` specs extend the model level spec by appending items to the end of the model items.
 
-<div data-toc-id="model-python-requires"><h4>python-requires</h4></div>
+<h4 data-toc-id="model-python-requires">python-requires</h4>
 
 *Default Python requirement for model operations (string)*
 
@@ -1202,13 +1232,13 @@ This value must be a valid [pip install requirements spec](https://pip.pypa.io/e
 
 Operations can redefine this value as needed using [`python-requires`](#operation-python-requires).
 
-<div data-toc-id="operation-defaults"><h4>operation-defaults</h4></div>
+<h4 data-toc-id="operation-defaults">operation-defaults</h4>
 
 *Mapping of attribute names to values*
 
 Use `operation-detaults` to provide a list of default operation attribute values. Operations that don't otherwise define an attribute use the values specified here. This is useful, for example, for specifying a default `output-scalars` attribute for operations.
 
-<div data-toc-id="model-extends"><h4>extends</h4></div>
+<h4 data-toc-id="model-extends">extends</h4>
 
 *One or more models or config objects to extend (string or list of strings)*
 
@@ -1216,7 +1246,7 @@ Use to inherit the a model definition from a model or config object.
 
 For more information, see [Inheritance](#inheritance) below.
 
-<div data-toc-id="model-params"><h4>params</h4></div>
+<h4 data-toc-id="model-params">params</h4>
 
 *Mapping of parameter names to values*
 
@@ -1224,7 +1254,7 @@ Use to define or redefine parameter values used in configuration.
 
 For more information, see [Parameters](#parameters).
 
-<div data-toc-id="model-references"><h4>references</h4></div>
+<h4 data-toc-id="model-references">references</h4>
 
 *List of model sources and attributions (list of strings)*
 
@@ -1248,63 +1278,63 @@ Define a package when you want to:
 applicable sections in
 https://setuptools.readthedocs.io/en/latest/setuptools.html -->
 
-<div data-toc-id="package-name"><h4>package</h4></div>
+<h4 data-toc-id="package-name">package</h4>
 
 *Package name (string --- required for package object type)*
 
 The `package` type attribute specifies the package name.
 
-<div data-toc-id="package-version"><h4>version</h4></div>
+<h4 data-toc-id="package-version">version</h4>
 
 *Package version (string)*
 
 Defaults to `0.0.0`.
 
-<div data-toc-id="package-description"><h4>description</h4></div>
+<h4 data-toc-id="package-description">description</h4>
 
 *Package description (string)*
 
 This can be a multi-line description.
 
-<div data-toc-id="package-url"><h4>url</h4></div>
+<h4 data-toc-id="package-url">url</h4>
 
 *URL to package website (string)*
 
-<div data-toc-id="package-author"><h4>author</h4></div>
+<h4 data-toc-id="package-author">author</h4>
 
 *Name of individual or organization author (string)*
 
-<div data-toc-id="package-author-email"><h4>author-email</h4></div>
+<h4 data-toc-id="package-author-email">author-email</h4>
 
 *Email of package author (string)*
 
-<div data-toc-id="package-license"><h4>license</h4></div>
+<h4 data-toc-id="package-license">license</h4>
 
 *Name of package license (string)*
 
-<div data-toc-id="package-tags"><h4>tags</h4></div>
+<h4 data-toc-id="package-tags">tags</h4>
 
 *List of package tags (list of strings)*
 
-<div data-toc-id="package-python-tag"><h4>python-tag</h4></div>
+<h4 data-toc-id="package-python-tag">python-tag</h4>
 
 *Python tag used in the distribution name (string)*
 
-<div data-toc-id="package-data-files"><h4>data-files</h4></div>
+<h4 data-toc-id="package-data-files">data-files</h4>
 
 *List of additional data files to include in the distribution (list of strings)*
 
 Guild always includes `guild.yml`, `LICENSE.*`, and `README.*`. The list of files specified by this attribute is added to this list.
 
-<div data-toc-id="package-python-requires"><h4>python-requires</h4></div>
+<h4 data-toc-id="package-python-requires">python-requires</h4>
 
 *Version of Python required by the package (string)*
 
-<div data-toc-id="package-requires"><h4>requires</h4></div>
+<h4 data-toc-id="package-requires">requires</h4>
 
 *Requirements that must be satisfied when the package is installed (list of string)*
 
-<div data-toc-id="package-packages"><h4>packages</h4></div>
+<h4 data-toc-id="package-packages">packages</h4>
 
 *Project Python packages to be included in the distribution (list of strings)*
 
