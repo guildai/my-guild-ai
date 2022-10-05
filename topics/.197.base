@@ -414,6 +414,16 @@ This flag is set by default for Python based operations. To disable it, set the 
 
 Set this value to `yes` to omit flags from command line arguments when `flags-dest` is `args`. You can re-enable specific flag arguments by setting their `arg-skip` attribute to `no`.
 
+<h4 data-toc-id="operation-delete-on-success">delete-on-success</h4>
+
+*Delete the run if it succeeds (boolean)*
+
+Set this value to `yes` to cause Guild to delete runs for this operation when the succeed. Non-successful runs (e.g. runs that terminate with a non-zero exit code or that are terminated by an interrupt) are not deleted, regardless of this attribute.
+
+There may be cases where a run performs an action that is recorded elswhere (e.g. logged externally) and there is little value in keeping the run when it succeeds.
+
+This setting can be overridden using `--keep-run` with the [run](/commands/run) command.
+
 ## Flags
 
 Flags are defined as mappings under the [`flags`](#operation-flags) operation attribute. The mapping key is the flag *name*.
@@ -912,6 +922,14 @@ Use to perform tasks on a resolved resource. For example, to apply patches, comp
 *Whether to log a warning when source doesn't resolve any files (boolean)*
 
 If true (default), Guild logs a warning message if the source does not resolve files. Set this to `no` to disable this warning.
+
+<h4 data-toc-id="resource-source-optional">optional</h4>
+
+*Flag indicating that the source is optional (boolean)*
+
+Added in 0.8.2.
+
+If true, Guild proceeds with a run when the source cannot be resolved. By default, sources are required, not optional, and Guild generates an error when the source cannot be resolved (e.g. a required file does not exist, a required run cannot be found, etc.) If a source is optional, set this value to `true`.
 
 <h4 data-toc-id="resource-source-fail-if-empty">fail-if-empty</h4>
 
