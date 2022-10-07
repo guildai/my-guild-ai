@@ -23,7 +23,7 @@ For this guide, we use various main modules to illustate different configuration
 
 Even if you don't plan to use a virtual environment for your work, it's a good idea to create a new, empty virtual environment when adding Guild support. As you run your project and discover missing Python modules, install the applicable Python packages using `pip` and add them to [`requirements.txt`](https://pip.pypa.io/en/stable/user_guide/#requirements-files). With this file, others can easily recreate a working virtual environment.
 
-As you [learn earlier](/start/classifier#create-a-guild-environment), Guild works with any virtual environment, including those created with [conda](https://docs.conda.io/), [virtualenv](https://virtualenv.pypa.io), or Python's [venv](https://docs.python.org/library/venv.html) module.
+As you [learned earlier](/start/classifier#create-a-guild-environment), Guild works with any virtual environment, including those created with [conda](https://docs.conda.io/), [virtualenv](https://virtualenv.pypa.io), or Python's [venv](https://docs.python.org/library/venv.html) module.
 
 Here's a simple way to create a project-local virtual environment using Python's built-in `venv` module (Python 3 only):
 
