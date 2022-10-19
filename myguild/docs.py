@@ -294,7 +294,7 @@ def _link_topic_json_for_redirect(location, link):
     if content_type != "application/json; charset=utf-8":
         log.error("Unexpected content type for %s: %s", location, content_type)
         raise TopicLookupError(link)
-    return resp.content
+    return resp.content.decode("utf-8")
 
 
 def _apply_commands(section, force, lines):
@@ -332,9 +332,9 @@ def _apply_command_links(section, force, lines):
 def _docs_index_post(api):
     log.info("Fetching docs index topic")
     try:
-        topic = api._get("/docs")
+        topic = api.topic2("guild-ai-documentation")
     except DiscourseClientError as e:
-        log.error("Error getting docs index topic for '/docs' permalink (%s)" % e)
+        log.error("Error getting docs topic for guild-ai-documentation (%s)" % e)
         raise SystemExit(1)
     else:
         if "post_stream" not in topic:
@@ -342,7 +342,8 @@ def _docs_index_post(api):
                 "unexpected result for /docs permalink: %s", pprint.pformat(topic)
             )
             raise SystemExit(1)
-        return api.post(topic["post_stream"]["posts"][0]["id"])
+        post0 = topic["post_stream"]["posts"][0]
+        return api._get(f"/posts/{post0['id']}.json")
 
 
 def _publish_index_comment():

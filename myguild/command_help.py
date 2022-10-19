@@ -112,6 +112,7 @@ def _get_cmd_help_data(cmd):
         shell=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
+        encoding="utf-8",
     )
     out, err = p.communicate()
     if p.returncode != 0:
@@ -174,21 +175,13 @@ def _sync_command_impl(cmd, data, preview, check, api):
 def _get_command_topic_post(cmd, api):
     assert cmd
     log.info("Fetching published help topic for '%s' from server", cmd)
-    try:
-        # Try permalink first.
-        topic = api._get(_command_permalink(cmd))
-    except DiscourseClientError:
-        # If permalink doesn't exist, try topic link.
-        topic = api._get(_command_topic_link(cmd))
-    return api.post(topic["post_stream"]["posts"][0]["id"])
-
-
-def _command_topic_link(cmd):
-    return "/t/%s" % _command_help_slug(cmd)
+    topic = api.topic2(_command_help_slug(cmd))
+    post0 = topic["post_stream"]["posts"][0]
+    return api._get(f"/posts/{post0['id']}.json")
 
 
 def _command_permalink(cmd):
-    return "/commands/%s" % cmd.replace(" ", "-")
+    return "commands/%s" % cmd.replace(" ", "-")
 
 
 def _create_command_post(cmd, data, preview, check, api):
@@ -221,7 +214,7 @@ def _commands_category(api):
 
 def _guild_commands_topic_category(api):
     try:
-        topic = api.topic("guild-ai-commands")
+        topic = api.topic2("guild-ai-commands")
     except DiscourseClientError:
         raise SystemExit(
             "cannot find 'guild-ai-commands' topic, which is required to "
@@ -242,7 +235,9 @@ def _publish_command(cmd, help_data, post, api, preview, check):
         return
     if check:
         log.warning(
-            "Help topic post %s for '%s' is out-of-date", post["id"], cmd,
+            "Help topic post %s for '%s' is out-of-date",
+            post["id"],
+            cmd,
         )
         return
     comment = _publish_command_comment(help_data)
@@ -256,7 +251,7 @@ def _format_command_help_post(cmd, help_data):
         formatted_help=_format_command_help(help_data),
         formatted_options=_format_command_help_options(help_data),
         formatted_subcommands=_format_command_subcommands(cmd, help_data),
-        **help_data
+        **help_data,
     )
     return _apply_command_refs(post).strip()
 
@@ -404,20 +399,22 @@ def _cmd_summary(data):
 def _commands_index_post(api):
     log.info("Fetching commands index topic")
     try:
-        topic = api._get("/commands")
+        topic = api.topic2("guild-ai-commands")
     except DiscourseClientError:
         log.error(
-            "Cannot find commands index topic for '/commands' permalink - "
-            "create a valid permalink and run this command again"
+            "Cannot find topic for 'guild-ai-commands' - "
+            "create a topic with this ID and try again"
         )
         raise SystemExit(1)
     else:
         if "post_stream" not in topic:
             log.error(
-                "unexpected result for /commands permalink: %s", pprint.pformat(topic)
+                "unexpected result for guild-ai-commands topic: %s",
+                pprint.pformat(topic),
             )
             raise SystemExit(1)
-        return api.post(topic["post_stream"]["posts"][0]["id"])
+        post0 = topic["post_stream"]["posts"][0]
+        return api._get(f"/posts/{post0['id']}.json")
 
 
 def _publish_index_comment(version):
@@ -459,10 +456,19 @@ def _check_permalink(link, cmd, api):
 
 
 def _no_permalink_error(link, cmd, api):
+    command_slug = _command_help_slug(cmd)
     try:
-        topic = api.topic(_command_help_slug(cmd))
+        topic = api.topic2(command_slug)
     except DiscourseClientError:
         log.error("No permalink or broken link for %s", link)
+    except Exception:
+        log.error(
+            "error getting topic for '%s' (command %s, link %s)",
+            command_slug,
+            cmd,
+            link,
+        )
+        raise
     else:
         log.error(
             "No permalink for %s but topic %s '%s' by %s exists",
@@ -485,7 +491,7 @@ def _check_permalink_redirect(link, resp, cmd, api):
         log.error("Unexpected redirect host for %s: %s", link, location)
     topic_id = int(m.group(1))
     try:
-        topic = api.topic(topic_id)
+        topic = api.topic2(topic_id)
     except DiscourseClientError as e:
         log.error("Error getting topic %s from server: %s", topic_id, e)
     else:
@@ -496,21 +502,8 @@ def _check_permalink_redirect(link, resp, cmd, api):
             topic["title"],
             topic["details"]["created_by"]["username"],
         )
-        _check_topic_author(topic)
         _check_topic_slug(topic, cmd)
         _check_topic_title(topic, cmd)
-
-
-def _check_topic_author(topic):
-    expected = "guildai"
-    author = topic["details"]["created_by"]["username"]
-    if author != expected:
-        log.error(
-            "Unexpected author for topic %s: got '%s' expected '%s'",
-            topic["id"],
-            author,
-            expected,
-        )
 
 
 def _check_topic_slug(topic, cmd):

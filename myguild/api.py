@@ -1,10 +1,12 @@
 import json
 import os
+import types
 
 import pydiscourse
 import requests
 
 DiscourseClientError = pydiscourse.exceptions.DiscourseClientError
+DiscourseError = pydiscourse.exceptions.DiscourseError
 
 
 def init():
@@ -30,6 +32,11 @@ def _my_guild_env(name):
 
 
 def _patch_client(client):
+    _fix_413_errors(client)
+    _add_topic2_function(client)
+
+
+def _fix_413_errors(client):
     # Weird 413 errors from server when `json` arg is `{}` (the
     # default). Replace api._request to ensure it's None, which works
     # fine.
@@ -40,6 +47,22 @@ def _patch_client(client):
         return request0(*args, json=json, **kw)
 
     client._request = patched_request
+
+
+def _add_topic2_function(client):
+    client.topic2 = types.MethodType(_topic2, client)
+
+
+def _topic2(api, slug_or_topic_id):
+    """More flexible version of api.topic.
+
+    slug_or_topic_id may be either a slug or a topic ID. If it's a
+    slug, handles the redirect from the server to te fully formed
+    topic URL.
+    """
+    return api._get(
+        f"/t/{slug_or_topic_id}.json", override_request_kwargs={"allow_redirects": True}
+    )
 
 
 def public_get_data(url):
